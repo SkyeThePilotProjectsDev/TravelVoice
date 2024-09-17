@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383372276654",
+    "project_id": "travel-voice-b342b",
+    "storage_bucket": "travel-voice-b342b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383372276654:android:e0efa6d77c98440ba0ce3f",
+        "android_client_info": {
+          "package_name": "com.pilotprojects.travelvoice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCmIbpK_7MIkdR9YYHuZpg-eZd4AdTnnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
