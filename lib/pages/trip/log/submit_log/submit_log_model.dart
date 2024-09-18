@@ -27,6 +27,8 @@ class SubmitLogModel extends FlutterFlowModel<SubmitLogWidget> {
     updateFn(selectedPlace ??= PlaceSearchStruct());
   }
 
+  bool placeSelected = false;
+
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();

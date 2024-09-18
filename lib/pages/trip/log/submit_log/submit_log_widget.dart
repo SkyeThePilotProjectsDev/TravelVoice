@@ -524,19 +524,9 @@ class _SubmitLogWidgetState extends State<SubmitLogWidget> {
                                                     '_model.textFieldCityTextController',
                                                     const Duration(milliseconds: 0),
                                                     () async {
-                                                      FFAppState().updateApp =
-                                                          !(FFAppState()
-                                                                  .updateApp ??
-                                                              true);
-                                                      FFAppState()
-                                                          .update(() {});
-                                                      _model.toggle =
-                                                          !_model.toggle;
+                                                      _model.placeSelected =
+                                                          false;
                                                       safeSetState(() {});
-                                                      await actions
-                                                          .printToConsoleAction(
-                                                        'Toggle: ${_model.toggle.toString()}',
-                                                      );
                                                     },
                                                   ),
                                                   autofocus: false,
@@ -642,7 +632,8 @@ class _SubmitLogWidgetState extends State<SubmitLogWidget> {
                                                 false) &&
                                             (_model.textFieldCityTextController
                                                         .text !=
-                                                    ''))
+                                                    '') &&
+                                            !_model.placeSelected)
                                           wrapWithModel(
                                             model: _model.placeSuggestionsModel,
                                             updateCallback: () =>
@@ -654,6 +645,7 @@ class _SubmitLogWidgetState extends State<SubmitLogWidget> {
                                               onSelect: (suggestion) async {
                                                 _model.selectedPlace =
                                                     suggestion;
+                                                _model.placeSelected = true;
                                                 safeSetState(() {});
                                                 safeSetState(() {
                                                   _model.textFieldCityTextController
