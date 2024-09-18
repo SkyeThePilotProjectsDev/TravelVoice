@@ -10,10 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ViewLogModel extends FlutterFlowModel<ViewLogWidget> {
-  ///  Local state fields for this page.
-
-  FFUploadedFile? image;
-
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();

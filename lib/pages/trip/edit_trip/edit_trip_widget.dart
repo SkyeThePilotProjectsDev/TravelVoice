@@ -167,7 +167,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     autofocus: false,
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      isDense: true,
+                                      isDense: false,
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelMedium
                                           .override(
@@ -179,11 +179,14 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                           .labelMedium
                                           .override(
                                             fontFamily: 'Inter',
+                                            color: FlutterFlowTheme.of(context)
+                                                .alternate,
                                             letterSpacing: 0.0,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Color(0x00000000),
+                                          color: FlutterFlowTheme.of(context)
+                                              .alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius:
@@ -191,7 +194,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Color(0x00000000),
+                                          color: FlutterFlowTheme.of(context)
+                                              .primary,
                                           width: 1.0,
                                         ),
                                         borderRadius:
@@ -286,7 +290,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     autofocus: false,
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      isDense: true,
+                                      isDense: false,
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelMedium
                                           .override(
@@ -298,11 +302,14 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                           .labelMedium
                                           .override(
                                             fontFamily: 'Inter',
+                                            color: FlutterFlowTheme.of(context)
+                                                .alternate,
                                             letterSpacing: 0.0,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Color(0x00000000),
+                                          color: FlutterFlowTheme.of(context)
+                                              .alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius:
@@ -310,7 +317,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Color(0x00000000),
+                                          color: FlutterFlowTheme.of(context)
+                                              .primary,
                                           width: 1.0,
                                         ),
                                         borderRadius:
@@ -569,15 +577,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     editDate: getCurrentTimestamp,
                                   ));
 
-                                  context.pushNamed(
-                                    'Logs',
-                                    queryParameters: {
-                                      'trip': serializeParam(
-                                        widget!.trip,
-                                        ParamType.DocumentReference,
-                                      ),
-                                    }.withoutNulls,
-                                  );
+                                  context.pushNamed('Logs');
                                 },
                                 text: 'Save trip',
                                 options: FFButtonOptions(

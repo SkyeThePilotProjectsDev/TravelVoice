@@ -85,6 +85,9 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
       FFUploadedFile(bytes: Uint8List.fromList([]));
   String uploadedFileUrl2 = '';
 
+  // Stores action output result for [Backend Call - Read Document] action in Button widget.
+  TripLogRecord? updatedLog;
+
   @override
   void initState(BuildContext context) {
     placeSuggestionsModel = createModel(context, () => PlaceSuggestionsModel());

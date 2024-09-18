@@ -19,16 +19,38 @@ class FFAppState extends ChangeNotifier {
     _instance = FFAppState._internal();
   }
 
-  Future initializePersistedState() async {}
+  Future initializePersistedState() async {
+    prefs = await SharedPreferences.getInstance();
+    _safeInit(() {
+      _currentTrip = prefs.getString('ff_currentTrip')?.ref ?? _currentTrip;
+    });
+  }
 
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
   }
 
-  bool _updateApp = false;
-  bool get updateApp => _updateApp;
-  set updateApp(bool value) {
-    _updateApp = value;
+  late SharedPreferences prefs;
+
+  DocumentReference? _currentTrip;
+  DocumentReference? get currentTrip => _currentTrip;
+  set currentTrip(DocumentReference? value) {
+    _currentTrip = value;
+    value != null
+        ? prefs.setString('ff_currentTrip', value.path)
+        : prefs.remove('ff_currentTrip');
   }
+}
+
+void _safeInit(Function() initializeField) {
+  try {
+    initializeField();
+  } catch (_) {}
+}
+
+Future _safeInitAsync(Function() initializeField) async {
+  try {
+    await initializeField();
+  } catch (_) {}
 }

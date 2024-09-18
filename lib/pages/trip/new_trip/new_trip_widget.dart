@@ -347,16 +347,10 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                         },
                                       ),
                                     });
-
-                                    context.pushNamed(
-                                      'Logs',
-                                      queryParameters: {
-                                        'trip': serializeParam(
-                                          _model.newTrip?.reference,
-                                          ParamType.DocumentReference,
-                                        ),
-                                      }.withoutNulls,
-                                    );
+                                    if (Navigator.of(context).canPop()) {
+                                      context.pop();
+                                    }
+                                    context.pushNamed('Logs');
 
                                     safeSetState(() {});
                                   },

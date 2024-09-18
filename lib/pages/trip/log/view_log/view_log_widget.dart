@@ -69,32 +69,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                     children: [
                       FFButtonWidget(
                         onPressed: () async {
-                          var confirmDialogResponse = await showDialog<bool>(
-                                context: context,
-                                builder: (alertDialogContext) {
-                                  return AlertDialog(
-                                    title: Text('Discard Log'),
-                                    content: Text(
-                                        'If you leave this page this log\'s data will be lost'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(
-                                            alertDialogContext, false),
-                                        child: Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(
-                                            alertDialogContext, true),
-                                        child: Text('Confirm'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ) ??
-                              false;
-                          if (confirmDialogResponse) {
-                            context.safePop();
-                          }
+                          context.pushNamed('Logs');
                         },
                         text: 'Back',
                         icon: Icon(
@@ -316,18 +291,13 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                       color: FlutterFlowTheme.of(context)
                                           .alternate,
                                     ),
-                                    Divider(
-                                      thickness: 2.0,
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                    ),
                                     Column(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Transcript:',
+                                          'AI Summary:',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
@@ -352,7 +322,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                                       fontFamily: 'Inter',
                                                       letterSpacing: 0.0,
                                                     ),
-                                            hintText: 'Type notes here',
+                                            hintText: 'Not yet implemented',
                                             hintStyle:
                                                 FlutterFlowTheme.of(context)
                                                     .labelMedium

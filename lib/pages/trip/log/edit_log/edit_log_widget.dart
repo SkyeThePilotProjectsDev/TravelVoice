@@ -215,6 +215,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
@@ -1528,117 +1529,185 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                     ),
                   ),
                 ),
-                FFButtonWidget(
-                  onPressed: () async {
-                    if (_model.image != null &&
-                        (_model.image?.bytes?.isNotEmpty ?? false)) {
-                      {
-                        safeSetState(() => _model.isDataUploading2 = true);
-                        var selectedUploadedFiles = <FFUploadedFile>[];
-                        var selectedMedia = <SelectedFile>[];
-                        var downloadUrls = <String>[];
-                        try {
-                          selectedUploadedFiles =
-                              _model.image!.bytes!.isNotEmpty
-                                  ? [_model.image!]
-                                  : <FFUploadedFile>[];
-                          selectedMedia = selectedFilesFromUploadedFiles(
-                            selectedUploadedFiles,
-                          );
-                          downloadUrls = (await Future.wait(
-                            selectedMedia.map(
-                              (m) async =>
-                                  await uploadData(m.storagePath, m.bytes),
-                            ),
-                          ))
-                              .where((u) => u != null)
-                              .map((u) => u!)
-                              .toList();
-                        } finally {
-                          _model.isDataUploading2 = false;
-                        }
-                        if (selectedUploadedFiles.length ==
-                                selectedMedia.length &&
-                            downloadUrls.length == selectedMedia.length) {
-                          safeSetState(() {
-                            _model.uploadedLocalFile2 =
-                                selectedUploadedFiles.first;
-                            _model.uploadedFileUrl2 = downloadUrls.first;
-                          });
-                        } else {
-                          safeSetState(() {});
-                          return;
-                        }
-                      }
-
-                      await widget!.log!.reference.update({
-                        ...createTripLogRecordData(
-                          location: updateLocationDataStruct(
-                            LocationDataStruct(
-                              location: functions.locationParser(
-                                  _model.selectedPlace?.geometry?.location),
-                              locationText:
-                                  _model.selectedPlace?.formattedAddress,
-                            ),
-                            clearUnsetFields: false,
-                          ),
-                          eventDate: _model.selectedDate,
-                          notes: _model.textFieldNotesTextController.text,
-                          photo: _model.uploadedFileUrl2,
-                          editDate: getCurrentTimestamp,
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!(_model.recordings.isNotEmpty))
+                        Text(
+                          '* There needs to be at least 1 recording',
+                          style:
+                              FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context).error,
+                                    letterSpacing: 0.0,
+                                  ),
                         ),
-                        ...mapToFirestore(
-                          {
-                            'recordings': _model.recordings,
-                          },
+                      if (_model.selectedPlace == null)
+                        Text(
+                          '* A city needs to be selected',
+                          style:
+                              FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context).error,
+                                    letterSpacing: 0.0,
+                                  ),
                         ),
-                      });
-                    } else {
-                      await widget!.log!.reference.update({
-                        ...createTripLogRecordData(
-                          location: updateLocationDataStruct(
-                            LocationDataStruct(
-                              location: functions.locationParser(
-                                  _model.selectedPlace?.geometry?.location),
-                              locationText:
-                                  _model.selectedPlace?.formattedAddress,
-                            ),
-                            clearUnsetFields: false,
-                          ),
-                          eventDate: _model.selectedDate,
-                          notes: _model.textFieldNotesTextController.text,
-                          editDate: getCurrentTimestamp,
-                        ),
-                        ...mapToFirestore(
-                          {
-                            'recordings': _model.recordings,
-                          },
-                        ),
-                      });
-                    }
-
-                    context.safePop();
-                  },
-                  text: 'Submit',
-                  icon: Icon(
-                    Icons.check_rounded,
-                    size: 15.0,
+                    ],
                   ),
-                  options: FFButtonOptions(
-                    height: 40.0,
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: FlutterFlowTheme.of(context).primary,
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          fontFamily: 'Inter Tight',
-                          color: Colors.white,
-                          letterSpacing: 0.0,
-                        ),
-                    elevation: 0.0,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FFButtonWidget(
+                      onPressed: (!(_model.recordings.isNotEmpty) ||
+                              (_model.selectedPlace == null))
+                          ? null
+                          : () async {
+                              if (_model.image != null &&
+                                  (_model.image?.bytes?.isNotEmpty ?? false)) {
+                                {
+                                  safeSetState(
+                                      () => _model.isDataUploading2 = true);
+                                  var selectedUploadedFiles =
+                                      <FFUploadedFile>[];
+                                  var selectedMedia = <SelectedFile>[];
+                                  var downloadUrls = <String>[];
+                                  try {
+                                    selectedUploadedFiles =
+                                        _model.image!.bytes!.isNotEmpty
+                                            ? [_model.image!]
+                                            : <FFUploadedFile>[];
+                                    selectedMedia =
+                                        selectedFilesFromUploadedFiles(
+                                      selectedUploadedFiles,
+                                    );
+                                    downloadUrls = (await Future.wait(
+                                      selectedMedia.map(
+                                        (m) async => await uploadData(
+                                            m.storagePath, m.bytes),
+                                      ),
+                                    ))
+                                        .where((u) => u != null)
+                                        .map((u) => u!)
+                                        .toList();
+                                  } finally {
+                                    _model.isDataUploading2 = false;
+                                  }
+                                  if (selectedUploadedFiles.length ==
+                                          selectedMedia.length &&
+                                      downloadUrls.length ==
+                                          selectedMedia.length) {
+                                    safeSetState(() {
+                                      _model.uploadedLocalFile2 =
+                                          selectedUploadedFiles.first;
+                                      _model.uploadedFileUrl2 =
+                                          downloadUrls.first;
+                                    });
+                                  } else {
+                                    safeSetState(() {});
+                                    return;
+                                  }
+                                }
+
+                                await widget!.log!.reference.update({
+                                  ...createTripLogRecordData(
+                                    location: updateLocationDataStruct(
+                                      LocationDataStruct(
+                                        location: functions.locationParser(
+                                            _model.selectedPlace?.geometry
+                                                ?.location),
+                                        locationText: _model
+                                            .selectedPlace?.formattedAddress,
+                                      ),
+                                      clearUnsetFields: false,
+                                    ),
+                                    eventDate: _model.selectedDate,
+                                    notes: _model
+                                        .textFieldNotesTextController.text,
+                                    photo: _model.uploadedFileUrl2,
+                                    editDate: getCurrentTimestamp,
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'recordings': _model.recordings,
+                                    },
+                                  ),
+                                });
+                              } else {
+                                await widget!.log!.reference.update({
+                                  ...createTripLogRecordData(
+                                    location: updateLocationDataStruct(
+                                      LocationDataStruct(
+                                        location: functions.locationParser(
+                                            _model.selectedPlace?.geometry
+                                                ?.location),
+                                        locationText: _model
+                                            .selectedPlace?.formattedAddress,
+                                      ),
+                                      clearUnsetFields: false,
+                                    ),
+                                    eventDate: _model.selectedDate,
+                                    notes: _model
+                                        .textFieldNotesTextController.text,
+                                    editDate: getCurrentTimestamp,
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'recordings': _model.recordings,
+                                    },
+                                  ),
+                                });
+                              }
+
+                              _model.updatedLog =
+                                  await TripLogRecord.getDocumentOnce(
+                                      widget!.log!.reference);
+
+                              context.pushNamed(
+                                'ViewLog',
+                                queryParameters: {
+                                  'log': serializeParam(
+                                    _model.updatedLog,
+                                    ParamType.Document,
+                                  ),
+                                }.withoutNulls,
+                                extra: <String, dynamic>{
+                                  'log': _model.updatedLog,
+                                },
+                              );
+
+                              safeSetState(() {});
+                            },
+                      text: 'Submit',
+                      icon: Icon(
+                        Icons.check_rounded,
+                        size: 15.0,
+                      ),
+                      options: FFButtonOptions(
+                        height: 40.0,
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            16.0, 0.0, 16.0, 0.0),
+                        iconPadding:
+                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                        color: FlutterFlowTheme.of(context).primary,
+                        textStyle:
+                            FlutterFlowTheme.of(context).titleSmall.override(
+                                  fontFamily: 'Inter Tight',
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                ),
+                        elevation: 0.0,
+                        borderRadius: BorderRadius.circular(8.0),
+                        disabledColor: FlutterFlowTheme.of(context).tertiary,
+                        disabledTextColor:
+                            FlutterFlowTheme.of(context).alternate,
+                      ),
+                    ),
+                  ],
                 ),
               ]
                   .divide(SizedBox(height: 16.0))

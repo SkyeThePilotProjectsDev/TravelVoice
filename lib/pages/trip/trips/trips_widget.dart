@@ -259,18 +259,12 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                                 Colors
                                                                     .transparent,
                                                             onTap: () async {
+                                                              FFAppState()
+                                                                      .currentTrip =
+                                                                  tripsItem;
+
                                                               context.pushNamed(
-                                                                'Logs',
-                                                                queryParameters:
-                                                                    {
-                                                                  'trip':
-                                                                      serializeParam(
-                                                                    tripsItem,
-                                                                    ParamType
-                                                                        .DocumentReference,
-                                                                  ),
-                                                                }.withoutNulls,
-                                                              );
+                                                                  'Logs');
                                                             },
                                                             child: Container(
                                                               decoration:

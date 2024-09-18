@@ -113,14 +113,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'Logs',
               path: 'logs',
               requireAuth: true,
-              builder: (context, params) => LogsWidget(
-                trip: params.getParam(
-                  'trip',
-                  ParamType.DocumentReference,
-                  isList: false,
-                  collectionNamePath: ['trip'],
-                ),
-              ),
+              builder: (context, params) => LogsWidget(),
             ),
             FFRoute(
               name: 'ForgotPassword',
