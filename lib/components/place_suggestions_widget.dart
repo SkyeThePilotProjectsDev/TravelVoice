@@ -9,6 +9,8 @@ import '/flutter_flow/instant_timer.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'place_suggestions_model.dart';
 export 'place_suggestions_model.dart';
 
@@ -43,14 +45,14 @@ class _PlaceSuggestionsWidgetState extends State<PlaceSuggestionsWidget> {
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       await actions.printToConsoleAction(
-        'Search: ${widget.query}',
+        'Search: ${widget!.query}',
       );
       _model.instantTimer = InstantTimer.periodic(
-        duration: const Duration(milliseconds: 1000),
+        duration: Duration(milliseconds: 1000),
         callback: (timer) async {
-          if (widget.query != _model.queryText) {
+          if (widget!.query != _model.queryText) {
             _model.apiResultfv3 = await PlacesSearchMultiCall.call(
-              query: widget.query,
+              query: widget!.query,
             );
 
             if ((_model.apiResultfv3?.succeeded ?? true)) {
@@ -65,7 +67,7 @@ class _PlaceSuggestionsWidgetState extends State<PlaceSuggestionsWidget> {
               safeSetState(() {});
             }
 
-            _model.queryText = widget.query;
+            _model.queryText = widget!.query;
             safeSetState(() {});
           }
         },
@@ -97,12 +99,12 @@ class _PlaceSuggestionsWidgetState extends State<PlaceSuggestionsWidget> {
         ),
         child: Builder(
           builder: (context) {
-            if (_model.queryText == widget.query) {
+            if (_model.queryText == widget!.query) {
               return Builder(
                 builder: (context) {
                   final place = _model.suggestions.toList();
                   if (place.isEmpty) {
-                    return const EmptyListWidget(
+                    return EmptyListWidget(
                       customText: 'No places found',
                     );
                   }
@@ -135,7 +137,7 @@ class _PlaceSuggestionsWidgetState extends State<PlaceSuggestionsWidget> {
               return wrapWithModel(
                 model: _model.emptyListModel,
                 updateCallback: () => safeSetState(() {}),
-                child: const EmptyListWidget(
+                child: EmptyListWidget(
                   customText: 'Loading...',
                 ),
               );

@@ -2,6 +2,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'landing_model.dart';
 export 'landing_model.dart';
 
@@ -49,7 +51,7 @@ class _LandingWidgetState extends State<LandingWidget> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +63,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 250.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
@@ -69,7 +71,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 100.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -96,7 +98,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                                             letterSpacing: 0.0,
                                           ),
                                     ),
-                                  ].divide(const SizedBox(height: 8.0)),
+                                  ].divide(SizedBox(height: 8.0)),
                                 ),
                               ),
                               FFButtonWidget(
@@ -107,9 +109,9 @@ class _LandingWidgetState extends State<LandingWidget> {
                                 options: FFButtonOptions(
                                   width: MediaQuery.sizeOf(context).width * 0.7,
                                   height: 40.0,
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
                                       24.0, 0.0, 24.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  iconPadding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 0.0, 0.0),
                                   color: FlutterFlowTheme.of(context).primary,
                                   textStyle: FlutterFlowTheme.of(context)
@@ -121,7 +123,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                                         letterSpacing: 0.0,
                                       ),
                                   elevation: 0.0,
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
@@ -135,9 +137,9 @@ class _LandingWidgetState extends State<LandingWidget> {
                                 options: FFButtonOptions(
                                   width: MediaQuery.sizeOf(context).width * 0.7,
                                   height: 40.0,
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
                                       24.0, 0.0, 24.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  iconPadding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 0.0, 0.0),
                                   color: FlutterFlowTheme.of(context).secondary,
                                   textStyle: FlutterFlowTheme.of(context)
@@ -149,13 +151,13 @@ class _LandingWidgetState extends State<LandingWidget> {
                                         letterSpacing: 0.0,
                                       ),
                                   elevation: 0.0,
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                               ),
-                            ].divide(const SizedBox(height: 32.0)),
+                            ].divide(SizedBox(height: 32.0)),
                           ),
                         ),
                       ],

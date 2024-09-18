@@ -1,9 +1,14 @@
+import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'edit_trip_model.dart';
 export 'edit_trip_model.dart';
 
@@ -45,7 +50,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<TripRecord>(
-      stream: TripRecord.getDocument(widget.trip!),
+      stream: TripRecord.getDocument(widget!.trip!),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -75,13 +80,13 @@ class _EditTripWidgetState extends State<EditTripWidget> {
             body: SafeArea(
               top: true,
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
+                        padding: EdgeInsetsDirectional.fromSTEB(
                             16.0, 0.0, 16.0, 0.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
@@ -96,15 +101,15 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     context.safePop();
                                   },
                                   text: 'Back',
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.keyboard_backspace,
                                     size: 15.0,
                                   ),
                                   options: FFButtonOptions(
                                     height: 40.0,
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
                                         24.0, 0.0, 24.0, 0.0),
-                                    iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    iconPadding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 0.0),
                                     color: Colors.transparent,
                                     textStyle: FlutterFlowTheme.of(context)
@@ -150,7 +155,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                         letterSpacing: 0.0,
                                       ),
                                 ),
-                                SizedBox(
+                                Container(
                                   width: 200.0,
                                   child: TextFormField(
                                     controller:
@@ -177,7 +182,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                             letterSpacing: 0.0,
                                           ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
+                                        borderSide: BorderSide(
                                           color: Color(0x00000000),
                                           width: 1.0,
                                         ),
@@ -185,7 +190,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                             BorderRadius.circular(8.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
+                                        borderSide: BorderSide(
                                           color: Color(0x00000000),
                                           width: 1.0,
                                         ),
@@ -227,7 +232,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                         .asValidator(context),
                                   ),
                                 ),
-                              ].divide(const SizedBox(height: 16.0)),
+                              ].divide(SizedBox(height: 16.0)),
                             ),
                             Column(
                               mainAxisSize: MainAxisSize.max,
@@ -256,7 +261,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                Container(
                                   width: 200.0,
                                   child: TextFormField(
                                     controller:
@@ -296,7 +301,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                             letterSpacing: 0.0,
                                           ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
+                                        borderSide: BorderSide(
                                           color: Color(0x00000000),
                                           width: 1.0,
                                         ),
@@ -304,7 +309,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                             BorderRadius.circular(8.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
+                                        borderSide: BorderSide(
                                           color: Color(0x00000000),
                                           width: 1.0,
                                         ),
@@ -347,7 +352,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                         .asValidator(context),
                                   ),
                                 ),
-                              ].divide(const SizedBox(height: 16.0)),
+                              ].divide(SizedBox(height: 16.0)),
                             ),
                             SingleChildScrollView(
                               child: Column(
@@ -408,7 +413,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.all(4.0),
+                                                          EdgeInsets.all(4.0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons.trash,
                                                         color:
@@ -453,7 +458,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                           letterSpacing: 0.0,
                                                         ),
                                                   ),
-                                                ].divide(const SizedBox(width: 8.0)),
+                                                ].divide(SizedBox(width: 8.0)),
                                               );
                                             },
                                           );
@@ -501,7 +506,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                   ),
                                                   child: Padding(
                                                     padding:
-                                                        const EdgeInsets.all(4.0),
+                                                        EdgeInsets.all(4.0),
                                                     child: FaIcon(
                                                       FontAwesomeIcons.trash,
                                                       color:
@@ -543,7 +548,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                           letterSpacing: 0.0,
                                                         ),
                                               ),
-                                            ].divide(const SizedBox(width: 8.0)),
+                                            ].divide(SizedBox(width: 8.0)),
                                           );
                                         }),
                                       );
@@ -553,11 +558,11 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
+                              padding: EdgeInsetsDirectional.fromSTEB(
                                   32.0, 0.0, 32.0, 0.0),
                               child: FFButtonWidget(
                                 onPressed: () async {
-                                  await widget.trip!
+                                  await widget!.trip!
                                       .update(createTripRecordData(
                                     name:
                                         _model.textFieldNameTextController.text,
@@ -568,7 +573,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     'Logs',
                                     queryParameters: {
                                       'trip': serializeParam(
-                                        widget.trip,
+                                        widget!.trip,
                                         ParamType.DocumentReference,
                                       ),
                                     }.withoutNulls,
@@ -577,9 +582,9 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                 text: 'Save trip',
                                 options: FFButtonOptions(
                                   height: 40.0,
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
                                       16.0, 0.0, 16.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  iconPadding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 0.0, 0.0),
                                   color: FlutterFlowTheme.of(context).primary,
                                   textStyle: FlutterFlowTheme.of(context)
@@ -595,9 +600,9 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                               ),
                             ),
                           ]
-                              .divide(const SizedBox(height: 32.0))
-                              .addToStart(const SizedBox(height: 16.0))
-                              .addToEnd(const SizedBox(height: 16.0)),
+                              .divide(SizedBox(height: 32.0))
+                              .addToStart(SizedBox(height: 16.0))
+                              .addToEnd(SizedBox(height: 16.0)),
                         ),
                       ),
                     ),

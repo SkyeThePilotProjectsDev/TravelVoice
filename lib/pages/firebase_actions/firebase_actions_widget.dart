@@ -1,7 +1,10 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'firebase_actions_model.dart';
 export 'firebase_actions_model.dart';
 
@@ -31,12 +34,12 @@ class _FirebaseActionsWidgetState extends State<FirebaseActionsWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (widget.mode == 'resetPassword') {
+      if (widget!.mode == 'resetPassword') {
         context.pushNamed(
           'ForgotPassword',
           queryParameters: {
             'firebaseCode': serializeParam(
-              widget.oobCode,
+              widget!.oobCode,
               ParamType.String,
             ),
           }.withoutNulls,
@@ -62,7 +65,7 @@ class _FirebaseActionsWidgetState extends State<FirebaseActionsWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -82,7 +85,7 @@ class _FirebaseActionsWidgetState extends State<FirebaseActionsWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
+                        padding: EdgeInsetsDirectional.fromSTEB(
                             16.0, 0.0, 16.0, 0.0),
                         child: Text(
                           'Please stand by while we process your request...',

@@ -4,7 +4,10 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'new_trip_model.dart';
 export 'new_trip_model.dart';
 
@@ -49,14 +52,14 @@ class _NewTripWidgetState extends State<NewTripWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
                   child: Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,15 +73,15 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                 context.safePop();
                               },
                               text: 'Back',
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.keyboard_backspace,
                                 size: 15.0,
                               ),
                               options: FFButtonOptions(
                                 height: 40.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     24.0, 0.0, 24.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 0.0),
                                 color: Colors.transparent,
                                 textStyle: FlutterFlowTheme.of(context)
@@ -123,7 +126,7 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                     letterSpacing: 0.0,
                                   ),
                             ),
-                            SizedBox(
+                            Container(
                               width: 200.0,
                               child: TextFormField(
                                 controller: _model.textController1,
@@ -193,7 +196,7 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                     .asValidator(context),
                               ),
                             ),
-                          ].divide(const SizedBox(height: 16.0)),
+                          ].divide(SizedBox(height: 16.0)),
                         ),
                         Column(
                           mainAxisSize: MainAxisSize.max,
@@ -222,7 +225,7 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            Container(
                               width: 200.0,
                               child: TextFormField(
                                 controller: _model.textController2,
@@ -292,13 +295,14 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                     .asValidator(context),
                               ),
                             ),
-                          ].divide(const SizedBox(height: 16.0)),
+                          ].divide(SizedBox(height: 16.0)),
                         ),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               32.0, 0.0, 32.0, 0.0),
                           child: FFButtonWidget(
-                            onPressed: (_model.textController1.text == '')
+                            onPressed: (_model.textController1.text == null ||
+                                    _model.textController1.text == '')
                                 ? null
                                 : () async {
                                     _model.usersRequests =
@@ -359,9 +363,9 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                             text: 'Create trip',
                             options: FFButtonOptions(
                               height: 40.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(
+                              padding: EdgeInsetsDirectional.fromSTEB(
                                   16.0, 0.0, 16.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                              iconPadding: EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 0.0),
                               color: FlutterFlowTheme.of(context).primary,
                               textStyle: FlutterFlowTheme.of(context)
@@ -381,9 +385,9 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                           ),
                         ),
                       ]
-                          .divide(const SizedBox(height: 32.0))
-                          .addToStart(const SizedBox(height: 16.0))
-                          .addToEnd(const SizedBox(height: 16.0)),
+                          .divide(SizedBox(height: 32.0))
+                          .addToStart(SizedBox(height: 16.0))
+                          .addToEnd(SizedBox(height: 16.0)),
                     ),
                   ),
                 ),

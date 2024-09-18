@@ -3,7 +3,10 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'sign_up_model.dart';
 export 'sign_up_model.dart';
 
@@ -54,14 +57,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,7 +80,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               ),
                         ),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 48.0, 0.0, 0.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
@@ -163,7 +166,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
-                                            prefixIcon: const Icon(
+                                            prefixIcon: Icon(
                                               Icons.person,
                                             ),
                                           ),
@@ -252,7 +255,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
-                                            prefixIcon: const Icon(
+                                            prefixIcon: Icon(
                                               Icons.person,
                                             ),
                                           ),
@@ -344,7 +347,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
-                                            prefixIcon: const Icon(
+                                            prefixIcon: Icon(
                                               Icons.lock,
                                             ),
                                             suffixIcon: InkWell(
@@ -454,7 +457,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
-                                            prefixIcon: const Icon(
+                                            prefixIcon: Icon(
                                               Icons.lock,
                                             ),
                                             suffixIcon: InkWell(
@@ -531,7 +534,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                                 .underline,
                                                       ),
                                                 ),
-                                                const TextSpan(
+                                                TextSpan(
                                                   text: '.',
                                                   style: TextStyle(),
                                                 )
@@ -550,16 +553,27 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                     ),
                                     FFButtonWidget(
                                       onPressed: () async {
-                                        Function() navigate = () {};
-                                        if ((_model.textFieldNameTextController.text ==
+                                        Function() _navigate = () {};
+                                        if ((_model.textFieldNameTextController
+                                                        .text ==
+                                                    null ||
+                                                _model.textFieldNameTextController.text ==
                                                     '') ||
-                                            (_model.textFieldEmailTextController
+                                            (_model.textFieldEmailTextController.text ==
+                                                    null ||
+                                                _model.textFieldEmailTextController
                                                         .text ==
                                                     '') ||
                                             (_model.textFieldPasswordTextController
                                                         .text ==
+                                                    null ||
+                                                _model.textFieldPasswordTextController
+                                                        .text ==
                                                     '') ||
                                             (_model.textFieldConfirmPasswordTextController
+                                                        .text ==
+                                                    null ||
+                                                _model.textFieldConfirmPasswordTextController
                                                         .text ==
                                                     '')) {
                                           // FailedAllFieldsFilled
@@ -576,19 +590,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                       color: (Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.dark
-                                                          ? const Color(0xFF68656B)
-                                                          : const Color(0xFFDCD6DD)),
+                                                          ? Color(0xFF68656B)
+                                                          : Color(0xFFDCD6DD)),
                                                       fontSize: 16.0,
                                                       letterSpacing: 0.0,
                                                     ),
                                               ),
                                               duration:
-                                                  const Duration(milliseconds: 4000),
+                                                  Duration(milliseconds: 4000),
                                               backgroundColor: Theme.of(context)
                                                           .brightness ==
                                                       Brightness.dark
-                                                  ? const Color(0xFFE6E0E9)
-                                                  : const Color(0xFF322F35),
+                                                  ? Color(0xFFE6E0E9)
+                                                  : Color(0xFF322F35),
                                             ),
                                           );
                                         } else if ((_model
@@ -610,19 +624,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                       color: (Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.dark
-                                                          ? const Color(0xFF68656B)
-                                                          : const Color(0xFFDCD6DD)),
+                                                          ? Color(0xFF68656B)
+                                                          : Color(0xFFDCD6DD)),
                                                       fontSize: 16.0,
                                                       letterSpacing: 0.0,
                                                     ),
                                               ),
                                               duration:
-                                                  const Duration(milliseconds: 4000),
+                                                  Duration(milliseconds: 4000),
                                               backgroundColor: Theme.of(context)
                                                           .brightness ==
                                                       Brightness.dark
-                                                  ? const Color(0xFFE6E0E9)
-                                                  : const Color(0xFF322F35),
+                                                  ? Color(0xFFE6E0E9)
+                                                  : Color(0xFF322F35),
                                             ),
                                           );
                                         } else if (!((String pass) {
@@ -651,19 +665,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                       color: (Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.dark
-                                                          ? const Color(0xFF68656B)
-                                                          : const Color(0xFFDCD6DD)),
+                                                          ? Color(0xFF68656B)
+                                                          : Color(0xFFDCD6DD)),
                                                       fontSize: 16.0,
                                                       letterSpacing: 0.0,
                                                     ),
                                               ),
                                               duration:
-                                                  const Duration(milliseconds: 4000),
+                                                  Duration(milliseconds: 4000),
                                               backgroundColor: Theme.of(context)
                                                           .brightness ==
                                                       Brightness.dark
-                                                  ? const Color(0xFFE6E0E9)
-                                                  : const Color(0xFF322F35),
+                                                  ? Color(0xFFE6E0E9)
+                                                  : Color(0xFF322F35),
                                             ),
                                           );
                                         } else {
@@ -677,7 +691,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                                   .text)) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                              const SnackBar(
+                                              SnackBar(
                                                 content: Text(
                                                   'Passwords don\'t match!',
                                                 ),
@@ -699,19 +713,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                             return;
                                           }
 
-                                          navigate = () => context.goNamedAuth(
+                                          _navigate = () => context.goNamedAuth(
                                               'Trips', context.mounted);
                                         }
 
-                                        navigate();
+                                        _navigate();
                                       },
                                       text: 'Sign up',
                                       options: FFButtonOptions(
                                         height: 40.0,
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
                                             24.0, 0.0, 24.0, 0.0),
                                         iconPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
+                                            EdgeInsetsDirectional.fromSTEB(
                                                 0.0, 0.0, 0.0, 0.0),
                                         color: FlutterFlowTheme.of(context)
                                             .secondary,
@@ -725,14 +739,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               letterSpacing: 0.0,
                                             ),
                                         elevation: 0.0,
-                                        borderSide: const BorderSide(
+                                        borderSide: BorderSide(
                                           width: 2.0,
                                         ),
                                         borderRadius:
                                             BorderRadius.circular(16.0),
                                       ),
                                     ),
-                                  ].divide(const SizedBox(height: 20.0)),
+                                  ].divide(SizedBox(height: 20.0)),
                                 ),
                               ),
                               Row(
@@ -763,7 +777,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           .primaryText,
                                     ),
                                   ),
-                                ].divide(const SizedBox(width: 2.0)),
+                                ].divide(SizedBox(width: 2.0)),
                               ),
                               Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -796,7 +810,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
+                                        padding: EdgeInsets.all(12.0),
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8.0),
@@ -837,7 +851,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: EdgeInsets.all(8.0),
                                         child: Icon(
                                           Icons.apple,
                                           color: FlutterFlowTheme.of(context)
@@ -847,7 +861,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                       ),
                                     ),
                                   ),
-                                ].divide(const SizedBox(width: 16.0)),
+                                ].divide(SizedBox(width: 16.0)),
                               ),
                               Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -885,14 +899,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                           ),
                                     ),
                                   ),
-                                ].divide(const SizedBox(width: 4.0)),
+                                ].divide(SizedBox(width: 4.0)),
                               ),
-                            ].divide(const SizedBox(height: 30.0)),
+                            ].divide(SizedBox(height: 30.0)),
                           ),
                         ),
                       ]
-                          .addToStart(const SizedBox(height: 16.0))
-                          .addToEnd(const SizedBox(height: 16.0)),
+                          .addToStart(SizedBox(height: 16.0))
+                          .addToEnd(SizedBox(height: 16.0)),
                     ),
                   ),
                 ],

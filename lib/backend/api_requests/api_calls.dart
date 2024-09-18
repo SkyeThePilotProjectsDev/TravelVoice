@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import '../schema/structs/index.dart';
 
 import 'package:flutter/foundation.dart';

@@ -2,7 +2,10 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'request_password_change_model.dart';
 export 'request_password_change_model.dart';
 
@@ -46,14 +49,14 @@ class _RequestPasswordChangeWidgetState
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
                   child: Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,7 +79,7 @@ class _RequestPasswordChangeWidgetState
                                 key: _model.formKey,
                                 autovalidateMode: AutovalidateMode.disabled,
                                 child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 32.0, 0.0, 0.0),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
@@ -157,7 +160,7 @@ class _RequestPasswordChangeWidgetState
                                                 borderRadius:
                                                     BorderRadius.circular(8.0),
                                               ),
-                                              prefixIcon: const Icon(
+                                              prefixIcon: Icon(
                                                 Icons.mail,
                                               ),
                                             ),
@@ -222,7 +225,7 @@ class _RequestPasswordChangeWidgetState
                                               .isEmpty) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
-                                              const SnackBar(
+                                              SnackBar(
                                                 content: Text(
                                                   'Email required!',
                                                 ),
@@ -241,10 +244,10 @@ class _RequestPasswordChangeWidgetState
                                         options: FFButtonOptions(
                                           height: 40.0,
                                           padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
+                                              EdgeInsetsDirectional.fromSTEB(
                                                   24.0, 0.0, 24.0, 0.0),
                                           iconPadding:
-                                              const EdgeInsetsDirectional.fromSTEB(
+                                              EdgeInsetsDirectional.fromSTEB(
                                                   0.0, 0.0, 0.0, 0.0),
                                           color: FlutterFlowTheme.of(context)
                                               .secondary,
@@ -259,23 +262,23 @@ class _RequestPasswordChangeWidgetState
                                                 letterSpacing: 0.0,
                                               ),
                                           elevation: 0.0,
-                                          borderSide: const BorderSide(
+                                          borderSide: BorderSide(
                                             width: 2.0,
                                           ),
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
                                       ),
-                                    ].divide(const SizedBox(height: 40.0)),
+                                    ].divide(SizedBox(height: 40.0)),
                                   ),
                                 ),
                               ),
-                            ].divide(const SizedBox(height: 48.0)),
+                            ].divide(SizedBox(height: 48.0)),
                           ),
                         ),
                       ]
-                          .addToStart(const SizedBox(height: 16.0))
-                          .addToEnd(const SizedBox(height: 16.0)),
+                          .addToStart(SizedBox(height: 16.0))
+                          .addToEnd(SizedBox(height: 16.0)),
                     ),
                   ),
                 ),

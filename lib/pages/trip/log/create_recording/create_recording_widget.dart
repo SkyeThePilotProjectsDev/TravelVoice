@@ -9,7 +9,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart'
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 import 'create_recording_model.dart';
 export 'create_recording_model.dart';
@@ -62,14 +64,14 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
             key: _model.formKey,
             autovalidateMode: AutovalidateMode.disabled,
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -78,15 +80,15 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             Navigator.pop(context);
                           },
                           text: 'Back',
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.arrow_back,
                             size: 15.0,
                           ),
                           options: FFButtonOptions(
                             height: 40.0,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
+                            padding: EdgeInsetsDirectional.fromSTEB(
                                 24.0, 0.0, 24.0, 0.0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                            iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
                             color: Colors.transparent,
                             textStyle: FlutterFlowTheme.of(context)
@@ -127,7 +129,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                   ),
                   Container(
                     height: 300.0,
-                    decoration: const BoxDecoration(),
+                    decoration: BoxDecoration(),
                     child: Builder(
                       builder: (context) {
                         if (_model.prompts.isNotEmpty) {
@@ -135,13 +137,13 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             builder: (context) {
                               final chosenPrompts = _model.prompts.toList();
 
-                              return SizedBox(
+                              return Container(
                                 width: double.infinity,
                                 height: 500.0,
                                 child: Stack(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 0.0, 0.0, 40.0),
                                       child: PageView.builder(
                                         controller: _model
@@ -175,14 +177,14 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                               children: [
                                                 Container(
                                                   height: 200.0,
-                                                  decoration: const BoxDecoration(),
+                                                  decoration: BoxDecoration(),
                                                   child: Align(
                                                     alignment:
-                                                        const AlignmentDirectional(
+                                                        AlignmentDirectional(
                                                             0.0, 0.0),
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.all(8.0),
+                                                          EdgeInsets.all(8.0),
                                                       child: AutoSizeText(
                                                         chosenPromptsItem,
                                                         minFontSize: 20.0,
@@ -207,9 +209,9 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                       ),
                                     ),
                                     Align(
-                                      alignment: const AlignmentDirectional(0.0, 1.0),
+                                      alignment: AlignmentDirectional(0.0, 1.0),
                                       child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
                                             0.0, 0.0, 0.0, 16.0),
                                         child: smooth_page_indicator
                                             .SmoothPageIndicator(
@@ -229,7 +231,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                                 .animateToPage(
                                               i,
                                               duration:
-                                                  const Duration(milliseconds: 500),
+                                                  Duration(milliseconds: 500),
                                               curve: Curves.ease,
                                             );
                                             safeSetState(() {});
@@ -274,19 +276,19 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                     color: FlutterFlowTheme.of(context).alternate,
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        Container(
                           width: 50.0,
                           height: 50.0,
                           child: Stack(
-                            alignment: const AlignmentDirectional(0.0, 0.0),
+                            alignment: AlignmentDirectional(0.0, 0.0),
                             children: [
                               AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
+                                duration: Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
                                 width: _model.isRecording
                                     ? (_model.beatSize * 50)
@@ -347,7 +349,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                           _model.instantTimer =
                                               InstantTimer.periodic(
                                             duration:
-                                                const Duration(milliseconds: 200),
+                                                Duration(milliseconds: 200),
                                             callback: (timer) async {
                                               _model.beatSize = random_data
                                                   .randomDouble(0.7, 1.0);
@@ -433,7 +435,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                 letterSpacing: 0.0,
                               ),
                         ),
-                      ].divide(const SizedBox(width: 8.0)),
+                      ].divide(SizedBox(width: 8.0)),
                     ),
                   ),
                 ],
@@ -450,14 +452,14 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                     : functions.defaultRecording());
           },
           text: 'Next',
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_right_alt_sharp,
             size: 15.0,
           ),
           options: FFButtonOptions(
             height: 40.0,
-            padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-            iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
             color: FlutterFlowTheme.of(context).primary,
             textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                   fontFamily: 'Inter Tight',
@@ -468,7 +470,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-      ].addToStart(const SizedBox(height: 16.0)).addToEnd(const SizedBox(height: 16.0)),
+      ].addToStart(SizedBox(height: 16.0)).addToEnd(SizedBox(height: 16.0)),
     );
   }
 }

@@ -5,6 +5,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'view_log_model.dart';
 export 'view_log_model.dart';
 
@@ -34,7 +36,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
     _model.textFieldNotesFocusNode1 ??= FocusNode();
 
     _model.textFieldNotesTextController2 ??=
-        TextEditingController(text: widget.log?.notes);
+        TextEditingController(text: widget!.log?.notes);
     _model.textFieldNotesFocusNode2 ??= FocusNode();
   }
 
@@ -55,12 +57,12 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,19 +73,19 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                 context: context,
                                 builder: (alertDialogContext) {
                                   return AlertDialog(
-                                    title: const Text('Discard Log'),
-                                    content: const Text(
+                                    title: Text('Discard Log'),
+                                    content: Text(
                                         'If you leave this page this log\'s data will be lost'),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(
                                             alertDialogContext, false),
-                                        child: const Text('Cancel'),
+                                        child: Text('Cancel'),
                                       ),
                                       TextButton(
                                         onPressed: () => Navigator.pop(
                                             alertDialogContext, true),
-                                        child: const Text('Confirm'),
+                                        child: Text('Confirm'),
                                       ),
                                     ],
                                   );
@@ -95,15 +97,15 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                           }
                         },
                         text: 'Back',
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back,
                           size: 15.0,
                         ),
                         options: FFButtonOptions(
                           height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               24.0, 0.0, 24.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 0.0),
                           color: Colors.transparent,
                           textStyle: FlutterFlowTheme.of(context)
@@ -121,32 +123,32 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                       ),
-                      if (widget.log?.ownedBy == currentUserReference)
+                      if (widget!.log?.ownedBy == currentUserReference)
                         FFButtonWidget(
                           onPressed: () async {
                             context.pushNamed(
                               'EditLog',
                               queryParameters: {
                                 'log': serializeParam(
-                                  widget.log,
+                                  widget!.log,
                                   ParamType.Document,
                                 ),
                               }.withoutNulls,
                               extra: <String, dynamic>{
-                                'log': widget.log,
+                                'log': widget!.log,
                               },
                             );
                           },
                           text: 'Edit',
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.edit,
                             size: 15.0,
                           ),
                           options: FFButtonOptions(
                             height: 40.0,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
+                            padding: EdgeInsetsDirectional.fromSTEB(
                                 24.0, 0.0, 24.0, 0.0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                            iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
                             color: Colors.transparent,
                             textStyle: FlutterFlowTheme.of(context)
@@ -170,19 +172,19 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 1.0, 0.0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 1.0, 0.0),
                     child: Form(
                       key: _model.formKey,
                       autovalidateMode: AutovalidateMode.disabled,
                       child: Padding(
                         padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     16.0, 0.0, 16.0, 0.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -191,7 +193,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                   children: [
                                     Text(
                                       valueOrDefault<String>(
-                                        widget.log?.location.locationText,
+                                        widget!.log?.location?.locationText,
                                         '[Location]',
                                       ),
                                       style: FlutterFlowTheme.of(context)
@@ -203,7 +205,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                     ),
                                     Text(
                                       dateTimeFormat(
-                                          "yMMMd", widget.log!.eventDate!),
+                                          "yMMMd", widget!.log!.eventDate!),
                                       style: FlutterFlowTheme.of(context)
                                           .headlineSmall
                                           .override(
@@ -221,9 +223,9 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                       children: [
                                         Builder(
                                           builder: (context) {
-                                            final takenRecordings = widget
+                                            final takenRecordings = widget!
                                                     .log?.recordings
-                                                    .toList() ??
+                                                    ?.toList() ??
                                                 [];
 
                                             return Column(
@@ -301,13 +303,13 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                                       ),
                                                     ),
                                                   ].divide(
-                                                      const SizedBox(width: 8.0)),
+                                                      SizedBox(width: 8.0)),
                                                 );
-                                              }).divide(const SizedBox(height: 4.0)),
+                                              }).divide(SizedBox(height: 4.0)),
                                             );
                                           },
                                         ),
-                                      ].divide(const SizedBox(height: 8.0)),
+                                      ].divide(SizedBox(height: 8.0)),
                                     ),
                                     Divider(
                                       thickness: 2.0,
@@ -557,16 +559,16 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                         ),
                                         Align(
                                           alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
+                                              AlignmentDirectional(0.0, 0.0),
                                           child: Container(
                                             width: 200.0,
                                             height: 200.0,
-                                            decoration: const BoxDecoration(),
+                                            decoration: BoxDecoration(),
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                               child: Image.network(
-                                                widget.log!.photo,
+                                                widget!.log!.photo,
                                                 width: 200.0,
                                                 height: 200.0,
                                                 fit: BoxFit.contain,
@@ -587,9 +589,9 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                   ),
                 ),
               ]
-                  .divide(const SizedBox(height: 16.0))
-                  .addToStart(const SizedBox(height: 16.0))
-                  .addToEnd(const SizedBox(height: 16.0)),
+                  .divide(SizedBox(height: 16.0))
+                  .addToStart(SizedBox(height: 16.0))
+                  .addToEnd(SizedBox(height: 16.0)),
             ),
           ),
         ),

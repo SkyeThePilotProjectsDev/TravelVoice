@@ -3,7 +3,10 @@ import '/components/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'logs_model.dart';
 export 'logs_model.dart';
 
@@ -40,7 +43,7 @@ class _LogsWidgetState extends State<LogsWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<TripRecord>(
-      stream: TripRecord.getDocument(widget.trip!),
+      stream: TripRecord.getDocument(widget!.trip!),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -70,13 +73,13 @@ class _LogsWidgetState extends State<LogsWidget> {
             body: SafeArea(
               top: true,
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
+                        padding: EdgeInsetsDirectional.fromSTEB(
                             16.0, 0.0, 16.0, 0.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
@@ -90,15 +93,15 @@ class _LogsWidgetState extends State<LogsWidget> {
                                     context.pushNamed('Trips');
                                   },
                                   text: 'Trips',
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.keyboard_backspace,
                                     size: 15.0,
                                   ),
                                   options: FFButtonOptions(
                                     height: 40.0,
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
                                         24.0, 0.0, 24.0, 0.0),
-                                    iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    iconPadding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 0.0),
                                     color: Colors.transparent,
                                     textStyle: FlutterFlowTheme.of(context)
@@ -123,15 +126,15 @@ class _LogsWidgetState extends State<LogsWidget> {
                                     print('Button pressed ...');
                                   },
                                   text: 'Edit',
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.edit,
                                     size: 15.0,
                                   ),
                                   options: FFButtonOptions(
                                     height: 40.0,
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
                                         24.0, 0.0, 24.0, 0.0),
-                                    iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    iconPadding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 0.0),
                                     color: Colors.transparent,
                                     textStyle: FlutterFlowTheme.of(context)
@@ -164,7 +167,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 32.0, 0.0, 0.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -190,7 +193,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                               'CreateLog',
                                               queryParameters: {
                                                 'trip': serializeParam(
-                                                  widget.trip,
+                                                  widget!.trip,
                                                   ParamType.DocumentReference,
                                                 ),
                                               }.withoutNulls,
@@ -200,10 +203,10 @@ class _LogsWidgetState extends State<LogsWidget> {
                                           options: FFButtonOptions(
                                             height: 40.0,
                                             padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
+                                                EdgeInsetsDirectional.fromSTEB(
                                                     24.0, 0.0, 24.0, 0.0),
                                             iconPadding:
-                                                const EdgeInsetsDirectional.fromSTEB(
+                                                EdgeInsetsDirectional.fromSTEB(
                                                     0.0, 0.0, 0.0, 0.0),
                                             color: Colors.transparent,
                                             textStyle:
@@ -236,14 +239,14 @@ class _LogsWidgetState extends State<LogsWidget> {
                                         children: [
                                           Padding(
                                             padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
+                                                EdgeInsetsDirectional.fromSTEB(
                                                     0.0, 0.0, 16.0, 0.0),
                                             child: Builder(
                                               builder: (context) {
                                                 final logs = logsTripRecord.logs
                                                     .toList();
                                                 if (logs.isEmpty) {
-                                                  return const EmptyListWidget();
+                                                  return EmptyListWidget();
                                                 }
 
                                                 return Column(
@@ -302,7 +305,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                                           ),
                                                           child: Padding(
                                                             padding:
-                                                                const EdgeInsets.all(
+                                                                EdgeInsets.all(
                                                                     8.0),
                                                             child: Column(
                                                               mainAxisSize:
@@ -349,8 +352,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                                                     );
                                                   })
                                                       .divide(
-                                                          const SizedBox(height: 0.0))
-                                                      .around(const SizedBox(
+                                                          SizedBox(height: 0.0))
+                                                      .around(SizedBox(
                                                           height: 0.0)),
                                                 );
                                               },
@@ -360,8 +363,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                                       ),
                                     ),
                                   ]
-                                      .divide(const SizedBox(height: 8.0))
-                                      .addToEnd(const SizedBox(height: 16.0)),
+                                      .divide(SizedBox(height: 8.0))
+                                      .addToEnd(SizedBox(height: 16.0)),
                                 ),
                               ),
                             ),
@@ -379,7 +382,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                       'CreateLog',
                                       queryParameters: {
                                         'trip': serializeParam(
-                                          widget.trip,
+                                          widget!.trip,
                                           ParamType.DocumentReference,
                                         ),
                                       }.withoutNulls,
@@ -404,8 +407,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                               ],
                             ),
                           ]
-                              .addToStart(const SizedBox(height: 16.0))
-                              .addToEnd(const SizedBox(height: 16.0)),
+                              .addToStart(SizedBox(height: 16.0))
+                              .addToEnd(SizedBox(height: 16.0)),
                         ),
                       ),
                     ),

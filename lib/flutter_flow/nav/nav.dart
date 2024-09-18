@@ -2,13 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
+import '/backend/schema/enums/enums.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
+import '/main.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/lat_lng.dart';
+import '/flutter_flow/place.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import 'serialization_util.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -76,29 +85,29 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       errorBuilder: (context, state) => _RouteErrorBuilder(
         state: state,
-        child: appStateNotifier.loggedIn ? const TripsWidget() : const LandingWidget(),
+        child: appStateNotifier.loggedIn ? TripsWidget() : LandingWidget(),
       ),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) =>
-              appStateNotifier.loggedIn ? const TripsWidget() : const LandingWidget(),
+              appStateNotifier.loggedIn ? TripsWidget() : LandingWidget(),
           routes: [
             FFRoute(
               name: 'Landing',
               path: 'landing',
-              builder: (context, params) => const LandingWidget(),
+              builder: (context, params) => LandingWidget(),
             ),
             FFRoute(
               name: 'LogIn',
               path: 'logIn',
-              builder: (context, params) => const LogInWidget(),
+              builder: (context, params) => LogInWidget(),
             ),
             FFRoute(
               name: 'SignUp',
               path: 'signUp',
-              builder: (context, params) => const SignUpWidget(),
+              builder: (context, params) => SignUpWidget(),
             ),
             FFRoute(
               name: 'Logs',
@@ -153,13 +162,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'Trips',
               path: 'trips',
               requireAuth: true,
-              builder: (context, params) => const TripsWidget(),
+              builder: (context, params) => TripsWidget(),
             ),
             FFRoute(
               name: 'NewTrip',
               path: 'newTrip',
               requireAuth: true,
-              builder: (context, params) => const NewTripWidget(),
+              builder: (context, params) => NewTripWidget(),
             ),
             FFRoute(
               name: 'EditTrip',
@@ -177,7 +186,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: 'RequestPasswordChange',
               path: 'requestPasswordChange',
-              builder: (context, params) => const RequestPasswordChangeWidget(),
+              builder: (context, params) => RequestPasswordChangeWidget(),
             ),
             FFRoute(
               name: 'EditLog',
@@ -442,14 +451,15 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => const TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() => TransitionInfo(hasTransition: false);
 }
 
 class _RouteErrorBuilder extends StatefulWidget {
   const _RouteErrorBuilder({
+    Key? key,
     required this.state,
     required this.child,
-  });
+  }) : super(key: key);
 
   final GoRouterState state;
   final Widget child;

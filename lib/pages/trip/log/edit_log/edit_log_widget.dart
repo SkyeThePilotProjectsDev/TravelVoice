@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
+import '/backend/schema/structs/index.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -10,10 +11,14 @@ import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'edit_log_model.dart';
 export 'edit_log_model.dart';
 
@@ -41,14 +46,14 @@ class _EditLogWidgetState extends State<EditLogWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (widget.log?.ownedBy != currentUserReference) {
+      if (widget!.log?.ownedBy != currentUserReference) {
         context.safePop();
         return;
       }
-      _model.selectedDate = widget.log?.eventDate;
-      _model.recordings = widget.log!.recordings.toList().cast<String>();
+      _model.selectedDate = widget!.log?.eventDate;
+      _model.recordings = widget!.log!.recordings.toList().cast<String>();
       _model.selectedPlace = PlaceSearchStruct(
-        formattedAddress: widget.log?.location.locationText,
+        formattedAddress: widget!.log?.location?.locationText,
       );
       safeSetState(() {});
       safeSetState(() {
@@ -77,7 +82,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
             offset: _model.textFieldCityTextController!.text.length);
       });
       safeSetState(() {
-        _model.textFieldNotesTextController?.text = widget.log!.notes;
+        _model.textFieldNotesTextController?.text = widget!.log!.notes;
         _model.textFieldNotesTextController?.selection =
             TextSelection.collapsed(
                 offset: _model.textFieldNotesTextController!.text.length);
@@ -207,12 +212,12 @@ class _EditLogWidgetState extends State<EditLogWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -222,19 +227,19 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                 context: context,
                                 builder: (alertDialogContext) {
                                   return AlertDialog(
-                                    title: const Text('Discard Log'),
-                                    content: const Text(
+                                    title: Text('Discard Log'),
+                                    content: Text(
                                         'If you leave this page this log\'s data will be lost'),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(
                                             alertDialogContext, false),
-                                        child: const Text('Cancel'),
+                                        child: Text('Cancel'),
                                       ),
                                       TextButton(
                                         onPressed: () => Navigator.pop(
                                             alertDialogContext, true),
-                                        child: const Text('Confirm'),
+                                        child: Text('Confirm'),
                                       ),
                                     ],
                                   );
@@ -246,15 +251,15 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                           }
                         },
                         text: 'Back',
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.arrow_back,
                           size: 15.0,
                         ),
                         options: FFButtonOptions(
                           height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               24.0, 0.0, 24.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 0.0),
                           color: Colors.transparent,
                           textStyle: FlutterFlowTheme.of(context)
@@ -277,19 +282,19 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 1.0, 0.0),
+                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 1.0, 0.0),
                     child: Form(
                       key: _model.formKey,
                       autovalidateMode: AutovalidateMode.disabled,
                       child: Padding(
                         padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     16.0, 0.0, 16.0, 0.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -396,9 +401,9 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                                   builder:
                                                                       (alertDialogContext) {
                                                                     return AlertDialog(
-                                                                      title: const Text(
+                                                                      title: Text(
                                                                           'Are you sure you want to delete this recording?'),
-                                                                      content: const Text(
+                                                                      content: Text(
                                                                           'You won\'t be able to get it back.'),
                                                                       actions: [
                                                                         TextButton(
@@ -406,14 +411,14 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                                               alertDialogContext,
                                                                               false),
                                                                           child:
-                                                                              const Text('Cancel'),
+                                                                              Text('Cancel'),
                                                                         ),
                                                                         TextButton(
                                                                           onPressed: () => Navigator.pop(
                                                                               alertDialogContext,
                                                                               true),
                                                                           child:
-                                                                              const Text('Delete'),
+                                                                              Text('Delete'),
                                                                         ),
                                                                       ],
                                                                     );
@@ -436,9 +441,9 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                       ),
                                                     ),
                                                   ].divide(
-                                                      const SizedBox(width: 8.0)),
+                                                      SizedBox(width: 8.0)),
                                                 );
-                                              }).divide(const SizedBox(height: 4.0)),
+                                              }).divide(SizedBox(height: 4.0)),
                                             );
                                           },
                                         ),
@@ -462,7 +467,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                         MediaQuery.viewInsetsOf(
                                                             context),
                                                     child:
-                                                        const CreateRecordingWidget(),
+                                                        CreateRecordingWidget(),
                                                   ),
                                                 );
                                               },
@@ -486,10 +491,10 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                           options: FFButtonOptions(
                                             height: 40.0,
                                             padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
+                                                EdgeInsetsDirectional.fromSTEB(
                                                     16.0, 0.0, 16.0, 0.0),
                                             iconPadding:
-                                                const EdgeInsetsDirectional.fromSTEB(
+                                                EdgeInsetsDirectional.fromSTEB(
                                                     0.0, 0.0, 0.0, 0.0),
                                             color: FlutterFlowTheme.of(context)
                                                 .primary,
@@ -506,7 +511,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 BorderRadius.circular(8.0),
                                           ),
                                         ),
-                                      ].divide(const SizedBox(height: 8.0)),
+                                      ].divide(SizedBox(height: 8.0)),
                                     ),
                                     Divider(
                                       thickness: 2.0,
@@ -532,7 +537,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                       ),
                                             ),
                                             Expanded(
-                                              child: SizedBox(
+                                              child: Container(
                                                 width: 200.0,
                                                 child: TextFormField(
                                                   controller: _model
@@ -542,7 +547,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                   onChanged: (_) =>
                                                       EasyDebounce.debounce(
                                                     '_model.textFieldCityTextController',
-                                                    const Duration(milliseconds: 0),
+                                                    Duration(milliseconds: 0),
                                                     () async {
                                                       _model.placeSelected =
                                                           false;
@@ -645,12 +650,15 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 ),
                                               ),
                                             ),
-                                          ].divide(const SizedBox(width: 8.0)),
+                                          ].divide(SizedBox(width: 8.0)),
                                         ),
                                         if ((_model.textFieldCityFocusNode
                                                     ?.hasFocus ??
                                                 false) &&
                                             (_model.textFieldCityTextController
+                                                        .text !=
+                                                    null &&
+                                                _model.textFieldCityTextController
                                                         .text !=
                                                     '') &&
                                             !_model.placeSelected)
@@ -663,24 +671,26 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                   .textFieldCityTextController
                                                   .text,
                                               onSelect: (suggestion) async {
-                                                _model.selectedPlace =
-                                                    suggestion;
-                                                _model.placeSelected = true;
-                                                safeSetState(() {});
-                                                safeSetState(() {
-                                                  _model.textFieldCityTextController
-                                                          ?.text =
-                                                      suggestion
-                                                          .formattedAddress;
-                                                  _model.textFieldCityTextController
-                                                          ?.selection =
-                                                      TextSelection.collapsed(
-                                                          offset: _model
-                                                              .textFieldCityTextController!
-                                                              .text
-                                                              .length);
-                                                });
-                                                                                            },
+                                                if (suggestion != null) {
+                                                  _model.selectedPlace =
+                                                      suggestion;
+                                                  _model.placeSelected = true;
+                                                  safeSetState(() {});
+                                                  safeSetState(() {
+                                                    _model.textFieldCityTextController
+                                                            ?.text =
+                                                        suggestion
+                                                            .formattedAddress;
+                                                    _model.textFieldCityTextController
+                                                            ?.selection =
+                                                        TextSelection.collapsed(
+                                                            offset: _model
+                                                                .textFieldCityTextController!
+                                                                .text
+                                                                .length);
+                                                  });
+                                                }
+                                              },
                                             ),
                                           ),
                                       ].divide(SizedBox(
@@ -688,6 +698,9 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                           ?.hasFocus ??
                                                       false) &&
                                                   (_model.textFieldCityTextController
+                                                              .text !=
+                                                          null &&
+                                                      _model.textFieldCityTextController
                                                               .text !=
                                                           '')
                                               ? 8.0
@@ -711,7 +724,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                               ),
                                         ),
                                         Expanded(
-                                          child: SizedBox(
+                                          child: Container(
                                             width: 200.0,
                                             child: TextFormField(
                                               controller: _model
@@ -739,7 +752,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                         ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -749,7 +762,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -811,7 +824,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                               ),
                                         ),
                                         Expanded(
-                                          child: SizedBox(
+                                          child: Container(
                                             width: 200.0,
                                             child: TextFormField(
                                               controller: _model
@@ -839,7 +852,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                         ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -849,7 +862,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -911,7 +924,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                               ),
                                         ),
                                         Expanded(
-                                          child: SizedBox(
+                                          child: Container(
                                             width: 200.0,
                                             child: TextFormField(
                                               controller: _model
@@ -939,7 +952,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                         ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -949,7 +962,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderSide: const BorderSide(
+                                                  borderSide: BorderSide(
                                                     color: Color(0x00000000),
                                                     width: 1.0,
                                                   ),
@@ -1007,10 +1020,14 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                           hoverColor: Colors.transparent,
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
-                                            final datePickedDate =
+                                            final _datePickedDate =
                                                 await showDatePicker(
                                               context: context,
-                                              initialDate: ((_model.selectedDate ?? getCurrentTimestamp) ??
+                                              initialDate: ((_model
+                                                              .selectedDate !=
+                                                          null
+                                                      ? _model.selectedDate
+                                                      : getCurrentTimestamp) ??
                                                   DateTime.now()),
                                               firstDate: DateTime(1900),
                                               lastDate: DateTime(2050),
@@ -1063,12 +1080,12 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                               },
                                             );
 
-                                            if (datePickedDate != null) {
+                                            if (_datePickedDate != null) {
                                               safeSetState(() {
                                                 _model.datePicked = DateTime(
-                                                  datePickedDate.year,
-                                                  datePickedDate.month,
-                                                  datePickedDate.day,
+                                                  _datePickedDate.year,
+                                                  _datePickedDate.month,
+                                                  _datePickedDate.day,
                                                 );
                                               });
                                             }
@@ -1123,7 +1140,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                             size: 24.0,
                                           ),
                                         ),
-                                      ].divide(const SizedBox(width: 8.0)),
+                                      ].divide(SizedBox(width: 8.0)),
                                     ),
                                     Divider(
                                       thickness: 2.0,
@@ -1256,11 +1273,11 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                         ),
                                         Align(
                                           alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
+                                              AlignmentDirectional(0.0, 0.0),
                                           child: Container(
                                             width: 200.0,
                                             height: 200.0,
-                                            decoration: const BoxDecoration(),
+                                            decoration: BoxDecoration(),
                                             child: Builder(
                                               builder: (context) {
                                                 if (_model.image != null &&
@@ -1284,11 +1301,11 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                       ),
                                                       Align(
                                                         alignment:
-                                                            const AlignmentDirectional(
+                                                            AlignmentDirectional(
                                                                 1.0, -1.0),
                                                         child: Padding(
                                                           padding:
-                                                              const EdgeInsets.all(
+                                                              EdgeInsets.all(
                                                                   8.0),
                                                           child: InkWell(
                                                             splashColor: Colors
@@ -1315,7 +1332,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                               ),
                                                               child: Padding(
                                                                 padding:
-                                                                    const EdgeInsets
+                                                                    EdgeInsets
                                                                         .all(
                                                                             8.0),
                                                                 child: Row(
@@ -1344,7 +1361,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                                       size:
                                                                           24.0,
                                                                     ),
-                                                                  ].divide(const SizedBox(
+                                                                  ].divide(SizedBox(
                                                                       width:
                                                                           8.0)),
                                                                 ),
@@ -1363,7 +1380,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                             BorderRadius
                                                                 .circular(8.0),
                                                         child: Image.network(
-                                                          widget.log!.photo,
+                                                          widget!.log!.photo,
                                                           width: 200.0,
                                                           height: 200.0,
                                                           fit: BoxFit.contain,
@@ -1371,11 +1388,11 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                       ),
                                                       Align(
                                                         alignment:
-                                                            const AlignmentDirectional(
+                                                            AlignmentDirectional(
                                                                 1.0, -1.0),
                                                         child: Padding(
                                                           padding:
-                                                              const EdgeInsets.all(
+                                                              EdgeInsets.all(
                                                                   8.0),
                                                           child: InkWell(
                                                             splashColor: Colors
@@ -1454,7 +1471,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                               ),
                                                               child: Padding(
                                                                 padding:
-                                                                    const EdgeInsets
+                                                                    EdgeInsets
                                                                         .all(
                                                                             8.0),
                                                                 child: Row(
@@ -1483,7 +1500,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                                       size:
                                                                           24.0,
                                                                     ),
-                                                                  ].divide(const SizedBox(
+                                                                  ].divide(SizedBox(
                                                                       width:
                                                                           8.0)),
                                                                 ),
@@ -1554,12 +1571,12 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                         }
                       }
 
-                      await widget.log!.reference.update({
+                      await widget!.log!.reference.update({
                         ...createTripLogRecordData(
                           location: updateLocationDataStruct(
                             LocationDataStruct(
                               location: functions.locationParser(
-                                  _model.selectedPlace?.geometry.location),
+                                  _model.selectedPlace?.geometry?.location),
                               locationText:
                                   _model.selectedPlace?.formattedAddress,
                             ),
@@ -1577,12 +1594,12 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                         ),
                       });
                     } else {
-                      await widget.log!.reference.update({
+                      await widget!.log!.reference.update({
                         ...createTripLogRecordData(
                           location: updateLocationDataStruct(
                             LocationDataStruct(
                               location: functions.locationParser(
-                                  _model.selectedPlace?.geometry.location),
+                                  _model.selectedPlace?.geometry?.location),
                               locationText:
                                   _model.selectedPlace?.formattedAddress,
                             ),
@@ -1603,16 +1620,16 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                     context.safePop();
                   },
                   text: 'Submit',
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.check_rounded,
                     size: 15.0,
                   ),
                   options: FFButtonOptions(
                     height: 40.0,
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                     iconPadding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                     color: FlutterFlowTheme.of(context).primary,
                     textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                           fontFamily: 'Inter Tight',
@@ -1624,9 +1641,9 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                   ),
                 ),
               ]
-                  .divide(const SizedBox(height: 16.0))
-                  .addToStart(const SizedBox(height: 16.0))
-                  .addToEnd(const SizedBox(height: 16.0)),
+                  .divide(SizedBox(height: 16.0))
+                  .addToStart(SizedBox(height: 16.0))
+                  .addToEnd(SizedBox(height: 16.0)),
             ),
           ),
         ),

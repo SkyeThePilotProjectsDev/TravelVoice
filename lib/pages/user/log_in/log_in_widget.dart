@@ -4,6 +4,8 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'log_in_model.dart';
 export 'log_in_model.dart';
 
@@ -52,7 +54,7 @@ class _LogInWidgetState extends State<LogInWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -73,7 +75,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                             key: _model.formKey,
                             autovalidateMode: AutovalidateMode.disabled,
                             child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
+                              padding: EdgeInsetsDirectional.fromSTEB(
                                   0.0, 32.0, 0.0, 0.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
@@ -151,7 +153,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
-                                          prefixIcon: const Icon(
+                                          prefixIcon: Icon(
                                             Icons.person,
                                           ),
                                         ),
@@ -242,7 +244,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
-                                          prefixIcon: const Icon(
+                                          prefixIcon: Icon(
                                             Icons.lock,
                                           ),
                                           suffixIcon: InkWell(
@@ -278,7 +280,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                       ),
                                       Align(
                                         alignment:
-                                            const AlignmentDirectional(1.0, 0.0),
+                                            AlignmentDirectional(1.0, 0.0),
                                         child: Text(
                                           'Forgot password?',
                                           style: FlutterFlowTheme.of(context)
@@ -292,15 +294,21 @@ class _LogInWidgetState extends State<LogInWidget> {
                                               ),
                                         ),
                                       ),
-                                    ].divide(const SizedBox(height: 16.0)),
+                                    ].divide(SizedBox(height: 16.0)),
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      Function() navigate = () {};
+                                      Function() _navigate = () {};
                                       if ((_model.textFieldEmailTextController
+                                                      .text ==
+                                                  null ||
+                                              _model.textFieldEmailTextController
                                                       .text ==
                                                   '') ||
                                           (_model.textFieldPasswordTextController
+                                                      .text ==
+                                                  null ||
+                                              _model.textFieldPasswordTextController
                                                       .text ==
                                                   '')) {
                                         ScaffoldMessenger.of(context)
@@ -316,19 +324,19 @@ class _LogInWidgetState extends State<LogInWidget> {
                                                     color: (Theme.of(context)
                                                                 .brightness ==
                                                             Brightness.dark
-                                                        ? const Color(0xFF68656B)
-                                                        : const Color(0xFFDCD6DD)),
+                                                        ? Color(0xFF68656B)
+                                                        : Color(0xFFDCD6DD)),
                                                     fontSize: 16.0,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),
                                             duration:
-                                                const Duration(milliseconds: 4000),
+                                                Duration(milliseconds: 4000),
                                             backgroundColor:
                                                 Theme.of(context).brightness ==
                                                         Brightness.dark
-                                                    ? const Color(0xFFE6E0E9)
-                                                    : const Color(0xFF322F35),
+                                                    ? Color(0xFFE6E0E9)
+                                                    : Color(0xFF322F35),
                                           ),
                                         );
                                       } else {
@@ -347,19 +355,19 @@ class _LogInWidgetState extends State<LogInWidget> {
                                           return;
                                         }
 
-                                        navigate = () => context.goNamedAuth(
+                                        _navigate = () => context.goNamedAuth(
                                             'Trips', context.mounted);
                                       }
 
-                                      navigate();
+                                      _navigate();
                                     },
                                     text: 'Login',
                                     options: FFButtonOptions(
                                       height: 40.0,
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
                                           24.0, 0.0, 24.0, 0.0),
                                       iconPadding:
-                                          const EdgeInsetsDirectional.fromSTEB(
+                                          EdgeInsetsDirectional.fromSTEB(
                                               0.0, 0.0, 0.0, 0.0),
                                       color: FlutterFlowTheme.of(context)
                                           .secondary,
@@ -372,13 +380,13 @@ class _LogInWidgetState extends State<LogInWidget> {
                                             letterSpacing: 0.0,
                                           ),
                                       elevation: 0.0,
-                                      borderSide: const BorderSide(
+                                      borderSide: BorderSide(
                                         width: 2.0,
                                       ),
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                   ),
-                                ].divide(const SizedBox(height: 40.0)),
+                                ].divide(SizedBox(height: 40.0)),
                               ),
                             ),
                           ),
@@ -412,7 +420,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: EdgeInsets.all(12.0),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8.0),
                                       child: Image.asset(
@@ -451,7 +459,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: Icon(
                                       Icons.apple,
                                       color: FlutterFlowTheme.of(context)
@@ -461,7 +469,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                   ),
                                 ),
                               ),
-                            ].divide(const SizedBox(width: 16.0)),
+                            ].divide(SizedBox(width: 16.0)),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -498,13 +506,13 @@ class _LogInWidgetState extends State<LogInWidget> {
                                       ),
                                 ),
                               ),
-                            ].divide(const SizedBox(width: 4.0)),
+                            ].divide(SizedBox(width: 4.0)),
                           ),
-                        ].divide(const SizedBox(height: 48.0)),
+                        ].divide(SizedBox(height: 48.0)),
                       ),
                     ]
-                        .addToStart(const SizedBox(height: 16.0))
-                        .addToEnd(const SizedBox(height: 16.0)),
+                        .addToStart(SizedBox(height: 16.0))
+                        .addToEnd(SizedBox(height: 16.0)),
                   ),
                 ),
               ],

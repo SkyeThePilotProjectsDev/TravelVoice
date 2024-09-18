@@ -2,6 +2,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'empty_list_model.dart';
 export 'empty_list_model.dart';
 
@@ -52,8 +54,8 @@ class _EmptyListWidgetState extends State<EmptyListWidget> {
         ),
         Text(
           valueOrDefault<String>(
-            widget.customText != null && widget.customText != ''
-                ? widget.customText
+            widget!.customText != null && widget!.customText != ''
+                ? widget!.customText
                 : 'This list is empty',
             '[]',
           ),
@@ -63,7 +65,7 @@ class _EmptyListWidgetState extends State<EmptyListWidget> {
                 letterSpacing: 0.0,
               ),
         ),
-      ].divide(const SizedBox(height: 16.0)),
+      ].divide(SizedBox(height: 16.0)),
     );
   }
 }
