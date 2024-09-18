@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
@@ -139,9 +138,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ),
             ),
             FFRoute(
-              name: 'SubmitLog',
-              path: 'submitLog',
-              builder: (context, params) => SubmitLogWidget(
+              name: 'CreateLog',
+              path: 'createLog',
+              builder: (context, params) => CreateLogWidget(
                 trip: params.getParam(
                   'trip',
                   ParamType.DocumentReference,
@@ -176,21 +175,35 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ),
             ),
             FFRoute(
-              name: 'NewLog',
-              path: 'newLog',
-              builder: (context, params) => NewLogWidget(
-                trip: params.getParam(
-                  'trip',
-                  ParamType.DocumentReference,
-                  isList: false,
-                  collectionNamePath: ['trip'],
+              name: 'RequestPasswordChange',
+              path: 'requestPasswordChange',
+              builder: (context, params) => const RequestPasswordChangeWidget(),
+            ),
+            FFRoute(
+              name: 'EditLog',
+              path: 'editLog',
+              asyncParams: {
+                'log': getDoc(['tripLog'], TripLogRecord.fromSnapshot),
+              },
+              builder: (context, params) => EditLogWidget(
+                log: params.getParam(
+                  'log',
+                  ParamType.Document,
                 ),
               ),
             ),
             FFRoute(
-              name: 'RequestPasswordChange',
-              path: 'requestPasswordChange',
-              builder: (context, params) => const RequestPasswordChangeWidget(),
+              name: 'ViewLog',
+              path: 'viewLog',
+              asyncParams: {
+                'log': getDoc(['tripLog'], TripLogRecord.fromSnapshot),
+              },
+              builder: (context, params) => ViewLogWidget(
+                log: params.getParam(
+                  'log',
+                  ParamType.Document,
+                ),
+              ),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),

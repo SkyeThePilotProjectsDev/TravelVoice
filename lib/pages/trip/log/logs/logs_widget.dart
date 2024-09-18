@@ -1,4 +1,3 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/components/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -120,14 +119,8 @@ class _LogsWidgetState extends State<LogsWidget> {
                                   ),
                                 ),
                                 FFButtonWidget(
-                                  onPressed: () async {
-                                    GoRouter.of(context).prepareAuthEvent();
-                                    await authManager.signOut();
-                                    GoRouter.of(context)
-                                        .clearRedirectLocation();
-
-                                    context.goNamedAuth(
-                                        'Landing', context.mounted);
+                                  onPressed: () {
+                                    print('Button pressed ...');
                                   },
                                   text: 'Edit',
                                   icon: const Icon(
@@ -194,7 +187,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                         FFButtonWidget(
                                           onPressed: () async {
                                             context.pushNamed(
-                                              'SubmitLog',
+                                              'CreateLog',
                                               queryParameters: {
                                                 'trip': serializeParam(
                                                   widget.trip,
@@ -383,7 +376,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
                                     context.pushNamed(
-                                      'SubmitLog',
+                                      'CreateLog',
                                       queryParameters: {
                                         'trip': serializeParam(
                                           widget.trip,

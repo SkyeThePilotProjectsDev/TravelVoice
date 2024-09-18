@@ -8,4 +8,5 @@ abstract class FFAppConstants {
     'Tell a funny story that happened during your travels.',
     'What was the most beautiful place you visited and why?'
   ];
+  static const String googleAPIKey = 'AIzaSyCx5MzxtWSIUYXGH2g21NW2M_xxGkzlBQk';
 }

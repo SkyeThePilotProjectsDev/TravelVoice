@@ -1,10 +1,10 @@
 import '/backend/backend.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import 'submit_log_widget.dart' show SubmitLogWidget;
+import 'create_log_widget.dart' show CreateLogWidget;
 import 'package:flutter/material.dart';
 
-class SubmitLogModel extends FlutterFlowModel<SubmitLogWidget> {
+class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   ///  Local state fields for this page.
 
   FFUploadedFile? image;

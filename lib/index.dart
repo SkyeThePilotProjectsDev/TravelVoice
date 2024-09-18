@@ -7,10 +7,11 @@ export '/pages/user/forgot_password/forgot_password_widget.dart'
     show ForgotPasswordWidget;
 export '/pages/firebase_actions/firebase_actions_widget.dart'
     show FirebaseActionsWidget;
-export '/pages/trip/log/submit_log/submit_log_widget.dart' show SubmitLogWidget;
+export '/pages/trip/log/create_log/create_log_widget.dart' show CreateLogWidget;
 export '/pages/trip/trips/trips_widget.dart' show TripsWidget;
 export '/pages/trip/new_trip/new_trip_widget.dart' show NewTripWidget;
 export '/pages/trip/edit_trip/edit_trip_widget.dart' show EditTripWidget;
-export '/pages/trip/log/new_log/new_log_widget.dart' show NewLogWidget;
 export '/pages/user/request_password_change/request_password_change_widget.dart'
     show RequestPasswordChangeWidget;
+export '/pages/trip/log/edit_log/edit_log_widget.dart' show EditLogWidget;
+export '/pages/trip/log/view_log/view_log_widget.dart' show ViewLogWidget;

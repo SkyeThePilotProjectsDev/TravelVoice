@@ -18,6 +18,12 @@ String encryptPassword(String password) {
   return base64.encode(utf8.encode(password));
 }
 
+LatLng? locationParser(LocationStruct? location) {
+  if (location == null) return null;
+
+  return LatLng(location.lat, location.lng);
+}
+
 DateTime dateBuilder(
   String? day,
   String? month,
@@ -72,4 +78,13 @@ String? defaultRecording() {
 
 String recordingToString(String? recording) {
   return recording ?? "";
+}
+
+LocationStruct? reverseLocationParser(LatLng? location) {
+  if (location == null) return null;
+
+  return LocationStruct(
+    lat: location.latitude,
+    lng: location.longitude,
+  );
 }

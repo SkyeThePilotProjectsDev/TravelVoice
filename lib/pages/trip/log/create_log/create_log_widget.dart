@@ -14,11 +14,11 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'submit_log_model.dart';
-export 'submit_log_model.dart';
+import 'create_log_model.dart';
+export 'create_log_model.dart';
 
-class SubmitLogWidget extends StatefulWidget {
-  const SubmitLogWidget({
+class CreateLogWidget extends StatefulWidget {
+  const CreateLogWidget({
     super.key,
     required this.trip,
   });
@@ -26,18 +26,18 @@ class SubmitLogWidget extends StatefulWidget {
   final DocumentReference? trip;
 
   @override
-  State<SubmitLogWidget> createState() => _SubmitLogWidgetState();
+  State<CreateLogWidget> createState() => _CreateLogWidgetState();
 }
 
-class _SubmitLogWidgetState extends State<SubmitLogWidget> {
-  late SubmitLogModel _model;
+class _CreateLogWidgetState extends State<CreateLogWidget> {
+  late CreateLogModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => SubmitLogModel());
+    _model = createModel(context, () => CreateLogModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -1562,6 +1562,16 @@ class _SubmitLogWidgetState extends State<SubmitLogWidget> {
                         ownedBy: currentUserReference,
                         editDate: getCurrentTimestamp,
                         creationDate: getCurrentTimestamp,
+                        location: updateLocationDataStruct(
+                          LocationDataStruct(
+                            locationText:
+                                _model.selectedPlace?.formattedAddress,
+                            location: functions.locationParser(
+                                _model.selectedPlace?.geometry.location),
+                          ),
+                          clearUnsetFields: false,
+                          create: true,
+                        ),
                       ),
                       ...mapToFirestore(
                         {
@@ -1578,6 +1588,16 @@ class _SubmitLogWidgetState extends State<SubmitLogWidget> {
                         ownedBy: currentUserReference,
                         editDate: getCurrentTimestamp,
                         creationDate: getCurrentTimestamp,
+                        location: updateLocationDataStruct(
+                          LocationDataStruct(
+                            locationText:
+                                _model.selectedPlace?.formattedAddress,
+                            location: functions.locationParser(
+                                _model.selectedPlace?.geometry.location),
+                          ),
+                          clearUnsetFields: false,
+                          create: true,
+                        ),
                       ),
                       ...mapToFirestore(
                         {
