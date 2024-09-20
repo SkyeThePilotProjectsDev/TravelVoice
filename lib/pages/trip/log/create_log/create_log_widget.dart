@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
+import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -1259,262 +1260,20 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                             width: 200.0,
                                             height: 200.0,
                                             decoration: BoxDecoration(),
-                                            child: Builder(
-                                              builder: (context) {
-                                                if (_model.image != null &&
-                                                    (_model.image?.bytes
-                                                            ?.isNotEmpty ??
-                                                        false)) {
-                                                  return Stack(
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                        child: Image.memory(
-                                                          _model.image?.bytes ??
-                                                              Uint8List
-                                                                  .fromList([]),
-                                                          width: 200.0,
-                                                          height: 200.0,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      ),
-                                                      Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                1.0, -1.0),
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  8.0),
-                                                          child: InkWell(
-                                                            splashColor: Colors
-                                                                .transparent,
-                                                            focusColor: Colors
-                                                                .transparent,
-                                                            hoverColor: Colors
-                                                                .transparent,
-                                                            highlightColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            onTap: () async {
-                                                              final selectedMedia =
-                                                                  await selectMediaWithSourceBottomSheet(
-                                                                context:
-                                                                    context,
-                                                                allowPhoto:
-                                                                    true,
-                                                              );
-                                                              if (selectedMedia !=
-                                                                      null &&
-                                                                  selectedMedia.every((m) =>
-                                                                      validateFileFormat(
-                                                                          m.storagePath,
-                                                                          context))) {
-                                                                safeSetState(() =>
-                                                                    _model.isDataUploading1 =
-                                                                        true);
-                                                                var selectedUploadedFiles =
-                                                                    <FFUploadedFile>[];
-
-                                                                try {
-                                                                  selectedUploadedFiles =
-                                                                      selectedMedia
-                                                                          .map((m) =>
-                                                                              FFUploadedFile(
-                                                                                name: m.storagePath.split('/').last,
-                                                                                bytes: m.bytes,
-                                                                                height: m.dimensions?.height,
-                                                                                width: m.dimensions?.width,
-                                                                                blurHash: m.blurHash,
-                                                                              ))
-                                                                          .toList();
-                                                                } finally {
-                                                                  _model.isDataUploading1 =
-                                                                      false;
-                                                                }
-                                                                if (selectedUploadedFiles
-                                                                        .length ==
-                                                                    selectedMedia
-                                                                        .length) {
-                                                                  safeSetState(
-                                                                      () {
-                                                                    _model.uploadedLocalFile1 =
-                                                                        selectedUploadedFiles
-                                                                            .first;
-                                                                  });
-                                                                } else {
-                                                                  safeSetState(
-                                                                      () {});
-                                                                  return;
-                                                                }
-                                                              }
-
-                                                              _model.image = _model
-                                                                  .uploadedLocalFile1;
-                                                              safeSetState(
-                                                                  () {});
-                                                            },
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondaryBackground,
-                                                              ),
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            8.0),
-                                                                child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  children: [
-                                                                    Text(
-                                                                      'Edit',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .override(
-                                                                            fontFamily:
-                                                                                'Inter',
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                          ),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .cloud_upload,
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .primaryText,
-                                                                      size:
-                                                                          24.0,
-                                                                    ),
-                                                                  ].divide(SizedBox(
-                                                                      width:
-                                                                          8.0)),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                } else {
-                                                  return InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    focusColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () async {
-                                                      final selectedMedia =
-                                                          await selectMediaWithSourceBottomSheet(
-                                                        context: context,
-                                                        allowPhoto: true,
-                                                      );
-                                                      if (selectedMedia !=
-                                                              null &&
-                                                          selectedMedia.every((m) =>
-                                                              validateFileFormat(
-                                                                  m.storagePath,
-                                                                  context))) {
-                                                        safeSetState(() => _model
-                                                                .isDataUploading2 =
-                                                            true);
-                                                        var selectedUploadedFiles =
-                                                            <FFUploadedFile>[];
-
-                                                        try {
-                                                          selectedUploadedFiles =
-                                                              selectedMedia
-                                                                  .map((m) =>
-                                                                      FFUploadedFile(
-                                                                        name: m
-                                                                            .storagePath
-                                                                            .split('/')
-                                                                            .last,
-                                                                        bytes: m
-                                                                            .bytes,
-                                                                        height: m
-                                                                            .dimensions
-                                                                            ?.height,
-                                                                        width: m
-                                                                            .dimensions
-                                                                            ?.width,
-                                                                        blurHash:
-                                                                            m.blurHash,
-                                                                      ))
-                                                                  .toList();
-                                                        } finally {
-                                                          _model.isDataUploading2 =
-                                                              false;
-                                                        }
-                                                        if (selectedUploadedFiles
-                                                                .length ==
-                                                            selectedMedia
-                                                                .length) {
-                                                          safeSetState(() {
-                                                            _model.uploadedLocalFile2 =
-                                                                selectedUploadedFiles
-                                                                    .first;
-                                                          });
-                                                        } else {
-                                                          safeSetState(() {});
-                                                          return;
-                                                        }
-                                                      }
-
-                                                      _model.image = _model
-                                                          .uploadedLocalFile2;
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                          width: 2.0,
-                                                        ),
-                                                      ),
-                                                      child: Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            border: Border.all(
-                                                              color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .primaryText,
-                                                              width: 2.0,
-                                                            ),
-                                                          ),
-                                                          child: Icon(
-                                                            Icons.add_rounded,
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                            size: 40.0,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              },
+                                            child: wrapWithModel(
+                                              model: _model.imageUploaderModel,
+                                              updateCallback: () =>
+                                                  safeSetState(() {}),
+                                              child: ImageUploaderWidget(
+                                                onUpload: (file) async {
+                                                  _model.image = file;
+                                                  safeSetState(() {});
+                                                },
+                                                onRemove: () async {
+                                                  _model.image = null;
+                                                  safeSetState(() {});
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1546,17 +1305,6 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                     letterSpacing: 0.0,
                                   ),
                         ),
-                      if (_model.image == null ||
-                          (_model.image?.bytes?.isEmpty ?? true))
-                        Text(
-                          '* A photo needs to be uploaded',
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    fontFamily: 'Inter',
-                                    color: FlutterFlowTheme.of(context).error,
-                                    letterSpacing: 0.0,
-                                  ),
-                        ),
                       if (_model.selectedPlace == null)
                         Text(
                           '* A city needs to be selected',
@@ -1576,14 +1324,12 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                   children: [
                     FFButtonWidget(
                       onPressed: (!(_model.recordings.isNotEmpty) ||
-                              (_model.image == null ||
-                                  (_model.image?.bytes?.isEmpty ?? true)) ||
                               (_model.selectedPlace == null))
                           ? null
                           : () async {
                               {
                                 safeSetState(
-                                    () => _model.isDataUploading3 = true);
+                                    () => _model.isDataUploading = true);
                                 var selectedUploadedFiles = <FFUploadedFile>[];
                                 var selectedMedia = <SelectedFile>[];
                                 var downloadUrls = <String>[];
@@ -1606,17 +1352,16 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                       .map((u) => u!)
                                       .toList();
                                 } finally {
-                                  _model.isDataUploading3 = false;
+                                  _model.isDataUploading = false;
                                 }
                                 if (selectedUploadedFiles.length ==
                                         selectedMedia.length &&
                                     downloadUrls.length ==
                                         selectedMedia.length) {
                                   safeSetState(() {
-                                    _model.uploadedLocalFile3 =
+                                    _model.uploadedLocalFile =
                                         selectedUploadedFiles.first;
-                                    _model.uploadedFileUrl3 =
-                                        downloadUrls.first;
+                                    _model.uploadedFileUrl = downloadUrls.first;
                                   });
                                 } else {
                                   safeSetState(() {});
@@ -1631,7 +1376,7 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                   eventDate: _model.selectedDate,
                                   notes:
                                       _model.textFieldNotesTextController.text,
-                                  photo: _model.uploadedFileUrl3,
+                                  photo: _model.uploadedFileUrl,
                                   createdBy: currentUserReference,
                                   ownedBy: currentUserReference,
                                   editDate: getCurrentTimestamp,
@@ -1659,7 +1404,7 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                   eventDate: _model.selectedDate,
                                   notes:
                                       _model.textFieldNotesTextController.text,
-                                  photo: _model.uploadedFileUrl3,
+                                  photo: _model.uploadedFileUrl,
                                   createdBy: currentUserReference,
                                   ownedBy: currentUserReference,
                                   editDate: getCurrentTimestamp,

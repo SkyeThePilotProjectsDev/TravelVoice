@@ -32,11 +32,6 @@ class TripRecord extends FirestoreRecord {
   List<TripUserStruct> get travelGroup => _travelGroup ?? const [];
   bool hasTravelGroup() => _travelGroup != null;
 
-  // "superUser" field.
-  DocumentReference? _superUser;
-  DocumentReference? get superUser => _superUser;
-  bool hasSuperUser() => _superUser != null;
-
   // "members" field.
   List<DocumentReference>? _members;
   List<DocumentReference> get members => _members ?? const [];
@@ -52,6 +47,16 @@ class TripRecord extends FirestoreRecord {
   DateTime? get editDate => _editDate;
   bool hasEditDate() => _editDate != null;
 
+  // "image" field.
+  String? _image;
+  String get image => _image ?? '';
+  bool hasImage() => _image != null;
+
+  // "ownedBy" field.
+  DocumentReference? _ownedBy;
+  DocumentReference? get ownedBy => _ownedBy;
+  bool hasOwnedBy() => _ownedBy != null;
+
   void _initializeFields() {
     _name = snapshotData['name'] as String?;
     _logs = getDataList(snapshotData['logs']);
@@ -59,10 +64,11 @@ class TripRecord extends FirestoreRecord {
       snapshotData['travelGroup'],
       TripUserStruct.fromMap,
     );
-    _superUser = snapshotData['superUser'] as DocumentReference?;
     _members = getDataList(snapshotData['members']);
     _creationDate = snapshotData['creationDate'] as DateTime?;
     _editDate = snapshotData['editDate'] as DateTime?;
+    _image = snapshotData['image'] as String?;
+    _ownedBy = snapshotData['ownedBy'] as DocumentReference?;
   }
 
   static CollectionReference get collection =>
@@ -100,16 +106,18 @@ class TripRecord extends FirestoreRecord {
 
 Map<String, dynamic> createTripRecordData({
   String? name,
-  DocumentReference? superUser,
   DateTime? creationDate,
   DateTime? editDate,
+  String? image,
+  DocumentReference? ownedBy,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
       'name': name,
-      'superUser': superUser,
       'creationDate': creationDate,
       'editDate': editDate,
+      'image': image,
+      'ownedBy': ownedBy,
     }.withoutNulls,
   );
 
@@ -125,10 +133,11 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
     return e1?.name == e2?.name &&
         listEquality.equals(e1?.logs, e2?.logs) &&
         listEquality.equals(e1?.travelGroup, e2?.travelGroup) &&
-        e1?.superUser == e2?.superUser &&
         listEquality.equals(e1?.members, e2?.members) &&
         e1?.creationDate == e2?.creationDate &&
-        e1?.editDate == e2?.editDate;
+        e1?.editDate == e2?.editDate &&
+        e1?.image == e2?.image &&
+        e1?.ownedBy == e2?.ownedBy;
   }
 
   @override
@@ -136,10 +145,11 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
         e?.name,
         e?.logs,
         e?.travelGroup,
-        e?.superUser,
         e?.members,
         e?.creationDate,
-        e?.editDate
+        e?.editDate,
+        e?.image,
+        e?.ownedBy
       ]);
 
   @override

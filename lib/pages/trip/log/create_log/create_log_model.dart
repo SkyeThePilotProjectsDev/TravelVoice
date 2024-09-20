@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
+import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -76,18 +77,12 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   TextEditingController? textFieldNotesTextController;
   String? Function(BuildContext, String?)?
       textFieldNotesTextControllerValidator;
-  bool isDataUploading1 = false;
-  FFUploadedFile uploadedLocalFile1 =
+  // Model for imageUploader component.
+  late ImageUploaderModel imageUploaderModel;
+  bool isDataUploading = false;
+  FFUploadedFile uploadedLocalFile =
       FFUploadedFile(bytes: Uint8List.fromList([]));
-
-  bool isDataUploading2 = false;
-  FFUploadedFile uploadedLocalFile2 =
-      FFUploadedFile(bytes: Uint8List.fromList([]));
-
-  bool isDataUploading3 = false;
-  FFUploadedFile uploadedLocalFile3 =
-      FFUploadedFile(bytes: Uint8List.fromList([]));
-  String uploadedFileUrl3 = '';
+  String uploadedFileUrl = '';
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   TripLogRecord? newLog;
@@ -95,6 +90,7 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   @override
   void initState(BuildContext context) {
     placeSuggestionsModel = createModel(context, () => PlaceSuggestionsModel());
+    imageUploaderModel = createModel(context, () => ImageUploaderModel());
   }
 
   @override
@@ -114,5 +110,7 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
 
     textFieldNotesFocusNode?.dispose();
     textFieldNotesTextController?.dispose();
+
+    imageUploaderModel.dispose();
   }
 }

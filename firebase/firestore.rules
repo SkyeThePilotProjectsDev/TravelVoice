@@ -19,7 +19,7 @@ service cloud.firestore {
       allow create: if true;
       allow read: if true;
       allow write: if /databases/$(database)/documents/users/$(request.auth.uid) in resource.data.members;
-      allow delete: if false;
+      allow delete: if resource.data.ownedBy == /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
     match /tripLog/{document} {

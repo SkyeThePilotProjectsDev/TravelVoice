@@ -88,3 +88,25 @@ LocationStruct? reverseLocationParser(LatLng? location) {
     lng: location.longitude,
   );
 }
+
+Color stringToColour(String? input) {
+  if (input == null) return Colors.black;
+  return Color(input.hashCode);
+}
+
+Color getFontColourForBackground(Color background) {
+  return (background.computeLuminance() > 0.179) ? Colors.black : Colors.white;
+}
+
+bool contains(
+  String? outer,
+  String? inner,
+  bool? caseSensetive,
+) {
+  if (inner == null) return true;
+  if (outer == null) return false;
+
+  return (caseSensetive ?? false)
+      ? outer.contains(inner)
+      : outer.toLowerCase().contains(inner.toLowerCase());
+}

@@ -4,6 +4,7 @@ import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'edit_trip_widget.dart' show EditTripWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
 
   ///  State fields for stateful widgets in this page.
 
+  // Stores action output result for [Custom Action - getOrCreateRequestOnce] action in Icon widget.
+  RequestsRecord? request;
   // State field(s) for TextField_Name widget.
   FocusNode? textFieldNameFocusNode;
   TextEditingController? textFieldNameTextController;

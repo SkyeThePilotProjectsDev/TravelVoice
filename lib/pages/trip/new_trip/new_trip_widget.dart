@@ -1,10 +1,14 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/firebase_storage/storage.dart';
+import '/components/image_uploader_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/upload_data.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -131,6 +135,11 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                               child: TextFormField(
                                 controller: _model.textController1,
                                 focusNode: _model.textFieldFocusNode1,
+                                onChanged: (_) => EasyDebounce.debounce(
+                                  '_model.textController1',
+                                  Duration(milliseconds: 0),
+                                  () => safeSetState(() {}),
+                                ),
                                 autofocus: false,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -230,6 +239,11 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                               child: TextFormField(
                                 controller: _model.textController2,
                                 focusNode: _model.textFieldFocusNode2,
+                                onChanged: (_) => EasyDebounce.debounce(
+                                  '_model.textController2',
+                                  Duration(milliseconds: 0),
+                                  () => safeSetState(() {}),
+                                ),
                                 autofocus: false,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -297,6 +311,34 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                             ),
                           ].divide(SizedBox(height: 16.0)),
                         ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 200.0,
+                              height: 200.0,
+                              decoration: BoxDecoration(),
+                              child: wrapWithModel(
+                                model: _model.imageUploaderModel,
+                                updateCallback: () => safeSetState(() {}),
+                                child: ImageUploaderWidget(
+                                  onUpload: (file) async {
+                                    if (file != null &&
+                                        (file.bytes?.isNotEmpty ?? false)) {
+                                      _model.photo = file;
+                                      safeSetState(() {});
+                                    }
+                                  },
+                                  onRemove: () async {
+                                    _model.photo = null;
+                                    safeSetState(() {});
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
                               32.0, 0.0, 32.0, 0.0),
@@ -306,47 +348,149 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                 ? null
                                 : () async {
                                     _model.usersRequests =
-                                        await actions.getOrCreateRequest(
+                                        await actions.getOrCreateRequestOnce(
                                       currentUserReference!,
                                     );
+                                    if (_model.photo != null &&
+                                        (_model.photo?.bytes?.isNotEmpty ??
+                                            false)) {
+                                      {
+                                        safeSetState(() =>
+                                            _model.isDataUploading = true);
+                                        var selectedUploadedFiles =
+                                            <FFUploadedFile>[];
+                                        var selectedMedia = <SelectedFile>[];
+                                        var downloadUrls = <String>[];
+                                        try {
+                                          selectedUploadedFiles =
+                                              _model.photo!.bytes!.isNotEmpty
+                                                  ? [_model.photo!]
+                                                  : <FFUploadedFile>[];
+                                          selectedMedia =
+                                              selectedFilesFromUploadedFiles(
+                                            selectedUploadedFiles,
+                                          );
+                                          downloadUrls = (await Future.wait(
+                                            selectedMedia.map(
+                                              (m) async => await uploadData(
+                                                  m.storagePath, m.bytes),
+                                            ),
+                                          ))
+                                              .where((u) => u != null)
+                                              .map((u) => u!)
+                                              .toList();
+                                        } finally {
+                                          _model.isDataUploading = false;
+                                        }
+                                        if (selectedUploadedFiles.length ==
+                                                selectedMedia.length &&
+                                            downloadUrls.length ==
+                                                selectedMedia.length) {
+                                          safeSetState(() {
+                                            _model.uploadedLocalFile =
+                                                selectedUploadedFiles.first;
+                                            _model.uploadedFileUrl =
+                                                downloadUrls.first;
+                                          });
+                                        } else {
+                                          safeSetState(() {});
+                                          return;
+                                        }
+                                      }
 
-                                    var tripRecordReference =
-                                        TripRecord.collection.doc();
-                                    await tripRecordReference.set({
-                                      ...createTripRecordData(
-                                        name: _model.textController1.text,
-                                        creationDate: getCurrentTimestamp,
-                                        editDate: getCurrentTimestamp,
-                                      ),
-                                      ...mapToFirestore(
-                                        {
-                                          'members': [currentUserReference],
-                                        },
-                                      ),
-                                    });
-                                    _model.newTrip =
-                                        TripRecord.getDocumentFromData({
-                                      ...createTripRecordData(
-                                        name: _model.textController1.text,
-                                        creationDate: getCurrentTimestamp,
-                                        editDate: getCurrentTimestamp,
-                                      ),
-                                      ...mapToFirestore(
-                                        {
-                                          'members': [currentUserReference],
-                                        },
-                                      ),
-                                    }, tripRecordReference);
+                                      var tripRecordReference1 =
+                                          TripRecord.collection.doc();
+                                      await tripRecordReference1.set({
+                                        ...createTripRecordData(
+                                          name: _model.textController1.text,
+                                          creationDate: getCurrentTimestamp,
+                                          editDate: getCurrentTimestamp,
+                                          image: _model.uploadedFileUrl,
+                                          ownedBy: currentUserReference,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'members': [currentUserReference],
+                                          },
+                                        ),
+                                      });
+                                      _model.newTripA =
+                                          TripRecord.getDocumentFromData({
+                                        ...createTripRecordData(
+                                          name: _model.textController1.text,
+                                          creationDate: getCurrentTimestamp,
+                                          editDate: getCurrentTimestamp,
+                                          image: _model.uploadedFileUrl,
+                                          ownedBy: currentUserReference,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'members': [currentUserReference],
+                                          },
+                                        ),
+                                      }, tripRecordReference1);
 
-                                    await _model.usersRequests!.reference
-                                        .update({
-                                      ...mapToFirestore(
-                                        {
-                                          'joinedTrips': FieldValue.arrayUnion(
-                                              [_model.newTrip?.reference]),
-                                        },
-                                      ),
-                                    });
+                                      await _model.usersRequests!.reference
+                                          .update({
+                                        ...mapToFirestore(
+                                          {
+                                            'joinedTrips':
+                                                FieldValue.arrayUnion([
+                                              _model.newTripA?.reference
+                                            ]),
+                                          },
+                                        ),
+                                      });
+                                      FFAppState().currentTrip =
+                                          _model.newTripA?.reference;
+                                      safeSetState(() {});
+                                    } else {
+                                      var tripRecordReference2 =
+                                          TripRecord.collection.doc();
+                                      await tripRecordReference2.set({
+                                        ...createTripRecordData(
+                                          name: _model.textController1.text,
+                                          creationDate: getCurrentTimestamp,
+                                          editDate: getCurrentTimestamp,
+                                          ownedBy: currentUserReference,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'members': [currentUserReference],
+                                          },
+                                        ),
+                                      });
+                                      _model.newTripB =
+                                          TripRecord.getDocumentFromData({
+                                        ...createTripRecordData(
+                                          name: _model.textController1.text,
+                                          creationDate: getCurrentTimestamp,
+                                          editDate: getCurrentTimestamp,
+                                          ownedBy: currentUserReference,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'members': [currentUserReference],
+                                          },
+                                        ),
+                                      }, tripRecordReference2);
+
+                                      await _model.usersRequests!.reference
+                                          .update({
+                                        ...mapToFirestore(
+                                          {
+                                            'joinedTrips':
+                                                FieldValue.arrayUnion([
+                                              _model.newTripB?.reference
+                                            ]),
+                                          },
+                                        ),
+                                      });
+                                      FFAppState().currentTrip =
+                                          _model.newTripB?.reference;
+                                      safeSetState(() {});
+                                    }
+
                                     if (Navigator.of(context).canPop()) {
                                       context.pop();
                                     }

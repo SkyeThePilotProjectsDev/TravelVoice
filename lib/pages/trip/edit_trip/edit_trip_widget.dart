@@ -4,6 +4,7 @@ import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -127,6 +128,76 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       width: 2.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                ),
+                                InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    final firestoreBatch =
+                                        FirebaseFirestore.instance.batch();
+                                    try {
+                                      var confirmDialogResponse =
+                                          await showDialog<bool>(
+                                                context: context,
+                                                builder: (alertDialogContext) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                        'Are you sure you want to delete this trip?'),
+                                                    content: Text(
+                                                        'You won\'t be able to get it back.'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                alertDialogContext,
+                                                                false),
+                                                        child: Text('Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                alertDialogContext,
+                                                                true),
+                                                        child: Text('Delete'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ) ??
+                                              false;
+                                      if (confirmDialogResponse) {
+                                        _model.request = await actions
+                                            .getOrCreateRequestOnce(
+                                          currentUserReference!,
+                                        );
+
+                                        firestoreBatch
+                                            .update(_model.request!.reference, {
+                                          ...mapToFirestore(
+                                            {
+                                              'joinedTrips':
+                                                  FieldValue.arrayRemove(
+                                                      [widget!.trip]),
+                                            },
+                                          ),
+                                        });
+                                        firestoreBatch.delete(widget!.trip!);
+
+                                        context.goNamed('Trips');
+                                      }
+                                    } finally {
+                                      await firestoreBatch.commit();
+                                    }
+
+                                    safeSetState(() {});
+                                  },
+                                  child: FaIcon(
+                                    FontAwesomeIcons.trash,
+                                    color: FlutterFlowTheme.of(context).error,
+                                    size: 24.0,
                                   ),
                                 ),
                               ],
