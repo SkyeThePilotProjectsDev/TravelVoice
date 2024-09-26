@@ -15,3 +15,4 @@ export '/pages/user/request_password_change/request_password_change_widget.dart'
     show RequestPasswordChangeWidget;
 export '/pages/trip/log/edit_log/edit_log_widget.dart' show EditLogWidget;
 export '/pages/trip/log/view_log/view_log_widget.dart' show ViewLogWidget;
+export '/test/test_widget.dart' show TestWidget;

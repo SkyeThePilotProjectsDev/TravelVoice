@@ -12,13 +12,10 @@ class ProfileIconWidget extends StatefulWidget {
   const ProfileIconWidget({
     super.key,
     this.input,
-    int? fontSize,
     int? padding,
-  })  : this.fontSize = fontSize ?? 50,
-        this.padding = padding ?? 10;
+  }) : this.padding = padding ?? 10;
 
   final String? input;
-  final int fontSize;
   final int padding;
 
   @override
@@ -53,46 +50,41 @@ class _ProfileIconWidgetState extends State<ProfileIconWidget> {
       width: MediaQuery.sizeOf(context).width * 1.0,
       height: MediaQuery.sizeOf(context).width * 1.0,
       decoration: BoxDecoration(
-        color: colorFromCssString(
-          widget!.input!,
-          defaultColor: Colors.black,
-        ),
+        color: functions.stringToColour(widget!.input),
         shape: BoxShape.circle,
       ),
       child: Align(
         alignment: AlignmentDirectional(0.0, 0.0),
-        child: Padding(
-          padding: EdgeInsets.all(valueOrDefault<double>(
-            widget!.padding.toDouble(),
-            0.0,
-          )),
-          child: AutoSizeText(
-            (String? inp) {
-              return inp == null
-                  ? ":)"
-                  : RegExp("\w+")
-                      .allMatches(inp)
-                      .map((m) => m.group(0))
-                      .join()
-                      .toUpperCase();
-            }(widget!.input),
-            textAlign: TextAlign.center,
-            minFontSize: 10.0,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  fontFamily: 'Inter',
-                  color: valueOrDefault<Color>(
-                    functions.getFontColourForBackground(valueOrDefault<Color>(
-                      functions.stringToColour(widget!.input),
-                      Colors.black,
-                    )),
-                    Colors.white,
+        child: Container(
+          decoration: BoxDecoration(),
+          child: Transform.scale(
+            scaleX: 0.8,
+            scaleY: 0.8,
+            child: AutoSizeText(
+              valueOrDefault<String>(
+                functions.getAcronym(valueOrDefault<String>(
+                  widget!.input,
+                  ':)',
+                )),
+                ':)',
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              minFontSize: 5.0,
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    fontFamily: 'Inter',
+                    color: valueOrDefault<Color>(
+                      functions
+                          .getFontColourForBackground(valueOrDefault<Color>(
+                        functions.stringToColour(widget!.input),
+                        Colors.black,
+                      )),
+                      Colors.white,
+                    ),
+                    fontSize: 300.0,
+                    letterSpacing: 0.0,
                   ),
-                  fontSize: valueOrDefault<double>(
-                    widget!.fontSize.toDouble(),
-                    50.0,
-                  ),
-                  letterSpacing: 0.0,
-                ),
+            ),
           ),
         ),
       ),

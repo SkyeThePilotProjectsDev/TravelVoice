@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
+import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
@@ -14,7 +15,6 @@ import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -49,129 +49,11 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.selectedDate = getCurrentTimestamp;
       safeSetState(() {});
-      safeSetState(() {
-        _model.textFieldDayTextController?.text =
-            dateTimeFormat("d", _model.selectedDate);
-        _model.textFieldDayTextController?.selection = TextSelection.collapsed(
-            offset: _model.textFieldDayTextController!.text.length);
-      });
-      safeSetState(() {
-        _model.textFieldMonthTextController?.text =
-            dateTimeFormat("M", _model.selectedDate);
-        _model.textFieldMonthTextController?.selection =
-            TextSelection.collapsed(
-                offset: _model.textFieldMonthTextController!.text.length);
-      });
-      safeSetState(() {
-        _model.textFieldYearTextController?.text =
-            dateTimeFormat("yyyy", _model.selectedDate);
-        _model.textFieldYearTextController?.selection = TextSelection.collapsed(
-            offset: _model.textFieldYearTextController!.text.length);
-      });
     });
 
     _model.textFieldCityTextController ??= TextEditingController();
     _model.textFieldCityFocusNode ??= FocusNode();
 
-    _model.textFieldYearTextController ??=
-        TextEditingController(text: dateTimeFormat("d", _model.selectedDate));
-    _model.textFieldYearFocusNode ??= FocusNode();
-    _model.textFieldYearFocusNode!.addListener(
-      () async {
-        _model.selectedDate = functions.dateBuilder(
-            _model.textFieldDayTextController.text,
-            _model.textFieldMonthTextController.text,
-            _model.textFieldYearTextController.text,
-            _model.selectedDate!);
-        safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldMonthTextController?.text =
-              dateTimeFormat("M", _model.selectedDate);
-          _model.textFieldMonthTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldMonthTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
-        });
-      },
-    );
-    _model.textFieldMonthTextController ??=
-        TextEditingController(text: dateTimeFormat("M", _model.selectedDate));
-    _model.textFieldMonthFocusNode ??= FocusNode();
-    _model.textFieldMonthFocusNode!.addListener(
-      () async {
-        _model.selectedDate = functions.dateBuilder(
-            _model.textFieldDayTextController.text,
-            _model.textFieldMonthTextController.text,
-            _model.textFieldYearTextController.text,
-            _model.selectedDate!);
-        safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldMonthTextController?.text =
-              dateTimeFormat("M", _model.selectedDate);
-          _model.textFieldMonthTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldMonthTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
-        });
-      },
-    );
-    _model.textFieldDayTextController ??= TextEditingController(
-        text: dateTimeFormat("yyyy", _model.selectedDate));
-    _model.textFieldDayFocusNode ??= FocusNode();
-    _model.textFieldDayFocusNode!.addListener(
-      () async {
-        _model.selectedDate = functions.dateBuilder(
-            _model.textFieldDayTextController.text,
-            _model.textFieldMonthTextController.text,
-            _model.textFieldYearTextController.text,
-            _model.selectedDate!);
-        safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldMonthTextController?.text =
-              dateTimeFormat("M", _model.selectedDate);
-          _model.textFieldMonthTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldMonthTextController!.text.length);
-        });
-        safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
-              TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
-        });
-      },
-    );
     _model.textFieldNotesTextController ??= TextEditingController();
     _model.textFieldNotesFocusNode ??= FocusNode();
   }
@@ -203,8 +85,12 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      FFButtonWidget(
-                        onPressed: () async {
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
                           var confirmDialogResponse = await showDialog<bool>(
                                 context: context,
                                 builder: (alertDialogContext) {
@@ -232,31 +118,10 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                             context.safePop();
                           }
                         },
-                        text: 'Back',
-                        icon: Icon(
-                          Icons.arrow_back,
-                          size: 15.0,
-                        ),
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              24.0, 0.0, 24.0, 0.0),
-                          iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: Colors.transparent,
-                          textStyle: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .override(
-                                fontFamily: 'Inter Tight',
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                letterSpacing: 0.0,
-                              ),
-                          elevation: 0.0,
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primary,
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.circular(16.0),
+                        child: Icon(
+                          Icons.chevron_left_rounded,
+                          color: FlutterFlowTheme.of(context).primaryText,
+                          size: 40.0,
                         ),
                       ),
                     ],
@@ -697,7 +562,7 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Text(
-                                          'Date:',
+                                          'Date: ',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
@@ -706,423 +571,19 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                               ),
                                         ),
                                         Expanded(
-                                          child: Container(
-                                            width: 200.0,
-                                            child: TextFormField(
-                                              controller: _model
-                                                  .textFieldYearTextController,
-                                              focusNode:
-                                                  _model.textFieldYearFocusNode,
-                                              autofocus: false,
-                                              obscureText: false,
-                                              decoration: InputDecoration(
-                                                isDense: true,
-                                                labelStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                hintText: 'TextField',
-                                                hintStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedErrorBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                filled: true,
-                                                fillColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                              ),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                              cursorColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryText,
-                                              validator: _model
-                                                  .textFieldYearTextControllerValidator
-                                                  .asValidator(context),
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          '/',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            width: 200.0,
-                                            child: TextFormField(
-                                              controller: _model
-                                                  .textFieldMonthTextController,
-                                              focusNode: _model
-                                                  .textFieldMonthFocusNode,
-                                              autofocus: false,
-                                              obscureText: false,
-                                              decoration: InputDecoration(
-                                                isDense: true,
-                                                labelStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                hintText: 'TextField',
-                                                hintStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedErrorBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                filled: true,
-                                                fillColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                              ),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                              cursorColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryText,
-                                              validator: _model
-                                                  .textFieldMonthTextControllerValidator
-                                                  .asValidator(context),
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          '/',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            width: 200.0,
-                                            child: TextFormField(
-                                              controller: _model
-                                                  .textFieldDayTextController,
-                                              focusNode:
-                                                  _model.textFieldDayFocusNode,
-                                              autofocus: false,
-                                              obscureText: false,
-                                              decoration: InputDecoration(
-                                                isDense: true,
-                                                labelStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                hintText: 'TextField',
-                                                hintStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                focusedErrorBorder:
-                                                    OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .error,
-                                                    width: 1.0,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                filled: true,
-                                                fillColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                              ),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                              cursorColor:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryText,
-                                              validator: _model
-                                                  .textFieldDayTextControllerValidator
-                                                  .asValidator(context),
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          splashColor: Colors.transparent,
-                                          focusColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          onTap: () async {
-                                            final _datePickedDate =
-                                                await showDatePicker(
-                                              context: context,
-                                              initialDate: ((_model
-                                                              .selectedDate !=
-                                                          null
-                                                      ? _model.selectedDate
-                                                      : getCurrentTimestamp) ??
-                                                  DateTime.now()),
-                                              firstDate: DateTime(1900),
-                                              lastDate: DateTime(2050),
-                                              builder: (context, child) {
-                                                return wrapInMaterialDatePickerTheme(
-                                                  context,
-                                                  child!,
-                                                  headerBackgroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primary,
-                                                  headerForegroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .info,
-                                                  headerTextStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineLarge
-                                                          .override(
-                                                            fontFamily:
-                                                                'Inter Tight',
-                                                            fontSize: 32.0,
-                                                            letterSpacing: 0.0,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                  pickerBackgroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .secondaryBackground,
-                                                  pickerForegroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primaryText,
-                                                  selectedDateTimeBackgroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primary,
-                                                  selectedDateTimeForegroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .info,
-                                                  actionButtonForegroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primaryText,
-                                                  iconSize: 24.0,
-                                                );
+                                          child: wrapWithModel(
+                                            model: _model.datePickerModel,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: DatePickerWidget(
+                                              defaultDate: _model.selectedDate!,
+                                              onChange: (setDate) async {
+                                                _model.selectedDate = setDate;
                                               },
-                                            );
-
-                                            if (_datePickedDate != null) {
-                                              safeSetState(() {
-                                                _model.datePicked = DateTime(
-                                                  _datePickedDate.year,
-                                                  _datePickedDate.month,
-                                                  _datePickedDate.day,
-                                                );
-                                              });
-                                            }
-                                            if (_model.datePicked != null) {
-                                              _model.selectedDate =
-                                                  _model.datePicked;
-                                              safeSetState(() {
-                                                _model.textFieldDayTextController
-                                                        ?.text =
-                                                    dateTimeFormat("d",
-                                                        _model.selectedDate);
-                                                _model.textFieldDayTextController
-                                                        ?.selection =
-                                                    TextSelection.collapsed(
-                                                        offset: _model
-                                                            .textFieldDayTextController!
-                                                            .text
-                                                            .length);
-                                              });
-                                              safeSetState(() {
-                                                _model.textFieldMonthTextController
-                                                        ?.text =
-                                                    dateTimeFormat("M",
-                                                        _model.selectedDate);
-                                                _model.textFieldMonthTextController
-                                                        ?.selection =
-                                                    TextSelection.collapsed(
-                                                        offset: _model
-                                                            .textFieldMonthTextController!
-                                                            .text
-                                                            .length);
-                                              });
-                                              safeSetState(() {
-                                                _model.textFieldYearTextController
-                                                        ?.text =
-                                                    dateTimeFormat("yyyy",
-                                                        _model.selectedDate);
-                                                _model.textFieldYearTextController
-                                                        ?.selection =
-                                                    TextSelection.collapsed(
-                                                        offset: _model
-                                                            .textFieldYearTextController!
-                                                            .text
-                                                            .length);
-                                              });
-                                            }
-                                          },
-                                          child: Icon(
-                                            Icons.event,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                            size: 24.0,
+                                            ),
                                           ),
                                         ),
-                                      ].divide(SizedBox(width: 8.0)),
+                                      ],
                                     ),
                                     Divider(
                                       thickness: 2.0,

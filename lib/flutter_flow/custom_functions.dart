@@ -30,7 +30,6 @@ DateTime dateBuilder(
   String? year,
   DateTime previousDate,
 ) {
-  print("DateBuilder $year $month $day $previousDate");
   var pullNumbers = (String str) {
     var matches = RegExp(r'\d+').allMatches(str);
     if (matches.length == 0) return 0;
@@ -55,8 +54,6 @@ DateTime dateBuilder(
     _day = previousDate.day;
   else
     math.max(0, _day);
-
-  print("return DateBuilder $_year $_month $_day $previousDate");
 
   return DateTime(_year, _month, _day);
 }
@@ -91,10 +88,22 @@ LocationStruct? reverseLocationParser(LatLng? location) {
 
 Color stringToColour(String? input) {
   if (input == null) return Colors.black;
-  return Color(input.hashCode);
+  try {
+    String hash = input.hashCode.toString();
+    // int a = int.parse(input.substring(0, 2));
+    String r = (hash.substring(2, 4));
+    String g = (hash.substring(4, 6));
+    String b = (hash.substring(6, 8));
+
+    return Color(int.parse("0xff$r$g$b"));
+  } catch (e) {}
+
+  return Colors.black;
 }
 
 Color getFontColourForBackground(Color background) {
+  print(
+      "Font $background ${background.computeLuminance()} ${(background.computeLuminance() > 0.179) ? Colors.black : Colors.white}");
   return (background.computeLuminance() > 0.179) ? Colors.black : Colors.white;
 }
 
@@ -109,4 +118,31 @@ bool contains(
   return (caseSensetive ?? false)
       ? outer.contains(inner)
       : outer.toLowerCase().contains(inner.toLowerCase());
+}
+
+String? getAcronym(String? inp) {
+  return inp == null
+      ? ":)"
+      : RegExp(r"[^\s\-_]+")
+          .allMatches(inp)
+          .map((m) => m.group(0)![0])
+          .join()
+          .toUpperCase();
+}
+
+String getDisplayName(UsersRecord? user) {
+  if (user == null) return "";
+  if (user.displayName != null && user.displayName.isNotEmpty)
+    return user.displayName;
+  return user.email;
+}
+
+bool stringEquality(
+  String? a,
+  String? b,
+) {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+
+  return a.trim().toLowerCase() == b.trim().toLowerCase();
 }

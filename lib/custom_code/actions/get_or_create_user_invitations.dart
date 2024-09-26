@@ -10,17 +10,23 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-Future<RequestsRecord> getOrCreateRequestOnce(
-  DocumentReference userRef,
+Future<InvitationsRecord> getOrCreateUserInvitations(
+  String email,
 ) async {
   // Add your function code here!
-  DocumentReference usersRequests = RequestsRecord.collection.doc(userRef.id);
+  String _email = email.trim().toLowerCase();
+  DocumentReference usersRequests = InvitationsRecord.collection.doc(_email);
   bool docExists = await usersRequests.get().then((u) => u.exists);
-  if (docExists) {
-    return await RequestsRecord.getDocumentOnce(usersRequests);
+
+  if (!docExists) {
+    final data = createInvitationsRecordData();
+    await usersRequests.set(data);
   }
 
-  final data = createRequestsRecordData();
-  await usersRequests.set(data);
-  return RequestsRecord.getDocumentFromData(data, usersRequests);
+  await for (final request in InvitationsRecord.getDocument(usersRequests)) {
+    return request;
+    // onUpdate?.call(request);
+  }
+
+  return await InvitationsRecord.getDocumentOnce(usersRequests);
 }

@@ -1,16 +1,22 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
+import '/backend/schema/enums/enums.dart';
+import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
+import '/components/profile_icon_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/custom_code/actions/index.dart' as actions;
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'new_trip_widget.dart' show NewTripWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -19,20 +25,51 @@ class NewTripModel extends FlutterFlowModel<NewTripWidget> {
 
   FFUploadedFile? photo;
 
+  DateTime? selectedDate;
+
+  String? photoURL;
+
+  List<String> shareWith = [];
+  void addToShareWith(String item) => shareWith.add(item);
+  void removeFromShareWith(String item) => shareWith.remove(item);
+  void removeAtIndexFromShareWith(int index) => shareWith.removeAt(index);
+  void insertAtIndexInShareWith(int index, String item) =>
+      shareWith.insert(index, item);
+  void updateShareWithAtIndex(int index, Function(String) updateFn) =>
+      shareWith[index] = updateFn(shareWith[index]);
+
+  int loopCounter = 0;
+
   ///  State fields for stateful widgets in this page.
 
+  final formKey = GlobalKey<FormState>();
   // State field(s) for TextField widget.
-  FocusNode? textFieldFocusNode1;
+  FocusNode? textFieldFocusNode;
   TextEditingController? textController1;
   String? Function(BuildContext, String?)? textController1Validator;
-  // State field(s) for TextField widget.
-  FocusNode? textFieldFocusNode2;
-  TextEditingController? textController2;
-  String? Function(BuildContext, String?)? textController2Validator;
+  // Model for DatePicker component.
+  late DatePickerModel datePickerModel;
+  // State field(s) for TextField_Share widget.
+  FocusNode? textFieldShareFocusNode;
+  TextEditingController? textFieldShareTextController;
+  String? Function(BuildContext, String?)?
+      textFieldShareTextControllerValidator;
+  String? _textFieldShareTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Field is required';
+    }
+
+    if (!RegExp(kTextValidatorEmailRegex).hasMatch(val)) {
+      return 'This is not a valid email';
+    }
+    return null;
+  }
+
+  // Stores action output result for [Validate Form] action in TextField_Share widget.
+  bool? isValidEmail;
   // Model for imageUploader component.
   late ImageUploaderModel imageUploaderModel;
-  // Stores action output result for [Custom Action - getOrCreateRequestOnce] action in Button widget.
-  RequestsRecord? usersRequests;
   bool isDataUploading = false;
   FFUploadedFile uploadedLocalFile =
       FFUploadedFile(bytes: Uint8List.fromList([]));
@@ -40,21 +77,25 @@ class NewTripModel extends FlutterFlowModel<NewTripWidget> {
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   TripRecord? newTripA;
-  // Stores action output result for [Backend Call - Create Document] action in Button widget.
-  TripRecord? newTripB;
+  // Stores action output result for [Custom Action - getOrCreateUserInvitationsRef] action in Button widget.
+  DocumentReference? userInvsRef;
 
   @override
   void initState(BuildContext context) {
+    datePickerModel = createModel(context, () => DatePickerModel());
+    textFieldShareTextControllerValidator =
+        _textFieldShareTextControllerValidator;
     imageUploaderModel = createModel(context, () => ImageUploaderModel());
   }
 
   @override
   void dispose() {
-    textFieldFocusNode1?.dispose();
+    textFieldFocusNode?.dispose();
     textController1?.dispose();
 
-    textFieldFocusNode2?.dispose();
-    textController2?.dispose();
+    datePickerModel.dispose();
+    textFieldShareFocusNode?.dispose();
+    textFieldShareTextController?.dispose();
 
     imageUploaderModel.dispose();
   }

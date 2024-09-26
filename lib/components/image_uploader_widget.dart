@@ -64,7 +64,7 @@ class _ImageUploaderWidgetState extends State<ImageUploaderWidget> {
                   safeSetState(() {});
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(0.0),
                   child: Image.memory(
                     _model.newImage?.bytes ?? Uint8List.fromList([]),
                     width: 200.0,
@@ -193,7 +193,7 @@ class _ImageUploaderWidgetState extends State<ImageUploaderWidget> {
                   safeSetState(() {});
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(0.0),
                   child: Image.network(
                     widget!.defaultImage!,
                     width: 200.0,
@@ -368,6 +368,9 @@ class _ImageUploaderWidgetState extends State<ImageUploaderWidget> {
                     _model.showMenu = false;
                     _model.removedImage = false;
                     safeSetState(() {});
+                    await widget.onUpload?.call(
+                      _model.newImage!,
+                    );
                   } else {
                     _model.showMenu = !_model.showMenu;
                     safeSetState(() {});

@@ -57,6 +57,16 @@ class TripRecord extends FirestoreRecord {
   DocumentReference? get ownedBy => _ownedBy;
   bool hasOwnedBy() => _ownedBy != null;
 
+  // "tripDate" field.
+  DateTime? _tripDate;
+  DateTime? get tripDate => _tripDate;
+  bool hasTripDate() => _tripDate != null;
+
+  // "shareRequests" field.
+  List<String>? _shareRequests;
+  List<String> get shareRequests => _shareRequests ?? const [];
+  bool hasShareRequests() => _shareRequests != null;
+
   void _initializeFields() {
     _name = snapshotData['name'] as String?;
     _logs = getDataList(snapshotData['logs']);
@@ -69,6 +79,8 @@ class TripRecord extends FirestoreRecord {
     _editDate = snapshotData['editDate'] as DateTime?;
     _image = snapshotData['image'] as String?;
     _ownedBy = snapshotData['ownedBy'] as DocumentReference?;
+    _tripDate = snapshotData['tripDate'] as DateTime?;
+    _shareRequests = getDataList(snapshotData['shareRequests']);
   }
 
   static CollectionReference get collection =>
@@ -110,6 +122,7 @@ Map<String, dynamic> createTripRecordData({
   DateTime? editDate,
   String? image,
   DocumentReference? ownedBy,
+  DateTime? tripDate,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -118,6 +131,7 @@ Map<String, dynamic> createTripRecordData({
       'editDate': editDate,
       'image': image,
       'ownedBy': ownedBy,
+      'tripDate': tripDate,
     }.withoutNulls,
   );
 
@@ -137,7 +151,9 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
         e1?.creationDate == e2?.creationDate &&
         e1?.editDate == e2?.editDate &&
         e1?.image == e2?.image &&
-        e1?.ownedBy == e2?.ownedBy;
+        e1?.ownedBy == e2?.ownedBy &&
+        e1?.tripDate == e2?.tripDate &&
+        listEquality.equals(e1?.shareRequests, e2?.shareRequests);
   }
 
   @override
@@ -149,7 +165,9 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
         e?.creationDate,
         e?.editDate,
         e?.image,
-        e?.ownedBy
+        e?.ownedBy,
+        e?.tripDate,
+        e?.shareRequests
       ]);
 
   @override

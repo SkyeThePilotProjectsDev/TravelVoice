@@ -1,0 +1,31 @@
+import '/backend/backend.dart';
+import '/components/profile_icon_widget.dart';
+import '/flutter_flow/flutter_flow_audio_player.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
+import 'trip_log_item_widget.dart' show TripLogItemWidget;
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+class TripLogItemModel extends FlutterFlowModel<TripLogItemWidget> {
+  ///  Local state fields for this component.
+
+  bool isExpanded = false;
+
+  ///  State fields for stateful widgets in this component.
+
+  // Model for profileIcon component.
+  late ProfileIconModel profileIconModel;
+
+  @override
+  void initState(BuildContext context) {
+    profileIconModel = createModel(context, () => ProfileIconModel());
+  }
+
+  @override
+  void dispose() {
+    profileIconModel.dispose();
+  }
+}

@@ -1,14 +1,21 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/schema/enums/enums.dart';
 import '/components/empty_list_widget.dart';
 import '/components/profile_icon_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/pages/trip/user_menu/user_menu_widget.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'trips_model.dart';
@@ -30,6 +37,13 @@ class _TripsWidgetState extends State<TripsWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => TripsModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.userInvRef = await actions.getOrCreateUserInvitationsRef(
+        currentUserEmail,
+      );
+    });
 
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
@@ -109,21 +123,151 @@ class _TripsWidgetState extends State<TripsWidget> {
                                     width: 50.0,
                                     height: 50.0,
                                     decoration: BoxDecoration(),
-                                    child: AuthUserStreamWidget(
-                                      builder: (context) => wrapWithModel(
-                                        model: _model.profileIconModel,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: ProfileIconWidget(
-                                          input: currentUserDisplayName !=
-                                                      null &&
-                                                  currentUserDisplayName != ''
-                                              ? currentUserDisplayName
-                                              : currentUserEmail,
-                                          fontSize: 30,
-                                          padding: 10,
+                                    child: Stack(
+                                      children: [
+                                        AuthUserStreamWidget(
+                                          builder: (context) => wrapWithModel(
+                                            model: _model.profileIconModel,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: ProfileIconWidget(
+                                              input: currentUserDisplayName !=
+                                                          null &&
+                                                      currentUserDisplayName !=
+                                                          ''
+                                                  ? currentUserDisplayName
+                                                  : currentUserEmail,
+                                              padding: 10,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        if (_model.userInvRef != null)
+                                          Builder(
+                                            builder: (context) => StreamBuilder<
+                                                List<TripInvitationRecord>>(
+                                              stream: queryTripInvitationRecord(
+                                                parent: _model.userInvRef,
+                                                queryBuilder:
+                                                    (tripInvitationRecord) =>
+                                                        tripInvitationRecord
+                                                            .where(
+                                                  'status',
+                                                  isEqualTo: RequestStatus
+                                                      .Requested.serialize(),
+                                                ),
+                                              ),
+                                              builder: (context, snapshot) {
+                                                // Customize what your widget looks like when it's loading.
+                                                if (!snapshot.hasData) {
+                                                  return Center(
+                                                    child: SizedBox(
+                                                      width: 50.0,
+                                                      height: 50.0,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                List<TripInvitationRecord>
+                                                    containerTripInvitationRecordList =
+                                                    snapshot.data!;
+
+                                                return InkWell(
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  focusColor:
+                                                      Colors.transparent,
+                                                  hoverColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onTap: () async {
+                                                    await showAlignedDialog(
+                                                      context: context,
+                                                      isGlobal: false,
+                                                      avoidOverflow: true,
+                                                      targetAnchor:
+                                                          AlignmentDirectional(
+                                                                  1.0, -1.0)
+                                                              .resolve(
+                                                                  Directionality.of(
+                                                                      context)),
+                                                      followerAnchor:
+                                                          AlignmentDirectional(
+                                                                  0.0, 0.0)
+                                                              .resolve(
+                                                                  Directionality.of(
+                                                                      context)),
+                                                      builder: (dialogContext) {
+                                                        return Material(
+                                                          color: Colors
+                                                              .transparent,
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () =>
+                                                                FocusScope.of(
+                                                                        dialogContext)
+                                                                    .unfocus(),
+                                                            child: Container(
+                                                              width: MediaQuery
+                                                                          .sizeOf(
+                                                                              context)
+                                                                      .width *
+                                                                  0.9,
+                                                              child:
+                                                                  UserMenuWidget(
+                                                                requests:
+                                                                    containerTripInvitationRecordList,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    width: MediaQuery.sizeOf(
+                                                                context)
+                                                            .width *
+                                                        1.0,
+                                                    height: 100.0,
+                                                    decoration: BoxDecoration(),
+                                                    child: Visibility(
+                                                      visible:
+                                                          containerTripInvitationRecordList
+                                                              .isNotEmpty,
+                                                      child: Align(
+                                                        alignment:
+                                                            AlignmentDirectional(
+                                                                1.0, -1.0),
+                                                        child: Container(
+                                                          width: 15.0,
+                                                          height: 15.0,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .error,
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -299,179 +443,235 @@ class _TripsWidgetState extends State<TripsWidget> {
                                           ),
                                         ],
                                       ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 0.0, 16.0, 0.0),
-                                            child: Builder(
-                                              builder: (context) {
-                                                final trips =
-                                                    tripsQueryTripRecordList
-                                                        .where((e) =>
-                                                            functions.contains(
-                                                                e.name,
-                                                                _model
-                                                                    .textController
-                                                                    .text,
-                                                                false))
-                                                        .toList();
-                                                if (trips.isEmpty) {
-                                                  return EmptyListWidget();
-                                                }
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 0.0, 16.0, 0.0),
+                                                child: Builder(
+                                                  builder: (context) {
+                                                    final trips =
+                                                        tripsQueryTripRecordList
+                                                            .where((e) =>
+                                                                functions.contains(
+                                                                    e.name,
+                                                                    _model
+                                                                        .textController
+                                                                        .text,
+                                                                    false))
+                                                            .toList();
+                                                    if (trips.isEmpty) {
+                                                      return EmptyListWidget();
+                                                    }
 
-                                                return Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .stretch,
-                                                  children: List.generate(
-                                                      trips.length,
-                                                      (tripsIndex) {
-                                                    final tripsItem =
-                                                        trips[tripsIndex];
-                                                    return InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {
-                                                        FFAppState()
-                                                                .currentTrip =
-                                                            tripsItem.reference;
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .stretch,
+                                                      children: List.generate(
+                                                          trips.length,
+                                                          (tripsIndex) {
+                                                        final tripsItem =
+                                                            trips[tripsIndex];
+                                                        return InkWell(
+                                                          splashColor: Colors
+                                                              .transparent,
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          hoverColor: Colors
+                                                              .transparent,
+                                                          highlightColor: Colors
+                                                              .transparent,
+                                                          onTap: () async {
+                                                            FFAppState()
+                                                                    .currentTrip =
+                                                                tripsItem
+                                                                    .reference;
 
-                                                        context
-                                                            .pushNamed('Logs');
-                                                      },
-                                                      child: Material(
-                                                        color:
-                                                            Colors.transparent,
-                                                        elevation: 4.0,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                        ),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: tripsItem.image !=
-                                                                        null &&
-                                                                    tripsItem
-                                                                            .image !=
-                                                                        ''
-                                                                ? null
-                                                                : FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .primary,
-                                                            image:
-                                                                DecorationImage(
-                                                              fit: BoxFit.cover,
-                                                              image:
-                                                                  Image.network(
-                                                                tripsItem.image !=
-                                                                            null &&
-                                                                        tripsItem.image !=
-                                                                            ''
-                                                                    ? tripsItem
-                                                                        .image
-                                                                    : null!,
-                                                              ).image,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        8.0,
-                                                                        4.0,
-                                                                        8.0,
-                                                                        4.0),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .stretch,
-                                                              children: [
-                                                                if (false)
-                                                                  AutoSizeText(
-                                                                    tripsItem
-                                                                        .name,
-                                                                    maxLines: 1,
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .override(
-                                                                          fontFamily:
-                                                                              'Inter Tight',
-                                                                          color:
-                                                                              FlutterFlowTheme.of(context).secondaryText,
-                                                                          fontSize:
-                                                                              30.0,
-                                                                          letterSpacing:
-                                                                              0.0,
+                                                            context.pushNamed(
+                                                                'Logs');
+                                                          },
+                                                          child: Builder(
+                                                            builder: (context) {
+                                                              if (tripsItem
+                                                                          .image !=
+                                                                      null &&
+                                                                  tripsItem
+                                                                          .image !=
+                                                                      '') {
+                                                                return Material(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  elevation:
+                                                                      4.0,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                  child:
+                                                                      Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      image:
+                                                                          DecorationImage(
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        image:
+                                                                            CachedNetworkImageProvider(
+                                                                          tripsItem
+                                                                              .image,
                                                                         ),
-                                                                  ),
-                                                                if (false)
-                                                                  Row(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .max,
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons
-                                                                            .calendar_month,
-                                                                        color: FlutterFlowTheme.of(context)
-                                                                            .secondaryText,
-                                                                        size:
-                                                                            16.0,
                                                                       ),
-                                                                      Text(
-                                                                        dateTimeFormat(
-                                                                            "MMMMd",
-                                                                            tripsItem.creationDate!),
-                                                                        style: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .override(
-                                                                              fontFamily: 'Inter',
-                                                                              color: FlutterFlowTheme.of(context).secondaryText,
-                                                                              letterSpacing: 0.0,
-                                                                            ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                    ),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                                                          8.0,
+                                                                          4.0,
+                                                                          8.0,
+                                                                          4.0),
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.stretch,
+                                                                        children:
+                                                                            [
+                                                                          AutoSizeText(
+                                                                            tripsItem.name,
+                                                                            maxLines:
+                                                                                1,
+                                                                            style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                                                                  fontFamily: 'Inter Tight',
+                                                                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                  fontSize: 30.0,
+                                                                                  letterSpacing: 0.0,
+                                                                                ),
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.max,
+                                                                            children:
+                                                                                [
+                                                                              Icon(
+                                                                                Icons.calendar_month,
+                                                                                color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                size: 16.0,
+                                                                              ),
+                                                                              Text(
+                                                                                dateTimeFormat("MMMMd", tripsItem.creationDate!),
+                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      fontFamily: 'Inter',
+                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                      letterSpacing: 0.0,
+                                                                                    ),
+                                                                              ),
+                                                                            ].divide(SizedBox(width: 8.0)),
+                                                                          ),
+                                                                        ].divide(SizedBox(height: 32.0)),
                                                                       ),
-                                                                    ].divide(SizedBox(
-                                                                        width:
-                                                                            8.0)),
+                                                                    ),
                                                                   ),
-                                                              ].divide(SizedBox(
-                                                                  height:
-                                                                      32.0)),
-                                                            ),
+                                                                );
+                                                              } else {
+                                                                return Material(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  elevation:
+                                                                      4.0,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                  child:
+                                                                      Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .primary,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                    ),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                                                          8.0,
+                                                                          4.0,
+                                                                          8.0,
+                                                                          4.0),
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.stretch,
+                                                                        children:
+                                                                            [
+                                                                          AutoSizeText(
+                                                                            tripsItem.name,
+                                                                            maxLines:
+                                                                                1,
+                                                                            style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                                                                  fontFamily: 'Inter Tight',
+                                                                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                  fontSize: 30.0,
+                                                                                  letterSpacing: 0.0,
+                                                                                ),
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.max,
+                                                                            children:
+                                                                                [
+                                                                              Icon(
+                                                                                Icons.calendar_month,
+                                                                                color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                size: 16.0,
+                                                                              ),
+                                                                              Text(
+                                                                                dateTimeFormat("MMMMd", tripsItem.creationDate!),
+                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      fontFamily: 'Inter',
+                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                      letterSpacing: 0.0,
+                                                                                    ),
+                                                                              ),
+                                                                            ].divide(SizedBox(width: 8.0)),
+                                                                          ),
+                                                                        ].divide(SizedBox(height: 32.0)),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            },
                                                           ),
-                                                        ),
-                                                      ),
+                                                        );
+                                                      }).divide(SizedBox(
+                                                          height: 12.0)),
                                                     );
-                                                  }).divide(
-                                                      SizedBox(height: 12.0)),
-                                                );
-                                              },
-                                            ),
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ].divide(SizedBox(height: 16.0)),
                                   ),
@@ -489,28 +689,65 @@ class _TripsWidgetState extends State<TripsWidget> {
                           padding: EdgeInsets.all(16.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed('NewTrip');
-                                },
+                              Expanded(
                                 child: Container(
-                                  width: 75.0,
-                                  height: 75.0,
                                   decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.add_rounded,
                                     color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    size: 50.0,
+                                        .secondaryBackground,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    context.pushNamed('NewTrip');
+                                  },
+                                  child: Container(
+                                    width: 75.0,
+                                    height: 75.0,
+                                    decoration: BoxDecoration(
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.add_rounded,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      size: 50.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
+
+                                      context.goNamedAuth(
+                                          'Landing', context.mounted);
+                                    },
+                                    child: Icon(
+                                      Icons.logout,
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondary,
+                                      size: 50.0,
+                                    ),
                                   ),
                                 ),
                               ),

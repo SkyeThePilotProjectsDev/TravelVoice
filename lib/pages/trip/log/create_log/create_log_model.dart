@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
+import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
@@ -15,7 +16,6 @@ import '/flutter_flow/custom_functions.dart' as functions;
 import 'create_log_widget.dart' show CreateLogWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -58,20 +58,8 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   String? Function(BuildContext, String?)? textFieldCityTextControllerValidator;
   // Model for PlaceSuggestions component.
   late PlaceSuggestionsModel placeSuggestionsModel;
-  // State field(s) for TextField_Year widget.
-  FocusNode? textFieldYearFocusNode;
-  TextEditingController? textFieldYearTextController;
-  String? Function(BuildContext, String?)? textFieldYearTextControllerValidator;
-  // State field(s) for TextField_Month widget.
-  FocusNode? textFieldMonthFocusNode;
-  TextEditingController? textFieldMonthTextController;
-  String? Function(BuildContext, String?)?
-      textFieldMonthTextControllerValidator;
-  // State field(s) for TextField_Day widget.
-  FocusNode? textFieldDayFocusNode;
-  TextEditingController? textFieldDayTextController;
-  String? Function(BuildContext, String?)? textFieldDayTextControllerValidator;
-  DateTime? datePicked;
+  // Model for DatePicker component.
+  late DatePickerModel datePickerModel;
   // State field(s) for TextField_Notes widget.
   FocusNode? textFieldNotesFocusNode;
   TextEditingController? textFieldNotesTextController;
@@ -90,6 +78,7 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   @override
   void initState(BuildContext context) {
     placeSuggestionsModel = createModel(context, () => PlaceSuggestionsModel());
+    datePickerModel = createModel(context, () => DatePickerModel());
     imageUploaderModel = createModel(context, () => ImageUploaderModel());
   }
 
@@ -99,15 +88,7 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
     textFieldCityTextController?.dispose();
 
     placeSuggestionsModel.dispose();
-    textFieldYearFocusNode?.dispose();
-    textFieldYearTextController?.dispose();
-
-    textFieldMonthFocusNode?.dispose();
-    textFieldMonthTextController?.dispose();
-
-    textFieldDayFocusNode?.dispose();
-    textFieldDayTextController?.dispose();
-
+    datePickerModel.dispose();
     textFieldNotesFocusNode?.dispose();
     textFieldNotesTextController?.dispose();
 
