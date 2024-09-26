@@ -9,7 +9,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/trip/user_menu/user_menu_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
-import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -190,26 +189,21 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                   highlightColor:
                                                       Colors.transparent,
                                                   onTap: () async {
-                                                    await showAlignedDialog(
+                                                    await showDialog(
                                                       context: context,
-                                                      isGlobal: false,
-                                                      avoidOverflow: true,
-                                                      targetAnchor:
-                                                          AlignmentDirectional(
-                                                                  1.0, -1.0)
-                                                              .resolve(
-                                                                  Directionality.of(
-                                                                      context)),
-                                                      followerAnchor:
-                                                          AlignmentDirectional(
-                                                                  0.0, 0.0)
-                                                              .resolve(
-                                                                  Directionality.of(
-                                                                      context)),
                                                       builder: (dialogContext) {
-                                                        return Material(
-                                                          color: Colors
-                                                              .transparent,
+                                                        return Dialog(
+                                                          elevation: 0,
+                                                          insetPadding:
+                                                              EdgeInsets.zero,
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          alignment: AlignmentDirectional(
+                                                                  0.0, -1.0)
+                                                              .resolve(
+                                                                  Directionality.of(
+                                                                      context)),
                                                           child:
                                                               GestureDetector(
                                                             onTap: () =>
@@ -221,7 +215,7 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                                           .sizeOf(
                                                                               context)
                                                                       .width *
-                                                                  0.9,
+                                                                  1.0,
                                                               child:
                                                                   UserMenuWidget(
                                                                 requests:
