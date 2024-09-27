@@ -63,7 +63,11 @@ class _WaveformState extends State<Waveform> {
     if (widget.state != state) {
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
-      if (state == MediaPlayerActions.record) rController.record().call();
+      if (state == MediaPlayerActions.record)
+        FutureBuilder(
+          future: rController.record(),
+          builder: (a, b) => Container(),
+        );
     }
 
     // if (widget.audio == null) return Container();
