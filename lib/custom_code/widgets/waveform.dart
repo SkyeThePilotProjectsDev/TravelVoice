@@ -193,6 +193,7 @@ class _WaveformState extends State<Waveform> {
           fixedWaveColor: _p,
           liveWaveColor: _s,
           spacing: 6,
+          scaleFactor: 20,
         ),
       );
       //     },
