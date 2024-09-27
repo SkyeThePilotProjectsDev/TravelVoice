@@ -115,6 +115,7 @@ class _WaveformState extends State<Waveform> {
         run.add(
           () async {
             print("STARTTTT");
+            await prep();
             await pController.startPlayer(finishMode: FinishMode.loop);
             print("START DONE");
           },
