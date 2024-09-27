@@ -326,6 +326,88 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
               child: Stack(
                 children: [
                   Align(
+                    alignment: AlignmentDirectional(
+                        valueOrDefault<double>(
+                          _model.newRecording != null &&
+                                  _model.newRecording != ''
+                              ? 1.0
+                              : 0.0,
+                          0.0,
+                        ),
+                        0.0),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        _model.newRecording = null;
+                        safeSetState(() {});
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 100),
+                        curve: Curves.easeInOut,
+                        width: 64.0,
+                        height: 64.0,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).error,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Align(
+                          alignment: AlignmentDirectional(0.0, 0.0),
+                          child: FaIcon(
+                            FontAwesomeIcons.trashAlt,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 30.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional(
+                        valueOrDefault<double>(
+                          _model.newRecording != null &&
+                                  _model.newRecording != ''
+                              ? -1.0
+                              : 0.0,
+                          0.0,
+                        ),
+                        0.0),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        Navigator.pop(
+                            context,
+                            _model.newRecording != null &&
+                                    _model.newRecording != ''
+                                ? _model.newRecording
+                                : functions.defaultRecording());
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 100),
+                        curve: Curves.easeInOut,
+                        width: 64.0,
+                        height: 64.0,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Align(
+                          alignment: AlignmentDirectional(0.0, 0.0),
+                          child: Icon(
+                            Icons.check_rounded,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 36.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
                     alignment: AlignmentDirectional(0.0, 0.0),
                     child: InkWell(
                       splashColor: Colors.transparent,
@@ -513,88 +595,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional(
-                        valueOrDefault<double>(
-                          _model.newRecording != null &&
-                                  _model.newRecording != ''
-                              ? 1.0
-                              : 0.0,
-                          0.0,
-                        ),
-                        0.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        _model.newRecording = null;
-                        safeSetState(() {});
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 100),
-                        curve: Curves.easeInOut,
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).error,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.trashAlt,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 30.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional(
-                        valueOrDefault<double>(
-                          _model.newRecording != null &&
-                                  _model.newRecording != ''
-                              ? -1.0
-                              : 0.0,
-                          0.0,
-                        ),
-                        0.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        Navigator.pop(
-                            context,
-                            _model.newRecording != null &&
-                                    _model.newRecording != ''
-                                ? _model.newRecording
-                                : functions.defaultRecording());
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 100),
-                        curve: Curves.easeInOut,
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: Icon(
-                            Icons.check_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 36.0,
-                          ),
                         ),
                       ),
                     ),
