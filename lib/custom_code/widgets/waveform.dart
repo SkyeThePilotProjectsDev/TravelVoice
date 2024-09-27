@@ -70,7 +70,9 @@ class _WaveformState extends State<Waveform> {
         run.add(
           Future.value(
             () async {
-              await widget.onRecordingComplete(await rController.stop());
+              String? path = await rController.stop();
+              print("GOT PATH: $path");
+              await widget.onRecordingComplete(path);
             },
           ),
         );

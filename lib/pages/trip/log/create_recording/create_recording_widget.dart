@@ -16,6 +16,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 import 'create_recording_model.dart';
 export 'create_recording_model.dart';
 
@@ -103,14 +104,28 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           ],
                         ),
                       ),
-                      Text(
-                        'New Log',
-                        textAlign: TextAlign.center,
-                        style:
-                            FlutterFlowTheme.of(context).headlineLarge.override(
-                                  fontFamily: 'Inter Tight',
-                                  letterSpacing: 0.0,
-                                ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          await startAudioRecording(
+                            context,
+                            audioRecorder: _model.audioRecorder ??=
+                                AudioRecorder(),
+                          );
+                        },
+                        child: Text(
+                          'New Log',
+                          textAlign: TextAlign.center,
+                          style: FlutterFlowTheme.of(context)
+                              .headlineLarge
+                              .override(
+                                fontFamily: 'Inter Tight',
+                                letterSpacing: 0.0,
+                              ),
+                        ),
                       ),
                       Container(
                         height: 300.0,
