@@ -279,24 +279,21 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                         ),
                       ),
-                      if ((_model.newRecording != null &&
-                              _model.newRecording != '') ||
-                          _model.isRecording)
-                        Container(
+                      Container(
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        height: 100.0,
+                        child: custom_widgets.Waveform(
                           width: MediaQuery.sizeOf(context).width * 1.0,
                           height: 100.0,
-                          child: custom_widgets.Waveform(
-                            width: MediaQuery.sizeOf(context).width * 1.0,
-                            height: 100.0,
-                            audio: _model.newRecording,
-                            state: _model.playerState!,
-                            onRecordingComplete: (audioPath) async {
-                              _model.newRecording =
-                                  functions.audioPathFix(audioPath);
-                              safeSetState(() {});
-                            },
-                          ),
+                          audio: _model.newRecording,
+                          state: _model.playerState!,
+                          onRecordingComplete: (audioPath) async {
+                            _model.newRecording =
+                                functions.audioPathFix(audioPath);
+                            safeSetState(() {});
+                          },
                         ),
+                      ),
                       Divider(
                         thickness: 2.0,
                         color: FlutterFlowTheme.of(context).alternate,

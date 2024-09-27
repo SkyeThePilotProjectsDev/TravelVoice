@@ -65,7 +65,7 @@ class _WaveformState extends State<Waveform> {
       List<Future Function()> run = [];
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
-      if (state == MediaPlayerActions.record)
+      if (state == MediaPlayerActions.record) {
         run.add(
           () async {
             print("RECORD");
@@ -76,7 +76,7 @@ class _WaveformState extends State<Waveform> {
             await rController.record(path: path);
           },
         );
-      else if (rController.isRecording)
+      } else if (rController.isRecording) {
         run.add(
           () async {
             print("COMPLETE");
@@ -85,17 +85,20 @@ class _WaveformState extends State<Waveform> {
             await widget.onRecordingComplete(path);
           },
         );
+      }
 
-      if (state == MediaPlayerActions.play)
+      if (state == MediaPlayerActions.play) {
         run.add(() async => pController.startPlayer());
-      else
+      } else {
         run.add(() async => pController.stopPlayer());
+      }
 
-      if (run.isNotEmpty)
+      if (run.isNotEmpty) {
         FutureBuilder(
           future: Future.wait(run.map((r) => Future(r))),
           builder: (a, b) => Container(),
         );
+      }
     }
 
     // if (widget.audio == null) return Container();
