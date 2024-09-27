@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'dart:ui' as ui;
 
@@ -33,16 +35,18 @@ class Waveform extends StatefulWidget {
 }
 
 class _WaveformState extends State<Waveform> {
-  late PlayerController controller;
+  late PlayerController pController;
+  late RecorderController rController;
   bool tryouts = false;
-  late MediaPlayerActions state;
+  MediaPlayerActions? state;
 
   @override
   void initState() {
     super.initState();
-    controller = PlayerController();
+    pController = PlayerController();
+    rController = RecorderController();
     print("INIT STATE -> ${widget.state}");
-    state = widget.state;
+    // state = widget.state;
   }
 
   @override
@@ -59,35 +63,63 @@ class _WaveformState extends State<Waveform> {
     if (widget.state != state) {
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
+      if (state == MediaPlayerActions.record) rController.record().call();
     }
 
-    if (widget.audio == null) return Container();
-    return InkWell(
-      onTap: () => print(widget.state),
-      child: FutureBuilder(
-        future: controller.extractWaveformData(
-          path: widget.audio!,
-          noOfSamples: 100,
+    // if (widget.audio == null) return Container();
+
+    if (state == MediaPlayerActions.record) {
+      return AudioWaveforms(
+        size: Size(
+          widget.width ?? 100,
+          widget.height ?? 100,
         ),
-        builder: (ctx, sc) {
-          List<double>? data = sc.data;
+        recorderController: rController,
+        enableGesture: true,
+        waveStyle: WaveStyle(
+          waveColor: _p,
+          showDurationLabel: true,
+          spacing: 8.0,
+          showBottom: false,
+          extendWaveform: true,
+          showMiddleLine: false,
+          gradient: ui.Gradient.linear(
+            const Offset(70, 50),
+            Offset(MediaQuery.of(context).size.width / 2, 0),
+            [Colors.red, Colors.green],
+          ),
+        ),
+      );
+    } else
+      return InkWell(
+        onTap: () => print(widget.state),
+        child: FutureBuilder(
+          future: pController.extractWaveformData(
+            path: widget.audio!,
+            noOfSamples: 100,
+          ),
+          builder: (ctx, sc) {
+            List<double>? data = sc.data;
 
-          if (data == null) return Container();
+            if (data == null) return Container();
 
-          return AudioFileWaveforms(
-            size: Size(MediaQuery.of(context).size.width, 100.0),
-            playerController: controller,
-            enableSeekGesture: true,
-            waveformType: WaveformType.long,
-            waveformData: data,
-            playerWaveStyle: PlayerWaveStyle(
-              fixedWaveColor: _p,
-              liveWaveColor: _s,
-              spacing: 6,
-            ),
-          );
-        },
-      ),
-    );
+            return AudioFileWaveforms(
+              size: Size(
+                widget.width ?? 100,
+                widget.height ?? 100,
+              ),
+              playerController: pController,
+              enableSeekGesture: true,
+              waveformType: WaveformType.long,
+              waveformData: data,
+              playerWaveStyle: PlayerWaveStyle(
+                fixedWaveColor: _p,
+                liveWaveColor: _s,
+                spacing: 6,
+              ),
+            );
+          },
+        ),
+      );
   }
 }
