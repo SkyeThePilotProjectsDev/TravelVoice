@@ -35,12 +35,14 @@ class Waveform extends StatefulWidget {
 class _WaveformState extends State<Waveform> {
   late PlayerController controller;
   bool tryouts = false;
+  late MediaPlayerActions state;
 
   @override
   void initState() {
     super.initState();
     controller = PlayerController();
     print("INIT STATE -> ${widget.state}");
+    state = widget.state;
   }
 
   @override
@@ -53,8 +55,16 @@ class _WaveformState extends State<Waveform> {
   Widget build(BuildContext context) {
     final Color _p = FlutterFlowTheme.of(context).primary;
     final Color _s = FlutterFlowTheme.of(context).secondary;
+
+    if (widget.state != state) {
+      print("STATE CHANGE $state -> ${widget.state}");
+      state = widget.state;
+    }
+
     if (widget.audio == null) return Container();
-    return FutureBuilder(
+    return InkWell(
+      onTap: () => print(widget.state),
+      child: FutureBuilder(
         future: controller.extractWaveformData(
           path: widget.audio!,
           noOfSamples: 100,
@@ -76,6 +86,8 @@ class _WaveformState extends State<Waveform> {
               spacing: 6,
             ),
           );
-        });
+        },
+      ),
+    );
   }
 }
