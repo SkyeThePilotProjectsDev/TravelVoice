@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'dart:ui' as ui;
+import 'package:path_provider/path_provider.dart';
 
 class Waveform extends StatefulWidget {
   const Waveform({
@@ -65,7 +66,16 @@ class _WaveformState extends State<Waveform> {
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
       if (state == MediaPlayerActions.record)
-        run.add(rController.record());
+        run.add(
+          Future.value(
+            () async {
+              final dir = await getApplicationDocumentsDirectory();
+              String path =
+                  '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+              await rController.record(path);
+            },
+          ),
+        );
       else if (rController.isRecording)
         run.add(
           Future.value(
