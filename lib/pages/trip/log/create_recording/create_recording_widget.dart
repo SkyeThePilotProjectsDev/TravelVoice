@@ -289,6 +289,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           onRecordingComplete: (audioPath) async {
                             _model.newRecording =
                                 functions.audioPathFix(audioPath);
+                            _model.isPlaying = false;
                             safeSetState(() {});
                           },
                         ),
@@ -584,7 +585,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                             alignment:
                                                 AlignmentDirectional(0.0, 0.0),
                                             child: Icon(
-                                              Icons.restart_alt_rounded,
+                                              Icons.pause_rounded,
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .secondaryText,
