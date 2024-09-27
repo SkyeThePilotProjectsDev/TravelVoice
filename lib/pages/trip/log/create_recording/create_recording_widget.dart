@@ -16,7 +16,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:record/record.dart';
 import 'create_recording_model.dart';
 export 'create_recording_model.dart';
 
@@ -276,6 +275,11 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             height: 100.0,
                             audio: _model.newRecording,
                             state: _model.playerState!,
+                            onRecordingComplete: (audioPath) async {
+                              _model.newRecording =
+                                  functions.audioPathFix(audioPath);
+                              safeSetState(() {});
+                            },
                           ),
                         ),
                       Divider(
@@ -444,17 +448,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               'Stopping recording',
                             );
                             _model.timerController.onStopTimer();
-                            await stopAudioRecording(
-                              audioRecorder: _model.audioRecorder,
-                              audioName: 'recordedFileBytes.mp3',
-                              onRecordingComplete: (audioFilePath, audioBytes) {
-                                _model.recordingCopy = audioFilePath;
-                                _model.recordedFileBytes = audioBytes;
-                              },
-                            );
-
                             _model.isRecording = false;
-                            _model.newRecording = _model.recordingCopy;
                             _model.playerState = MediaPlayerActions.pause;
                             safeSetState(() {});
                           } else {
@@ -462,19 +456,11 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               'Starting recording',
                             );
                             _model.timerController.onStartTimer();
-                            await startAudioRecording(
-                              context,
-                              audioRecorder: _model.audioRecorder ??=
-                                  AudioRecorder(),
-                            );
-
                             _model.isRecording = true;
                             _model.playerState = MediaPlayerActions.record;
                             safeSetState(() {});
                           }
                         }
-
-                        safeSetState(() {});
                       },
                       child: Container(
                         width: 125.0,

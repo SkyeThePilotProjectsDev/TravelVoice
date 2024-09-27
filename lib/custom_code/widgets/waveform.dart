@@ -21,28 +21,30 @@ class Waveform extends StatefulWidget {
     this.height,
     this.audio,
     required this.state,
+    required this.onRecordingComplete,
   });
 
   final double? width;
   final double? height;
   final String? audio;
   final MediaPlayerActions state;
+  final Future Function(String audioPath) onRecordingComplete;
 
   @override
   State<Waveform> createState() => _WaveformState();
 }
 
 class _WaveformState extends State<Waveform> {
-  late PlayerController pController;
   late RecorderController rController;
+  late PlayerController pController;
   bool tryouts = false;
   MediaPlayerActions? state;
 
   @override
   void initState() {
     super.initState();
-    pController = PlayerController();
     rController = RecorderController();
+    pController = PlayerController();
     print("INIT STATE -> ${widget.state}");
     // state = widget.state;
   }
@@ -59,11 +61,22 @@ class _WaveformState extends State<Waveform> {
     final Color _s = FlutterFlowTheme.of(context).secondary;
 
     if (widget.state != state) {
+      List<Future> run = [];
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
       if (state == MediaPlayerActions.record)
+        run.add(rController.record());
+      else
+        run.add(rController.stop());
+
+      if (state == MediaPlayerActions.play)
+        run.add(pController.startPlayer());
+      else
+        run.add(pController.stopPlayer());
+
+      if (run.isNotEmpty)
         FutureBuilder(
-          future: rController.record(),
+          future: Future.wait(run),
           builder: (a, b) => Container(),
         );
     }

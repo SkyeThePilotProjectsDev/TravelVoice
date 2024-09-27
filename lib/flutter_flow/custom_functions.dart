@@ -154,3 +154,7 @@ DocumentReference getPlainInvetationsRef(String email) {
   String _email = email.trim().toLowerCase();
   return FirebaseFirestore.instance.collection('invitations').doc(_email);
 }
+
+String? audioPathFix(String? input) {
+  return input;
+}

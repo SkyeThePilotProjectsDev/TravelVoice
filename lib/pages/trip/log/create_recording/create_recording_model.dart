@@ -17,7 +17,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
-import 'package:record/record.dart';
 
 class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   ///  Local state fields for this component.
@@ -64,10 +63,6 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
       FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countUp));
 
   AudioPlayer? soundPlayer;
-  String? recordingCopy;
-  FFUploadedFile recordedFileBytes =
-      FFUploadedFile(bytes: Uint8List.fromList([]));
-  AudioRecorder? audioRecorder;
 
   @override
   void initState(BuildContext context) {}
