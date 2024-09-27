@@ -97,9 +97,13 @@ class _WaveformState extends State<Waveform> {
 
       if (state == MediaPlayerActions.play) {
         run.add(
-            () async => pController.startPlayer(finishMode: FinishMode.stop));
+          () async {
+            print("STARTTTT");
+            await pController.startPlayer(finishMode: FinishMode.pause);
+          },
+        );
       } else {
-        run.add(() async => pController.stopPlayer());
+        run.add(() async => await pController.stopPlayer());
       }
 
       if (run.isNotEmpty) {

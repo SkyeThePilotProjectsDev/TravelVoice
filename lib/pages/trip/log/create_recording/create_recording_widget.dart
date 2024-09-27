@@ -432,6 +432,9 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await actions.printToConsoleAction(
                               'Stopping play',
                             );
+                            _model.isPlaying = false;
+                            _model.playerState = MediaPlayerActions.pause;
+                            safeSetState(() {});
                           } else {
                             await actions.printToConsoleAction(
                               'Starting play',
@@ -440,10 +443,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             _model.playerState = MediaPlayerActions.play;
                             safeSetState(() {});
                           }
-
-                          _model.isPlaying = false;
-                          _model.playerState = MediaPlayerActions.pause;
-                          safeSetState(() {});
                         } else {
                           if (_model.isRecording) {
                             await actions.printToConsoleAction(
