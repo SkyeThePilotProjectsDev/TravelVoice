@@ -122,7 +122,7 @@ class _WaveformState extends State<Waveform> {
         );
       } else {
         run.add(() async {
-          await pController.stopPlayer();
+          await pController.pausePlayer();
           await prep();
         });
       }
