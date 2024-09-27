@@ -23,6 +23,7 @@ enum AccessLevel {
 }
 
 enum MediaPlayerActions {
+  record,
   play,
   pause,
   stop,

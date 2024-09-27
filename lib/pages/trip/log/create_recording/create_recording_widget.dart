@@ -1,3 +1,5 @@
+import '/backend/backend.dart';
+import '/backend/schema/enums/enums.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -263,6 +265,19 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                         ),
                       ),
+                      if ((_model.newRecording != null &&
+                              _model.newRecording != '') ||
+                          _model.isRecording)
+                        Container(
+                          width: MediaQuery.sizeOf(context).width * 1.0,
+                          height: 100.0,
+                          child: custom_widgets.Waveform(
+                            width: MediaQuery.sizeOf(context).width * 1.0,
+                            height: 100.0,
+                            audio: _model.newRecording,
+                            state: _model.playerState!,
+                          ),
+                        ),
                       Divider(
                         thickness: 2.0,
                         color: FlutterFlowTheme.of(context).alternate,
@@ -293,17 +308,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               ),
                         ),
                       ),
-                      if (_model.newRecording != null &&
-                          _model.newRecording != '')
-                        Container(
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: 100.0,
-                          child: custom_widgets.Waveform(
-                            width: MediaQuery.sizeOf(context).width * 1.0,
-                            height: 100.0,
-                            audio: _model.newRecording!,
-                          ),
-                        ),
                     ].divide(SizedBox(height: 16.0)),
                   ),
                 ),
@@ -413,14 +417,13 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await actions.printToConsoleAction(
                               'Stopping play',
                             );
-                            _model.isPlaying = false;
-                            safeSetState(() {});
                             _model.soundPlayer?.stop();
                           } else {
                             await actions.printToConsoleAction(
                               'Starting play',
                             );
                             _model.isPlaying = true;
+                            _model.playerState = MediaPlayerActions.play;
                             safeSetState(() {});
                             _model.soundPlayer ??= AudioPlayer();
                             if (_model.soundPlayer!.playing) {
@@ -430,15 +433,17 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await _model.soundPlayer!
                                 .setUrl(_model.newRecording!)
                                 .then((_) => _model.soundPlayer!.play());
-
-                            _model.isPlaying = false;
-                            safeSetState(() {});
                           }
+
+                          _model.isPlaying = false;
+                          _model.playerState = MediaPlayerActions.pause;
+                          safeSetState(() {});
                         } else {
                           if (_model.isRecording) {
                             await actions.printToConsoleAction(
                               'Stopping recording',
                             );
+                            _model.timerController.onStopTimer();
                             await stopAudioRecording(
                               audioRecorder: _model.audioRecorder,
                               audioName: 'recordedFileBytes.mp3',
@@ -448,22 +453,24 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               },
                             );
 
-                            _model.timerController.onStopTimer();
                             _model.isRecording = false;
                             _model.newRecording = _model.recordingCopy;
+                            _model.playerState = MediaPlayerActions.pause;
                             safeSetState(() {});
                           } else {
                             await actions.printToConsoleAction(
                               'Starting recording',
                             );
-                            _model.isRecording = true;
-                            safeSetState(() {});
                             _model.timerController.onStartTimer();
                             await startAudioRecording(
                               context,
                               audioRecorder: _model.audioRecorder ??=
                                   AudioRecorder(),
                             );
+
+                            _model.isRecording = true;
+                            _model.playerState = MediaPlayerActions.record;
+                            safeSetState(() {});
                           }
                         }
 
@@ -581,24 +588,37 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                     color: FlutterFlowTheme.of(context).primary,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Builder(
-                                    builder: (context) {
-                                      if (_model.isPlaying) {
-                                        return Icon(
-                                          Icons.restart_alt_rounded,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 50.0,
-                                        );
-                                      } else {
-                                        return Icon(
-                                          Icons.play_arrow_rounded,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 50.0,
-                                        );
-                                      }
-                                    },
+                                  child: Align(
+                                    alignment: AlignmentDirectional(0.0, 0.0),
+                                    child: Builder(
+                                      builder: (context) {
+                                        if (_model.isPlaying) {
+                                          return Align(
+                                            alignment:
+                                                AlignmentDirectional(0.0, 0.0),
+                                            child: Icon(
+                                              Icons.restart_alt_rounded,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 50.0,
+                                            ),
+                                          );
+                                        } else {
+                                          return Align(
+                                            alignment:
+                                                AlignmentDirectional(0.0, 0.0),
+                                            child: Icon(
+                                              Icons.play_arrow_rounded,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 50.0,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),

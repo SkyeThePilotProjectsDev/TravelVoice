@@ -19,12 +19,14 @@ class Waveform extends StatefulWidget {
     super.key,
     this.width,
     this.height,
-    required this.audio,
+    this.audio,
+    required this.state,
   });
 
   final double? width;
   final double? height;
-  final String audio;
+  final String? audio;
+  final MediaPlayerActions state;
 
   @override
   State<Waveform> createState() => _WaveformState();
@@ -38,13 +40,13 @@ class _WaveformState extends State<Waveform> {
   void initState() {
     super.initState();
     controller = PlayerController();
-    print("INIT STATE");
+    print("INIT STATE -> ${widget.state}");
   }
 
   @override
   void setState(void Function() fn) {
     super.setState(fn);
-    print("SET STATE");
+    print("SET STATE -> ${widget.state}");
   }
 
   @override

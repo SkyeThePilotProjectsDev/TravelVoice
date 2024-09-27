@@ -1,3 +1,5 @@
+import '/backend/backend.dart';
+import '/backend/schema/enums/enums.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -36,6 +38,8 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
       prompts.insert(index, item);
   void updatePromptsAtIndex(int index, Function(String) updateFn) =>
       prompts[index] = updateFn(prompts[index]);
+
+  MediaPlayerActions? playerState = MediaPlayerActions.record;
 
   ///  State fields for stateful widgets in this component.
 
