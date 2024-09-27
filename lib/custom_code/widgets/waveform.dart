@@ -62,39 +62,35 @@ class _WaveformState extends State<Waveform> {
     final Color _s = FlutterFlowTheme.of(context).secondary;
 
     if (widget.state != state) {
-      List<Future> run = [];
+      List<Future Function()> run = [];
       print("STATE CHANGE $state -> ${widget.state}");
       state = widget.state;
       if (state == MediaPlayerActions.record)
         run.add(
-          Future.value(
-            () async {
-              final dir = await getApplicationDocumentsDirectory();
-              String path =
-                  '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
-              await rController.record(path: path);
-            },
-          ),
+          () async {
+            final dir = await getApplicationDocumentsDirectory();
+            String path =
+                '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+            await rController.record(path: path);
+          },
         );
       else if (rController.isRecording)
         run.add(
-          Future.value(
-            () async {
-              String? path = await rController.stop();
-              print("GOT PATH: $path");
-              await widget.onRecordingComplete(path);
-            },
-          ),
+          () async {
+            String? path = await rController.stop();
+            print("GOT PATH: $path");
+            await widget.onRecordingComplete(path);
+          },
         );
 
       if (state == MediaPlayerActions.play)
-        run.add(pController.startPlayer());
+        run.add(() async => pController.startPlayer());
       else
-        run.add(pController.stopPlayer());
+        run.add(() async => pController.stopPlayer());
 
       if (run.isNotEmpty)
         FutureBuilder(
-          future: Future.wait(run),
+          future: Future.wait(run.map((r) => Future(r))),
           builder: (a, b) => Container(),
         );
     }
