@@ -46,6 +46,11 @@ class _WaveformState extends State<Waveform> {
     super.initState();
     rController = RecorderController();
     pController = PlayerController();
+    pController.onCompletion.listen((_) {
+      print("COMPLETE");
+      // await pController.stopPlayer();
+      // await pController.;
+    });
     print("INIT STATE -> ${widget.state}");
     // state = widget.state;
   }
@@ -99,12 +104,15 @@ class _WaveformState extends State<Waveform> {
         run.add(
           () async {
             print("STARTTTT");
-            await pController.startPlayer(finishMode: FinishMode.pause);
+            await pController.startPlayer(finishMode: FinishMode.loop);
             print("START DONE");
           },
         );
       } else {
-        run.add(() async => await pController.stopPlayer());
+        run.add(() async {
+          await pController.stopPlayer();
+          await pController.seekTo(0);
+        });
       }
 
       if (run.isNotEmpty) {
