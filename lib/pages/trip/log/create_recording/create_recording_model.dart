@@ -21,7 +21,7 @@ import 'package:record/record.dart';
 class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   ///  Local state fields for this component.
 
-  bool isRecording = false;
+  bool isRecording = true;
 
   String? newRecording;
 
