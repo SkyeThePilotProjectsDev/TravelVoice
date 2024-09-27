@@ -95,7 +95,7 @@ class _WaveformState extends State<Waveform> {
         run.add(
           () async {
             print("COMPLETE");
-            String? path = await rController.stop();
+            path = await rController.stop();
             print("GOT PATH: $path");
             await widget.onRecordingComplete(path);
             await prep();
