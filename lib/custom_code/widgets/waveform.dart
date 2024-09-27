@@ -125,7 +125,8 @@ class _WaveformState extends State<Waveform> {
           ),
         ),
       );
-    } else
+    } else {
+      if (widget.audio == null) return Container();
       return InkWell(
         onTap: () => print(widget.state),
         child: FutureBuilder(
@@ -156,5 +157,6 @@ class _WaveformState extends State<Waveform> {
           },
         ),
       );
+    }
   }
 }
