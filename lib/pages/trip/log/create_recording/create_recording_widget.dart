@@ -343,6 +343,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                       onTap: () async {
                         _model.newRecording = null;
                         safeSetState(() {});
+                        _model.timerController.onResetTimer();
                       },
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 100),
@@ -454,6 +455,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               },
                             );
 
+                            _model.timerController.onStopTimer();
                             _model.isRecording = false;
                             _model.newRecording = _model.recordingCopy;
                             safeSetState(() {});
@@ -463,6 +465,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             );
                             _model.isRecording = true;
                             safeSetState(() {});
+                            _model.timerController.onStartTimer();
                             await startAudioRecording(
                               context,
                               audioRecorder: _model.audioRecorder ??=
