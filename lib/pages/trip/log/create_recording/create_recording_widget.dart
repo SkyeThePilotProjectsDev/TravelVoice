@@ -1,10 +1,9 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
-import '/flutter_flow/random_data_util.dart' as random_data;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'
     as smooth_page_indicator;
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -337,10 +336,16 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                         if (_model.newRecording != null &&
                             _model.newRecording != '') {
                           if (_model.isPlaying) {
+                            await actions.printToConsoleAction(
+                              'Stopping play',
+                            );
                             _model.soundPlayer?.stop();
                             _model.isPlaying = false;
                             safeSetState(() {});
                           } else {
+                            await actions.printToConsoleAction(
+                              'Starting play',
+                            );
                             _model.soundPlayer ??= AudioPlayer();
                             if (_model.soundPlayer!.playing) {
                               await _model.soundPlayer!.stop();
@@ -355,7 +360,9 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           }
                         } else {
                           if (_model.isRecording) {
-                            _model.instantTimer?.cancel();
+                            await actions.printToConsoleAction(
+                              'Stopping recording',
+                            );
                             await stopAudioRecording(
                               audioRecorder: _model.audioRecorder,
                               audioName: 'recordedFileBytes.mp3',
@@ -369,28 +376,16 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             _model.newRecording = _model.recordingCopy;
                             safeSetState(() {});
                           } else {
-                            await Future.wait([
-                              Future(() async {
-                                _model.instantTimer = InstantTimer.periodic(
-                                  duration: Duration(milliseconds: 200),
-                                  callback: (timer) async {
-                                    _model.beatSize =
-                                        random_data.randomDouble(0.7, 1.0);
-                                    safeSetState(() {});
-                                  },
-                                  startImmediately: true,
-                                );
-                              }),
-                              Future(() async {
-                                _model.isRecording = true;
-                                safeSetState(() {});
-                                await startAudioRecording(
-                                  context,
-                                  audioRecorder: _model.audioRecorder ??=
-                                      AudioRecorder(),
-                                );
-                              }),
-                            ]);
+                            await actions.printToConsoleAction(
+                              'Starting recording',
+                            );
+                            _model.isRecording = true;
+                            safeSetState(() {});
+                            await startAudioRecording(
+                              context,
+                              audioRecorder: _model.audioRecorder ??=
+                                  AudioRecorder(),
+                            );
                           }
                         }
 

@@ -1,10 +1,9 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
-import '/flutter_flow/random_data_util.dart' as random_data;
 import 'create_recording_widget.dart' show CreateRecordingWidget;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'
     as smooth_page_indicator;
@@ -64,7 +63,6 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   String? recordingCopy;
   FFUploadedFile recordedFileBytes =
       FFUploadedFile(bytes: Uint8List.fromList([]));
-  InstantTimer? instantTimer;
   AudioRecorder? audioRecorder;
 
   @override
@@ -73,6 +71,5 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   @override
   void dispose() {
     timerController.dispose();
-    instantTimer?.cancel();
   }
 }
