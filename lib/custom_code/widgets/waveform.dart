@@ -40,6 +40,16 @@ class _WaveformState extends State<Waveform> {
   late PlayerController pController;
   bool tryouts = false;
   MediaPlayerActions? state;
+  String? path;
+
+  Future prep() async => path == null
+      ? null
+      : await pController.preparePlayer(
+          path: path!,
+          shouldExtractWaveform: true,
+          noOfSamples: 100,
+          volume: 1.0,
+        );
 
   @override
   void initState() {
@@ -75,10 +85,10 @@ class _WaveformState extends State<Waveform> {
           () async {
             print("RECORD");
             final dir = await getApplicationDocumentsDirectory();
-            String path =
+            String _path =
                 '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
-            print(path);
-            await rController.record(path: path);
+            print(_path);
+            await rController.record(path: _path);
           },
         );
       } else if (rController.isRecording) {
@@ -88,14 +98,15 @@ class _WaveformState extends State<Waveform> {
             String? path = await rController.stop();
             print("GOT PATH: $path");
             await widget.onRecordingComplete(path);
-            if (path != null) {
-              await pController.preparePlayer(
-                path: path,
-                shouldExtractWaveform: true,
-                noOfSamples: 100,
-                volume: 1.0,
-              );
-            }
+            await prep();
+            // if (path != null) {
+            //   await pController.preparePlayer(
+            //     path: path,
+            //     shouldExtractWaveform: true,
+            //     noOfSamples: 100,
+            //     volume: 1.0,
+            //   );
+            // }
           },
         );
       }
@@ -111,7 +122,7 @@ class _WaveformState extends State<Waveform> {
       } else {
         run.add(() async {
           await pController.stopPlayer();
-          await pController.seekTo(0);
+          await prep();
         });
       }
 
