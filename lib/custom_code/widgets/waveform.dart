@@ -68,15 +68,18 @@ class _WaveformState extends State<Waveform> {
       if (state == MediaPlayerActions.record)
         run.add(
           () async {
+            print("RECORD");
             final dir = await getApplicationDocumentsDirectory();
             String path =
                 '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+            print(path);
             await rController.record(path: path);
           },
         );
       else if (rController.isRecording)
         run.add(
           () async {
+            print("COMPLETE");
             String? path = await rController.stop();
             print("GOT PATH: $path");
             await widget.onRecordingComplete(path);
