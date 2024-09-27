@@ -32,14 +32,25 @@ class Waveform extends StatefulWidget {
 
 class _WaveformState extends State<Waveform> {
   late PlayerController controller;
+  bool tryouts = false;
 
   @override
   void initState() {
+    super.initState();
     controller = PlayerController();
+    print("INIT STATE");
+  }
+
+  @override
+  void setState(void Function() fn) {
+    super.setState(fn);
+    print("SET STATE");
   }
 
   @override
   Widget build(BuildContext context) {
+    final Color _p = FlutterFlowTheme.of(context).primary;
+    final Color _s = FlutterFlowTheme.of(context).secondary;
     return FutureBuilder(
         future: controller.extractWaveformData(
           path: widget.audio,
@@ -56,9 +67,9 @@ class _WaveformState extends State<Waveform> {
             enableSeekGesture: true,
             waveformType: WaveformType.long,
             waveformData: data,
-            playerWaveStyle: const PlayerWaveStyle(
-              fixedWaveColor: Colors.white54,
-              liveWaveColor: Colors.blueAccent,
+            playerWaveStyle: PlayerWaveStyle(
+              fixedWaveColor: _p,
+              liveWaveColor: _s,
               spacing: 6,
             ),
           );

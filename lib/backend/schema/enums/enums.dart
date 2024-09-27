@@ -22,6 +22,12 @@ enum AccessLevel {
   SuperAdmin,
 }
 
+enum MediaPlayerActions {
+  play,
+  pause,
+  stop,
+}
+
 extension FFEnumExtensions<T extends Enum> on T {
   String serialize() => name;
 }
@@ -39,6 +45,8 @@ T? deserializeEnum<T>(String? value) {
       return LocationSpecificity.values.deserialize(value) as T?;
     case (AccessLevel):
       return AccessLevel.values.deserialize(value) as T?;
+    case (MediaPlayerActions):
+      return MediaPlayerActions.values.deserialize(value) as T?;
     default:
       return null;
   }
