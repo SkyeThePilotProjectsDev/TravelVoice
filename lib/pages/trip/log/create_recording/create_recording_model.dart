@@ -1,7 +1,6 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
@@ -50,12 +49,6 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
           pageViewController!.page != null
       ? pageViewController!.page!.round()
       : 0;
-  AudioPlayer? soundPlayer;
-  String? recording;
-  FFUploadedFile recordedFileBytes =
-      FFUploadedFile(bytes: Uint8List.fromList([]));
-  InstantTimer? instantTimer;
-  AudioRecorder? audioRecorder;
   // State field(s) for Timer widget.
   final timerInitialTimeMs = 0;
   int timerMilliseconds = 0;
@@ -67,12 +60,19 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   FlutterFlowTimerController timerController =
       FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countUp));
 
+  AudioPlayer? soundPlayer;
+  String? recordingCopy;
+  FFUploadedFile recordedFileBytes =
+      FFUploadedFile(bytes: Uint8List.fromList([]));
+  InstantTimer? instantTimer;
+  AudioRecorder? audioRecorder;
+
   @override
   void initState(BuildContext context) {}
 
   @override
   void dispose() {
-    instantTimer?.cancel();
     timerController.dispose();
+    instantTimer?.cancel();
   }
 }
