@@ -72,7 +72,7 @@ class _WaveformState extends State<Waveform> {
               final dir = await getApplicationDocumentsDirectory();
               String path =
                   '${dir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
-              await rController.record(path);
+              await rController.record(path: path);
             },
           ),
         );
