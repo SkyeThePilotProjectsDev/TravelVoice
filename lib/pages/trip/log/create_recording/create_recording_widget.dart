@@ -582,8 +582,8 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                 child: AnimatedContainer(
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInOut,
-                                  width: 64.0,
-                                  height: 64.0,
+                                  width: 70.0,
+                                  height: 70.0,
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context).primary,
                                     shape: BoxShape.circle,

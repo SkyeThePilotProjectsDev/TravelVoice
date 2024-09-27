@@ -53,9 +53,10 @@ class _WaveformState extends State<Waveform> {
   Widget build(BuildContext context) {
     final Color _p = FlutterFlowTheme.of(context).primary;
     final Color _s = FlutterFlowTheme.of(context).secondary;
+    if (widget.audio == null) return Container();
     return FutureBuilder(
         future: controller.extractWaveformData(
-          path: widget.audio,
+          path: widget.audio!,
           noOfSamples: 100,
         ),
         builder: (ctx, sc) {
