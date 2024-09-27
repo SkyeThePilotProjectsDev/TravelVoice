@@ -585,11 +585,24 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                     color: FlutterFlowTheme.of(context).primary,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(
-                                    Icons.play_arrow_rounded,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    size: 50.0,
+                                  child: Builder(
+                                    builder: (context) {
+                                      if (_model.isPlaying) {
+                                        return Icon(
+                                          Icons.restart_alt_rounded,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 50.0,
+                                        );
+                                      } else {
+                                        return Icon(
+                                          Icons.play_arrow_rounded,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 50.0,
+                                        );
+                                      }
+                                    },
                                   ),
                                 ),
                               ),
