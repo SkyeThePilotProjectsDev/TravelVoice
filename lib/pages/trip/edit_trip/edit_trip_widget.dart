@@ -9,6 +9,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -946,7 +947,30 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     ));
                                   }
 
+                                  _model.loopCounter = 0;
+                                  safeSetState(() {});
+                                  while (_model.loopCounter <
+                                      _model.newMembers.length) {
+                                    _model.userInvsRef = await actions
+                                        .getOrCreateUserInvitationsRef(
+                                      null,
+                                      _model.newMembers[_model.loopCounter],
+                                    );
+
+                                    await TripInvitationRecord.createDoc(
+                                            _model.userInvsRef!)
+                                        .set(createTripInvitationRecordData(
+                                      trip: widget!.trip,
+                                      invitedBy: currentUserReference,
+                                      dateInvited: getCurrentTimestamp,
+                                      status: RequestStatus.Requested,
+                                    ));
+                                    _model.loopCounter = _model.loopCounter + 1;
+                                  }
+
                                   context.pushNamed('Logs');
+
+                                  safeSetState(() {});
                                 },
                                 text: 'Save trip',
                                 options: FFButtonOptions(

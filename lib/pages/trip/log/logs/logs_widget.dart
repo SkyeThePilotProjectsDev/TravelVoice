@@ -330,7 +330,7 @@ class _LogsWidgetState extends State<LogsWidget> {
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
-                                        Icons.add_rounded,
+                                        Icons.mic,
                                         color: FlutterFlowTheme.of(context)
                                             .primaryBackground,
                                         size: 50.0,

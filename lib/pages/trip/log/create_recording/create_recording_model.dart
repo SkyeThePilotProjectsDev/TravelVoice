@@ -1,15 +1,19 @@
 import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
+import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import '/flutter_flow/random_data_util.dart' as random_data;
 import 'create_recording_widget.dart' show CreateRecordingWidget;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'
     as smooth_page_indicator;
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +56,16 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
       FFUploadedFile(bytes: Uint8List.fromList([]));
   InstantTimer? instantTimer;
   AudioRecorder? audioRecorder;
+  // State field(s) for Timer widget.
+  final timerInitialTimeMs = 0;
+  int timerMilliseconds = 0;
+  String timerValue = StopWatchTimer.getDisplayTime(
+    0,
+    hours: false,
+    milliSecond: false,
+  );
+  FlutterFlowTimerController timerController =
+      FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countUp));
 
   @override
   void initState(BuildContext context) {}
@@ -59,5 +73,6 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   @override
   void dispose() {
     instantTimer?.cancel();
+    timerController.dispose();
   }
 }

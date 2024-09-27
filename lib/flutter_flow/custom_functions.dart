@@ -49,11 +49,14 @@ DateTime dateBuilder(
   // print("000" + (day ?? ""));
   // print(pullNumbers("000" + (day ?? "")));
   int _day = pullNumbers("000" + (day ?? ""));
+  print("Pulled day: ${'000' + (day ?? '')} -> $_day");
   // print("Pulled day $_day");
   if (_day == 0)
     _day = previousDate.day;
   else
     math.max(0, _day);
+
+  print("$year/$month/$day -> $_year/$_month/$_day ($previousDate)");
 
   return DateTime(_year, _month, _day);
 }
@@ -145,4 +148,9 @@ bool stringEquality(
   if (a == null || b == null) return false;
 
   return a.trim().toLowerCase() == b.trim().toLowerCase();
+}
+
+DocumentReference getPlainInvetationsRef(String email) {
+  String _email = email.trim().toLowerCase();
+  return FirebaseFirestore.instance.collection('invitations').doc(_email);
 }

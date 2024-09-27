@@ -715,6 +715,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
                                           _navigate = () => context.goNamedAuth(
                                               'Trips', context.mounted);
+                                          await authManager
+                                              .sendEmailVerification();
                                         }
 
                                         _navigate();

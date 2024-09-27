@@ -9,6 +9,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'edit_trip_widget.dart' show EditTripWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
@@ -56,6 +57,9 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
   FFUploadedFile uploadedLocalFile =
       FFUploadedFile(bytes: Uint8List.fromList([]));
   String uploadedFileUrl = '';
+
+  // Stores action output result for [Custom Action - getOrCreateUserInvitationsRef] action in Button widget.
+  DocumentReference? userInvsRef;
 
   @override
   void initState(BuildContext context) {

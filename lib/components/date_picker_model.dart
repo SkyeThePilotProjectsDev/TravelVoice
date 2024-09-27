@@ -15,19 +15,19 @@ class DatePickerModel extends FlutterFlowModel<DatePickerWidget> {
 
   ///  State fields for stateful widgets in this component.
 
-  // State field(s) for TextField_Year widget.
-  FocusNode? textFieldYearFocusNode;
-  TextEditingController? textFieldYearTextController;
-  String? Function(BuildContext, String?)? textFieldYearTextControllerValidator;
+  // State field(s) for TextField_Day widget.
+  FocusNode? textFieldDayFocusNode;
+  TextEditingController? textFieldDayTextController;
+  String? Function(BuildContext, String?)? textFieldDayTextControllerValidator;
   // State field(s) for TextField_Month widget.
   FocusNode? textFieldMonthFocusNode;
   TextEditingController? textFieldMonthTextController;
   String? Function(BuildContext, String?)?
       textFieldMonthTextControllerValidator;
-  // State field(s) for TextField_Day widget.
-  FocusNode? textFieldDayFocusNode;
-  TextEditingController? textFieldDayTextController;
-  String? Function(BuildContext, String?)? textFieldDayTextControllerValidator;
+  // State field(s) for TextField_Year widget.
+  FocusNode? textFieldYearFocusNode;
+  TextEditingController? textFieldYearTextController;
+  String? Function(BuildContext, String?)? textFieldYearTextControllerValidator;
   DateTime? datePicked;
 
   @override
@@ -35,13 +35,13 @@ class DatePickerModel extends FlutterFlowModel<DatePickerWidget> {
 
   @override
   void dispose() {
-    textFieldYearFocusNode?.dispose();
-    textFieldYearTextController?.dispose();
+    textFieldDayFocusNode?.dispose();
+    textFieldDayTextController?.dispose();
 
     textFieldMonthFocusNode?.dispose();
     textFieldMonthTextController?.dispose();
 
-    textFieldDayFocusNode?.dispose();
-    textFieldDayTextController?.dispose();
+    textFieldYearFocusNode?.dispose();
+    textFieldYearTextController?.dispose();
   }
 }

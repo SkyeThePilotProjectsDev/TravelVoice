@@ -39,7 +39,14 @@ class _TripsWidgetState extends State<TripsWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      await authManager.refreshUser();
+      if (!currentUserEmailVerified) {
+        context.pushNamed('unverifiedUser');
+
+        return;
+      }
       _model.userInvRef = await actions.getOrCreateUserInvitationsRef(
+        currentUserReference,
         currentUserEmail,
       );
     });
@@ -217,10 +224,7 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                                       .width *
                                                                   1.0,
                                                               child:
-                                                                  UserMenuWidget(
-                                                                requests:
-                                                                    containerTripInvitationRecordList,
-                                                              ),
+                                                                  UserMenuWidget(),
                                                             ),
                                                           ),
                                                         );
@@ -685,63 +689,27 @@ class _TripsWidgetState extends State<TripsWidget> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Expanded(
+                              InkWell(
+                                splashColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () async {
+                                  context.pushNamed('NewTrip');
+                                },
                                 child: Container(
+                                  width: 75.0,
+                                  height: 75.0,
                                   decoration: BoxDecoration(
+                                    color:
+                                        FlutterFlowTheme.of(context).secondary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.add_rounded,
                                     color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  splashColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onTap: () async {
-                                    context.pushNamed('NewTrip');
-                                  },
-                                  child: Container(
-                                    width: 75.0,
-                                    height: 75.0,
-                                    decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.add_rounded,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryBackground,
-                                      size: 50.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Align(
-                                  alignment: AlignmentDirectional(0.0, 0.0),
-                                  child: InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      GoRouter.of(context).prepareAuthEvent();
-                                      await authManager.signOut();
-                                      GoRouter.of(context)
-                                          .clearRedirectLocation();
-
-                                      context.goNamedAuth(
-                                          'Landing', context.mounted);
-                                    },
-                                    child: Icon(
-                                      Icons.logout,
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondary,
-                                      size: 50.0,
-                                    ),
+                                        .primaryBackground,
+                                    size: 50.0,
                                   ),
                                 ),
                               ),

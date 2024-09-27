@@ -697,6 +697,7 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                 _model.loopCounter < _model.shareWith.length) {
                               _model.userInvsRef =
                                   await actions.getOrCreateUserInvitationsRef(
+                                null,
                                 _model.shareWith[_model.loopCounter],
                               );
 

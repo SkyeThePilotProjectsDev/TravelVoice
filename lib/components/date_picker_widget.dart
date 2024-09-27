@@ -43,14 +43,14 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       safeSetState(() {});
     });
 
-    _model.textFieldYearTextController ??= TextEditingController(
+    _model.textFieldDayTextController ??= TextEditingController(
         text: dateTimeFormat(
             "d",
             _model.selectedDate != null
                 ? _model.selectedDate
                 : widget!.defaultDate));
-    _model.textFieldYearFocusNode ??= FocusNode();
-    _model.textFieldYearFocusNode!.addListener(
+    _model.textFieldDayFocusNode ??= FocusNode();
+    _model.textFieldDayFocusNode!.addListener(
       () async {
         _model.selectedDate = functions.dateBuilder(
             _model.textFieldDayTextController.text,
@@ -58,11 +58,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             _model.textFieldYearTextController.text,
             _model.selectedDate!);
         safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
+          _model.textFieldYearTextController?.text =
+              dateTimeFormat("yyyy", _model.selectedDate);
+          _model.textFieldYearTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
+                  offset: _model.textFieldYearTextController!.text.length);
         });
         safeSetState(() {
           _model.textFieldMonthTextController?.text =
@@ -72,11 +72,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                   offset: _model.textFieldMonthTextController!.text.length);
         });
         safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
+          _model.textFieldDayTextController?.text =
+              dateTimeFormat("d", _model.selectedDate);
+          _model.textFieldDayTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
+                  offset: _model.textFieldDayTextController!.text.length);
         });
       },
     );
@@ -95,11 +95,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             _model.textFieldYearTextController.text,
             _model.selectedDate!);
         safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
+          _model.textFieldYearTextController?.text =
+              dateTimeFormat("yyyy", _model.selectedDate);
+          _model.textFieldYearTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
+                  offset: _model.textFieldYearTextController!.text.length);
         });
         safeSetState(() {
           _model.textFieldMonthTextController?.text =
@@ -109,22 +109,22 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                   offset: _model.textFieldMonthTextController!.text.length);
         });
         safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
+          _model.textFieldDayTextController?.text =
+              dateTimeFormat("d", _model.selectedDate);
+          _model.textFieldDayTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
+                  offset: _model.textFieldDayTextController!.text.length);
         });
       },
     );
-    _model.textFieldDayTextController ??= TextEditingController(
+    _model.textFieldYearTextController ??= TextEditingController(
         text: dateTimeFormat(
             "yyyy",
             _model.selectedDate != null
                 ? _model.selectedDate
                 : widget!.defaultDate));
-    _model.textFieldDayFocusNode ??= FocusNode();
-    _model.textFieldDayFocusNode!.addListener(
+    _model.textFieldYearFocusNode ??= FocusNode();
+    _model.textFieldYearFocusNode!.addListener(
       () async {
         _model.selectedDate = functions.dateBuilder(
             _model.textFieldDayTextController.text,
@@ -132,11 +132,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             _model.textFieldYearTextController.text,
             _model.selectedDate!);
         safeSetState(() {
-          _model.textFieldDayTextController?.text =
-              dateTimeFormat("d", _model.selectedDate);
-          _model.textFieldDayTextController?.selection =
+          _model.textFieldYearTextController?.text =
+              dateTimeFormat("yyyy", _model.selectedDate);
+          _model.textFieldYearTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldDayTextController!.text.length);
+                  offset: _model.textFieldYearTextController!.text.length);
         });
         safeSetState(() {
           _model.textFieldMonthTextController?.text =
@@ -146,11 +146,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                   offset: _model.textFieldMonthTextController!.text.length);
         });
         safeSetState(() {
-          _model.textFieldYearTextController?.text =
-              dateTimeFormat("yyyy", _model.selectedDate);
-          _model.textFieldYearTextController?.selection =
+          _model.textFieldDayTextController?.text =
+              dateTimeFormat("d", _model.selectedDate);
+          _model.textFieldDayTextController?.selection =
               TextSelection.collapsed(
-                  offset: _model.textFieldYearTextController!.text.length);
+                  offset: _model.textFieldDayTextController!.text.length);
         });
       },
     );
@@ -172,8 +172,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           child: Container(
             width: 200.0,
             child: TextFormField(
-              controller: _model.textFieldYearTextController,
-              focusNode: _model.textFieldYearFocusNode,
+              controller: _model.textFieldDayTextController,
+              focusNode: _model.textFieldDayFocusNode,
               autofocus: false,
               obscureText: false,
               decoration: InputDecoration(
@@ -223,7 +223,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                     letterSpacing: 0.0,
                   ),
               cursorColor: FlutterFlowTheme.of(context).primaryText,
-              validator: _model.textFieldYearTextControllerValidator
+              validator: _model.textFieldDayTextControllerValidator
                   .asValidator(context),
             ),
           ),
@@ -306,8 +306,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           child: Container(
             width: 200.0,
             child: TextFormField(
-              controller: _model.textFieldDayTextController,
-              focusNode: _model.textFieldDayFocusNode,
+              controller: _model.textFieldYearTextController,
+              focusNode: _model.textFieldYearFocusNode,
               autofocus: false,
               obscureText: false,
               decoration: InputDecoration(
@@ -357,7 +357,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                     letterSpacing: 0.0,
                   ),
               cursorColor: FlutterFlowTheme.of(context).primaryText,
-              validator: _model.textFieldDayTextControllerValidator
+              validator: _model.textFieldYearTextControllerValidator
                   .asValidator(context),
             ),
           ),
@@ -370,8 +370,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           onTap: () async {
             final _datePickedDate = await showDatePicker(
               context: context,
-              initialDate: ((widget!.defaultDate != null
-                      ? widget!.defaultDate
+              initialDate: ((_model.selectedDate != null
+                      ? _model.selectedDate
                       : getCurrentTimestamp) ??
                   DateTime.now()),
               firstDate: DateTime(1900),
@@ -415,11 +415,12 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             }
             if (_model.datePicked != null) {
               safeSetState(() {
-                _model.textFieldDayTextController?.text =
-                    dateTimeFormat("d", _model.datePicked);
-                _model.textFieldDayTextController?.selection =
+                _model.textFieldYearTextController?.text =
+                    dateTimeFormat("yyyy", _model.datePicked);
+                _model.textFieldYearTextController?.selection =
                     TextSelection.collapsed(
-                        offset: _model.textFieldDayTextController!.text.length);
+                        offset:
+                            _model.textFieldYearTextController!.text.length);
               });
               safeSetState(() {
                 _model.textFieldMonthTextController?.text =
@@ -430,12 +431,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
                             _model.textFieldMonthTextController!.text.length);
               });
               safeSetState(() {
-                _model.textFieldYearTextController?.text =
-                    dateTimeFormat("yyyy", _model.datePicked);
-                _model.textFieldYearTextController?.selection =
+                _model.textFieldDayTextController?.text =
+                    dateTimeFormat("d", _model.datePicked);
+                _model.textFieldDayTextController?.selection =
                     TextSelection.collapsed(
-                        offset:
-                            _model.textFieldYearTextController!.text.length);
+                        offset: _model.textFieldDayTextController!.text.length);
               });
               await widget.onChange?.call(
                 _model.datePicked!,

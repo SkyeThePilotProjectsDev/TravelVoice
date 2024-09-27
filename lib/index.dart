@@ -16,3 +16,5 @@ export '/pages/user/request_password_change/request_password_change_widget.dart'
 export '/pages/trip/log/edit_log/edit_log_widget.dart' show EditLogWidget;
 export '/pages/trip/log/view_log/view_log_widget.dart' show ViewLogWidget;
 export '/test/test_widget.dart' show TestWidget;
+export '/pages/user/unverified_user/unverified_user_widget.dart'
+    show UnverifiedUserWidget;

@@ -5,9 +5,11 @@ import '/components/empty_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +17,7 @@ import 'user_menu_model.dart';
 export 'user_menu_model.dart';
 
 class UserMenuWidget extends StatefulWidget {
-  const UserMenuWidget({
-    super.key,
-    this.requests,
-  });
-
-  final List<TripInvitationRecord>? requests;
+  const UserMenuWidget({super.key});
 
   @override
   State<UserMenuWidget> createState() => _UserMenuWidgetState();
@@ -39,6 +36,14 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => UserMenuModel());
+
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.userInvRef = await actions.getOrCreateUserInvitationsRef(
+        currentUserReference,
+        currentUserEmail,
+      );
+    });
   }
 
   @override
@@ -78,20 +83,46 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Builder(
-                      builder: (context) {
-                        final reqs = widget!.requests?.toList() ?? [];
-                        if (reqs.isEmpty) {
+                    StreamBuilder<List<TripInvitationRecord>>(
+                      stream: queryTripInvitationRecord(
+                        parent: _model.userInvRef,
+                        queryBuilder: (tripInvitationRecord) =>
+                            tripInvitationRecord.where(
+                          'status',
+                          isEqualTo: RequestStatus.Requested.serialize(),
+                        ),
+                      ),
+                      builder: (context, snapshot) {
+                        // Customize what your widget looks like when it's loading.
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: SizedBox(
+                              width: 50.0,
+                              height: 50.0,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  FlutterFlowTheme.of(context).primary,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        List<TripInvitationRecord>
+                            columnTripInvitationRecordList = snapshot.data!;
+                        if (columnTripInvitationRecordList.isEmpty) {
                           return EmptyListWidget();
                         }
 
                         return Column(
                           mainAxisSize: MainAxisSize.max,
-                          children: List.generate(reqs.length, (reqsIndex) {
-                            final reqsItem = reqs[reqsIndex];
+                          children: List.generate(
+                              columnTripInvitationRecordList.length,
+                              (columnIndex) {
+                            final columnTripInvitationRecord =
+                                columnTripInvitationRecordList[columnIndex];
                             return FutureBuilder<UsersRecord>(
                               future: UsersRecord.getDocumentOnce(
-                                  reqsItem.invitedBy!),
+                                  columnTripInvitationRecord.invitedBy!),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
                                 if (!snapshot.hasData) {
@@ -115,7 +146,7 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                                   decoration: BoxDecoration(),
                                   child: FutureBuilder<TripRecord>(
                                     future: TripRecord.getDocumentOnce(
-                                        reqsItem.trip!),
+                                        columnTripInvitationRecord.trip!),
                                     builder: (context, snapshot) {
                                       // Customize what your widget looks like when it's loading.
                                       if (!snapshot.hasData) {
@@ -149,8 +180,8 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                                                 text: TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: userUsersRecord
-                                                          .displayName,
+                                                      text:
+                                                          userUsersRecord.email,
                                                       style: FlutterFlowTheme
                                                               .of(context)
                                                           .bodyMedium
@@ -194,20 +225,23 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                                                       .contains(
                                                           currentUserReference)) {
                                                     firestoreBatch.update(
-                                                        reqsItem.trip!, {
-                                                      ...mapToFirestore(
+                                                        tripTripRecord
+                                                            .reference,
                                                         {
-                                                          'members': FieldValue
-                                                              .arrayUnion([
-                                                            currentUserReference
-                                                          ]),
-                                                        },
-                                                      ),
-                                                    });
+                                                          ...mapToFirestore(
+                                                            {
+                                                              'members': FieldValue
+                                                                  .arrayUnion([
+                                                                currentUserReference
+                                                              ]),
+                                                            },
+                                                          ),
+                                                        });
                                                   }
 
                                                   firestoreBatch.update(
-                                                      reqsItem.reference,
+                                                      columnTripInvitationRecord
+                                                          .reference,
                                                       createTripInvitationRecordData(
                                                         status: RequestStatus
                                                             .Accepted,
@@ -250,8 +284,10 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                                               highlightColor:
                                                   Colors.transparent,
                                               onTap: () async {
-                                                await reqsItem.reference.update(
-                                                    createTripInvitationRecordData(
+                                                await columnTripInvitationRecord
+                                                    .reference
+                                                    .update(
+                                                        createTripInvitationRecordData(
                                                   status: RequestStatus.Denied,
                                                 ));
                                               },

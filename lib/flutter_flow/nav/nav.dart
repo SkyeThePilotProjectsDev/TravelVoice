@@ -211,6 +211,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'test',
               path: 'test',
               builder: (context, params) => TestWidget(),
+            ),
+            FFRoute(
+              name: 'unverifiedUser',
+              path: 'unverifiedUser',
+              requireAuth: true,
+              builder: (context, params) => UnverifiedUserWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),

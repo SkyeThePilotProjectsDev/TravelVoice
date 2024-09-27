@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 Future<DocumentReference<Object?>> getOrCreateUserInvitationsRef(
+  DocumentReference<Object?>? userRef,
   String email,
 ) async {
   // Add your function code here!
@@ -19,7 +20,9 @@ Future<DocumentReference<Object?>> getOrCreateUserInvitationsRef(
   bool docExists = await usersRequests.get().then((u) => u.exists);
 
   if (!docExists) {
-    final data = createInvitationsRecordData();
+    final data = createInvitationsRecordData(
+      user: userRef,
+    );
     await usersRequests.set(data);
   }
 
