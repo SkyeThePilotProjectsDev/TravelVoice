@@ -83,12 +83,21 @@ class _WaveformState extends State<Waveform> {
             String? path = await rController.stop();
             print("GOT PATH: $path");
             await widget.onRecordingComplete(path);
+            if (path != null) {
+              await pController.preparePlayer(
+                path: path,
+                shouldExtractWaveform: true,
+                noOfSamples: 100,
+                volume: 1.0,
+              );
+            }
           },
         );
       }
 
       if (state == MediaPlayerActions.play) {
-        run.add(() async => pController.startPlayer());
+        run.add(
+            () async => pController.startPlayer(finishMode: FinishMode.stop));
       } else {
         run.add(() async => pController.stopPlayer());
       }
@@ -115,48 +124,48 @@ class _WaveformState extends State<Waveform> {
           waveColor: _p,
           showDurationLabel: true,
           spacing: 8.0,
-          showBottom: false,
+          showBottom: true,
           extendWaveform: true,
-          showMiddleLine: false,
+          showMiddleLine: true,
           gradient: ui.Gradient.linear(
             const Offset(70, 50),
             Offset(MediaQuery.of(context).size.width / 2, 0),
-            [Colors.red, Colors.green],
+            [_s, _p],
           ),
         ),
       );
     } else {
-      if (widget.audio == null) return Container();
-      return InkWell(
-        onTap: () => print(widget.state),
-        child: FutureBuilder(
-          future: pController.extractWaveformData(
-            path: widget.audio!,
-            noOfSamples: 100,
-          ),
-          builder: (ctx, sc) {
-            List<double>? data = sc.data;
+      // if (widget.audio == null) return Container();
+      // return InkWell(
+      //   onTap: () => print(widget.state),
+      //   child: FutureBuilder(
+      //     future: pController.extractWaveformData(
+      //       path: widget.audio!,
+      //       noOfSamples: 100,
+      //     ),
+      //     builder: (ctx, sc) {
+      //       List<double>? data = sc.data;
 
-            if (data == null) return Container();
+      //       if (data == null) return Container();
 
-            return AudioFileWaveforms(
-              size: Size(
-                widget.width ?? 100,
-                widget.height ?? 100,
-              ),
-              playerController: pController,
-              enableSeekGesture: true,
-              waveformType: WaveformType.long,
-              waveformData: data,
-              playerWaveStyle: PlayerWaveStyle(
-                fixedWaveColor: _p,
-                liveWaveColor: _s,
-                spacing: 6,
-              ),
-            );
-          },
+      return AudioFileWaveforms(
+        size: Size(
+          widget.width ?? 100,
+          widget.height ?? 100,
+        ),
+        playerController: pController,
+        enableSeekGesture: true,
+        waveformType: WaveformType.long,
+        // waveformData: [],
+        playerWaveStyle: PlayerWaveStyle(
+          fixedWaveColor: _p,
+          liveWaveColor: _s,
+          spacing: 6,
         ),
       );
+      //     },
+      //   ),
+      // );
     }
   }
 }

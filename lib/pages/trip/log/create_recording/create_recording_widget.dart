@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 import 'create_recording_model.dart';
@@ -433,7 +432,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await actions.printToConsoleAction(
                               'Stopping play',
                             );
-                            _model.soundPlayer?.stop();
                           } else {
                             await actions.printToConsoleAction(
                               'Starting play',
@@ -441,14 +439,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             _model.isPlaying = true;
                             _model.playerState = MediaPlayerActions.play;
                             safeSetState(() {});
-                            _model.soundPlayer ??= AudioPlayer();
-                            if (_model.soundPlayer!.playing) {
-                              await _model.soundPlayer!.stop();
-                            }
-                            _model.soundPlayer!.setVolume(1.0);
-                            await _model.soundPlayer!
-                                .setUrl(_model.newRecording!)
-                                .then((_) => _model.soundPlayer!.play());
                           }
 
                           _model.isPlaying = false;
