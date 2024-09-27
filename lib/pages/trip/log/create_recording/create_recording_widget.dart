@@ -292,6 +292,10 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             _model.isPlaying = false;
                             safeSetState(() {});
                           },
+                          onPlayingComplete: () async {
+                            _model.isPlaying = false;
+                            safeSetState(() {});
+                          },
                         ),
                       ),
                       Divider(

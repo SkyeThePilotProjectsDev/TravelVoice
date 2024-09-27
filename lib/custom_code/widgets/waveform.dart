@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'dart:ffi';
+
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'dart:ui' as ui;
 import 'package:path_provider/path_provider.dart';
@@ -23,6 +25,7 @@ class Waveform extends StatefulWidget {
     this.audio,
     required this.state,
     required this.onRecordingComplete,
+    required this.onPlayingComplete,
   });
 
   final double? width;
@@ -30,6 +33,7 @@ class Waveform extends StatefulWidget {
   final String? audio;
   final MediaPlayerActions state;
   final Future Function(String? audioPath) onRecordingComplete;
+  final Future Function() onPlayingComplete;
 
   @override
   State<Waveform> createState() => _WaveformState();
@@ -60,6 +64,7 @@ class _WaveformState extends State<Waveform> {
       print("COMPLETE");
       // await pController.stopPlayer();
       // await pController.;
+      widget.onPlayingComplete.call();
     });
     print("INIT STATE -> ${widget.state}");
     // state = widget.state;
@@ -147,11 +152,13 @@ class _WaveformState extends State<Waveform> {
         enableGesture: true,
         waveStyle: WaveStyle(
           waveColor: _p,
-          showDurationLabel: true,
+          showDurationLabel: false,
+          durationLinesColor: Colors.transparent,
           spacing: 8.0,
+          showTop: true,
           showBottom: true,
           extendWaveform: true,
-          showMiddleLine: true,
+          showMiddleLine: false,
           gradient: ui.Gradient.linear(
             const Offset(70, 50),
             Offset(MediaQuery.of(context).size.width / 2, 0),
