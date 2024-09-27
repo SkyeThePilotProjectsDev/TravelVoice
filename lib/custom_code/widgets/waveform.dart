@@ -28,7 +28,7 @@ class Waveform extends StatefulWidget {
   final double? height;
   final String? audio;
   final MediaPlayerActions state;
-  final Future Function(String audioPath) onRecordingComplete;
+  final Future Function(String? audioPath) onRecordingComplete;
 
   @override
   State<Waveform> createState() => _WaveformState();
@@ -66,8 +66,14 @@ class _WaveformState extends State<Waveform> {
       state = widget.state;
       if (state == MediaPlayerActions.record)
         run.add(rController.record());
-      else
-        run.add(rController.stop());
+      else if (rController.isRecording)
+        run.add(
+          Future.value(
+            () async {
+              await widget.onRecordingComplete(await rController.stop());
+            },
+          ),
+        );
 
       if (state == MediaPlayerActions.play)
         run.add(pController.startPlayer());
