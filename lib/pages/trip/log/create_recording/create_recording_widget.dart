@@ -111,15 +111,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                                   letterSpacing: 0.0,
                                 ),
                       ),
-                      Text(
-                        'Need some insperation? Swipe through the prompts below while you record.',
-                        textAlign: TextAlign.justify,
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              fontFamily: 'Inter',
-                              fontSize: 14.0,
-                              letterSpacing: 0.0,
-                            ),
-                      ),
                       Container(
                         height: 300.0,
                         decoration: BoxDecoration(),
@@ -284,7 +275,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               StopWatchTimer.getDisplayTime(
                             value,
                             hours: false,
-                            milliSecond: false,
+                            minute: false,
                           ),
                           controller: _model.timerController,
                           updateStateInterval: Duration(milliseconds: 1000),
@@ -313,7 +304,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             audio: _model.newRecording!,
                           ),
                         ),
-                    ],
+                    ].divide(SizedBox(height: 16.0)),
                   ),
                 ),
               ),
@@ -422,23 +413,25 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await actions.printToConsoleAction(
                               'Stopping play',
                             );
-                            _model.soundPlayer?.stop();
                             _model.isPlaying = false;
                             safeSetState(() {});
+                            _model.soundPlayer?.stop();
                           } else {
                             await actions.printToConsoleAction(
                               'Starting play',
                             );
+                            _model.isPlaying = true;
+                            safeSetState(() {});
                             _model.soundPlayer ??= AudioPlayer();
                             if (_model.soundPlayer!.playing) {
                               await _model.soundPlayer!.stop();
                             }
                             _model.soundPlayer!.setVolume(1.0);
-                            _model.soundPlayer!
+                            await _model.soundPlayer!
                                 .setUrl(_model.newRecording!)
                                 .then((_) => _model.soundPlayer!.play());
 
-                            _model.isPlaying = true;
+                            _model.isPlaying = false;
                             safeSetState(() {});
                           }
                         } else {
