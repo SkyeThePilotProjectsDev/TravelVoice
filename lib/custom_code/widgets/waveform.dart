@@ -121,10 +121,7 @@ class _WaveformState extends State<Waveform> {
           () async {
             print("STARTTTT");
             // await prep();
-            // int c = await pController.getDuration(DurationType.current);
-            // if(c == 0 || c == pController.maxDuration)
             await pController.startPlayer(finishMode: FinishMode.pause);
-            // else await pController.startPlayer();
             print("START DONE");
           },
         );
