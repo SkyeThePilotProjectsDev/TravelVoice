@@ -159,6 +159,7 @@ class _WaveformState extends State<Waveform> {
           showBottom: true,
           extendWaveform: true,
           showMiddleLine: false,
+          scaleFactor: 400,
           gradient: ui.Gradient.linear(
             const Offset(70, 50),
             Offset(MediaQuery.of(context).size.width / 2, 0),
@@ -167,38 +168,38 @@ class _WaveformState extends State<Waveform> {
         ),
       );
     } else {
-      // if (widget.audio == null) return Container();
-      // return InkWell(
-      //   onTap: () => print(widget.state),
-      //   child: FutureBuilder(
-      //     future: pController.extractWaveformData(
-      //       path: widget.audio!,
-      //       noOfSamples: 100,
-      //     ),
-      //     builder: (ctx, sc) {
-      //       List<double>? data = sc.data;
+      if (path == null) return Container();
+      return InkWell(
+        onTap: () => print(widget.state),
+        child: FutureBuilder(
+          future: pController.extractWaveformData(
+            path: path!,
+            noOfSamples: 100,
+          ),
+          builder: (ctx, sc) {
+            List<double>? data = sc.data;
 
-      //       if (data == null) return Container();
+            if (data == null) return Container();
 
-      return AudioFileWaveforms(
-        size: Size(
-          widget.width ?? 100,
-          widget.height ?? 100,
-        ),
-        playerController: pController,
-        enableSeekGesture: true,
-        waveformType: WaveformType.long,
-        // waveformData: [],
-        playerWaveStyle: PlayerWaveStyle(
-          fixedWaveColor: _p,
-          liveWaveColor: _s,
-          spacing: 6,
-          scaleFactor: 20,
+            return AudioFileWaveforms(
+              size: Size(
+                widget.width ?? 100,
+                widget.height ?? 100,
+              ),
+              playerController: pController,
+              enableSeekGesture: true,
+              waveformType: WaveformType.long,
+              waveformData: data,
+              playerWaveStyle: PlayerWaveStyle(
+                fixedWaveColor: _p,
+                liveWaveColor: _s,
+                spacing: 6,
+                scaleFactor: 400,
+              ),
+            );
+          },
         ),
       );
-      //     },
-      //   ),
-      // );
     }
   }
 }
