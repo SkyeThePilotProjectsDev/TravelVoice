@@ -112,14 +112,6 @@ class _WaveformState extends State<Waveform> {
             print("GOT PATH: $path");
             await widget.onRecordingComplete(path);
             await prep();
-            // if (path != null) {
-            //   await pController.preparePlayer(
-            //     path: path,
-            //     shouldExtractWaveform: true,
-            //     noOfSamples: 100,
-            //     volume: 1.0,
-            //   );
-            // }
           },
         );
       }
@@ -129,14 +121,17 @@ class _WaveformState extends State<Waveform> {
           () async {
             print("STARTTTT");
             // await prep();
+            // int c = await pController.getDuration(DurationType.current);
+            // if(c == 0 || c == pController.maxDuration)
             await pController.startPlayer(finishMode: FinishMode.pause);
+            // else await pController.startPlayer();
             print("START DONE");
           },
         );
       } else {
         run.add(() async {
           await pController.pausePlayer();
-          await prep();
+          // await prep();
         });
       }
 
