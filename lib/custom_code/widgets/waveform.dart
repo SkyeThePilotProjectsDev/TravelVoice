@@ -64,11 +64,15 @@ class _WaveformState extends State<Waveform> {
       print("COMPLETE");
       // await pController.stopPlayer();
       // await pController.;
-      widget.onPlayingComplete.call();
+      // widget.onPlayingComplete.call();
       FutureBuilder(
         future: widget.onPlayingComplete(),
-        builder: (_, __) => Container(),
+        builder: (_, __) {
+          print("Almost done");
+          return Container();
+        },
       );
+      print("Done done");
     });
     print("INIT STATE -> ${widget.state}");
     // state = widget.state;
