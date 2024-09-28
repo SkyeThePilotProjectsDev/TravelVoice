@@ -294,10 +294,8 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                           onPlayingComplete: () async {
                             _model.isPlaying = false;
+                            _model.playerState = MediaPlayerActions.pause;
                             safeSetState(() {});
-                            await actions.printToConsoleAction(
-                              'No longer playing',
-                            );
                           },
                         ),
                       ),
