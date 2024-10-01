@@ -99,7 +99,12 @@ class _UnverifiedUserWidgetState extends State<UnverifiedUserWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            FFAppState().update(() {});
+                            await authManager.refreshUser();
+                            if (currentUserEmailVerified) {
+                              FFAppState().update(() {});
+                            } else {
+                              FFAppState().update(() {});
+                            }
                           },
                           child: Icon(
                             Icons.refresh,
