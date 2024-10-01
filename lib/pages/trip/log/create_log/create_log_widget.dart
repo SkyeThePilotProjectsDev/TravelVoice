@@ -11,7 +11,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -49,6 +48,27 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.selectedDate = getCurrentTimestamp;
       safeSetState(() {});
+      await showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        enableDrag: false,
+        useSafeArea: true,
+        context: context,
+        builder: (context) {
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Padding(
+              padding: MediaQuery.viewInsetsOf(context),
+              child: CreateRecordingWidget(),
+            ),
+          );
+        },
+      ).then((value) => safeSetState(() => _model.recordingInit = value));
+
+      if (_model.recording != null && _model.recording != '') {
+        _model.addToRecordings(_model.recordingInit!);
+        safeSetState(() {});
+      }
     });
 
     _model.textFieldCityTextController ??= TextEditingController();
@@ -321,10 +341,6 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                             ).then((value) => safeSetState(() =>
                                                 _model.recording = value));
 
-                                            await actions.printToConsoleAction(
-                                              functions.recordingToString(
-                                                  _model.recording),
-                                            );
                                             if (_model.recording != null &&
                                                 _model.recording != '') {
                                               _model.addToRecordings(
@@ -576,7 +592,10 @@ class _CreateLogWidgetState extends State<CreateLogWidget> {
                                             updateCallback: () =>
                                                 safeSetState(() {}),
                                             child: DatePickerWidget(
-                                              defaultDate: _model.selectedDate!,
+                                              defaultDate:
+                                                  _model.selectedDate != null
+                                                      ? _model.selectedDate!
+                                                      : getCurrentTimestamp,
                                               onChange: (setDate) async {
                                                 _model.selectedDate = setDate;
                                               },

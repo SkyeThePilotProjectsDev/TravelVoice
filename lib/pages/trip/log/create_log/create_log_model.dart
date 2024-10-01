@@ -11,7 +11,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'create_log_widget.dart' show CreateLogWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,6 +49,8 @@ class CreateLogModel extends FlutterFlowModel<CreateLogWidget> {
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();
+  // Stores action output result for [Bottom Sheet - createRecording] action in CreateLog widget.
+  String? recordingInit;
   // Stores action output result for [Bottom Sheet - createRecording] action in Button widget.
   String? recording;
   // State field(s) for TextField_City widget.

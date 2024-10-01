@@ -47,6 +47,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
           .toList()
           .cast<String>();
       safeSetState(() {});
+      _model.timerController.onStartTimer();
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -278,26 +279,45 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                         ),
                       ),
-                      Container(
-                        width: MediaQuery.sizeOf(context).width * 1.0,
-                        height: 100.0,
-                        child: custom_widgets.Waveform(
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: 100.0,
-                          audio: _model.newRecording,
-                          state: _model.playerState!,
-                          onRecordingComplete: (audioPath) async {
-                            _model.newRecording =
-                                functions.audioPathFix(audioPath);
-                            _model.isPlaying = false;
-                            safeSetState(() {});
-                          },
-                          onPlayingComplete: () async {
-                            _model.isPlaying = false;
-                            _model.playerState = MediaPlayerActions.pause;
-                            safeSetState(() {});
-                          },
-                        ),
+                      Builder(
+                        builder: (context) {
+                          if (!isWeb) {
+                            return Container(
+                              width: MediaQuery.sizeOf(context).width * 1.0,
+                              height: 100.0,
+                              child: custom_widgets.Waveform(
+                                width: MediaQuery.sizeOf(context).width * 1.0,
+                                height: 100.0,
+                                audio: _model.newRecording,
+                                state: _model.playerState!,
+                                onRecordingComplete: (audioPath) async {
+                                  _model.newRecording =
+                                      functions.audioPathFix(audioPath);
+                                  _model.isPlaying = false;
+                                  safeSetState(() {});
+                                },
+                                onPlayingComplete: () async {
+                                  _model.isPlaying = false;
+                                  _model.playerState = MediaPlayerActions.pause;
+                                  safeSetState(() {});
+                                },
+                              ),
+                            );
+                          } else {
+                            return Text(
+                              'This functionality is only supported within the app',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context).error,
+                                    fontSize: 25.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            );
+                          }
+                        },
                       ),
                       Divider(
                         thickness: 2.0,
@@ -462,6 +482,8 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                             await actions.printToConsoleAction(
                               'Starting recording',
                             );
+                            _model.timerController.onResetTimer();
+
                             _model.timerController.onStartTimer();
                             _model.isRecording = true;
                             _model.playerState = MediaPlayerActions.record;

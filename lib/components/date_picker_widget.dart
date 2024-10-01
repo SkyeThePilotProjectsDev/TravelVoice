@@ -1,5 +1,6 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      await actions.printToConsoleAction(
+        'Init',
+      );
       _model.selectedDate = widget!.defaultDate;
       safeSetState(() {});
     });
@@ -52,6 +56,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     _model.textFieldDayFocusNode ??= FocusNode();
     _model.textFieldDayFocusNode!.addListener(
       () async {
+        await actions.printToConsoleAction(
+          'Focus d',
+        );
         _model.selectedDate = functions.dateBuilder(
             _model.textFieldDayTextController.text,
             _model.textFieldMonthTextController.text,
@@ -89,6 +96,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     _model.textFieldMonthFocusNode ??= FocusNode();
     _model.textFieldMonthFocusNode!.addListener(
       () async {
+        await actions.printToConsoleAction(
+          'Focus m',
+        );
         _model.selectedDate = functions.dateBuilder(
             _model.textFieldDayTextController.text,
             _model.textFieldMonthTextController.text,
@@ -126,6 +136,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     _model.textFieldYearFocusNode ??= FocusNode();
     _model.textFieldYearFocusNode!.addListener(
       () async {
+        await actions.printToConsoleAction(
+          'Focus y',
+        );
         _model.selectedDate = functions.dateBuilder(
             _model.textFieldDayTextController.text,
             _model.textFieldMonthTextController.text,
