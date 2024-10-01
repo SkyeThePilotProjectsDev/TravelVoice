@@ -12,7 +12,36 @@
           "package_name": "com.pilotprojects.travelvoice"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "383372276654-82jle1fv2jav1rvdd99bpacfcrdd4rb9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pilotprojects.travelvoice",
+            "certificate_hash": "c26510d14a800ff95e4ad763de380945763073db"
+          }
+        },
+        {
+          "client_id": "383372276654-appg36tca6bn5b40nmjeft323lpagmie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pilotprojects.travelvoice",
+            "certificate_hash": "315aaf72593d705fc4491ec8c4d5e7659959f54e"
+          }
+        },
+        {
+          "client_id": "383372276654-s12vdha73utoijm1o7q03bcdp9tlk8hi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pilotprojects.travelvoice",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "383372276654-vdd8pntq1m29epg74n5r46kgag3pugjn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDCmIbpK_7MIkdR9YYHuZpg-eZd4AdTnnc"
@@ -20,7 +49,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "383372276654-vdd8pntq1m29epg74n5r46kgag3pugjn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "383372276654-fdbqh8i2pclm522k7qupeif526egnepu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pilotprojects.travelvoice"
+              }
+            }
+          ]
         }
       }
     }

@@ -46,14 +46,16 @@ class _WaveformState extends State<Waveform> {
   MediaPlayerActions? state;
   String? path;
 
-  Future prep() async => path == null
-      ? null
-      : await pController.preparePlayer(
-          path: path!,
-          shouldExtractWaveform: true,
-          noOfSamples: 100,
-          volume: 1.0,
-        );
+  Future prep() async {
+    if (path == null) return;
+    await pController.release();
+    await pController.preparePlayer(
+      path: path!,
+      shouldExtractWaveform: true,
+      noOfSamples: 100,
+      volume: 1.0,
+    );
+  }
 
   @override
   void initState() {
