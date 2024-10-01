@@ -1,8 +1,8 @@
 import '/backend/backend.dart';
-import '/components/profile_icon_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/pages/user/profile_icon/profile_icon_widget.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -95,11 +95,16 @@ class _TripLogItemWidgetState extends State<TripLogItemWidget> {
                       width: 50.0,
                       height: 50.0,
                       decoration: BoxDecoration(),
-                      child: wrapWithModel(
-                        model: _model.profileIconModel,
-                        updateCallback: () => safeSetState(() {}),
-                        child: ProfileIconWidget(
-                          input: functions.getDisplayName(containerUsersRecord),
+                      child: Transform.scale(
+                        scaleX: 0.9,
+                        scaleY: 0.9,
+                        child: wrapWithModel(
+                          model: _model.profileIconModel,
+                          updateCallback: () => safeSetState(() {}),
+                          child: ProfileIconWidget(
+                            input:
+                                functions.getDisplayName(containerUsersRecord),
+                          ),
                         ),
                       ),
                     );

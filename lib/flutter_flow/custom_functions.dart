@@ -158,3 +158,7 @@ DocumentReference getPlainInvetationsRef(String email) {
 String? audioPathFix(String? input) {
   return input;
 }
+
+List<String> reverseStringList(List<String> input) {
+  return input.reversed.toList();
+}

@@ -43,6 +43,14 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
         currentUserReference,
         currentUserEmail,
       );
+      await actions.printToConsoleAction(
+        'REF: ${valueOrDefault<String>(
+          _model.userInvRef?.id,
+          'No ref',
+        )}',
+      );
+
+      safeSetState(() {});
     });
   }
 
@@ -75,7 +83,12 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
             child: Container(
               decoration: BoxDecoration(
                 color: FlutterFlowTheme.of(context).secondaryBackground,
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8.0),
+                  bottomRight: Radius.circular(8.0),
+                  topLeft: Radius.circular(0.0),
+                  topRight: Radius.circular(0.0),
+                ),
               ),
               child: Padding(
                 padding: EdgeInsets.all(8.0),
@@ -83,236 +96,289 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    StreamBuilder<List<TripInvitationRecord>>(
-                      stream: queryTripInvitationRecord(
-                        parent: _model.userInvRef,
-                        queryBuilder: (tripInvitationRecord) =>
-                            tripInvitationRecord.where(
-                          'status',
-                          isEqualTo: RequestStatus.Requested.serialize(),
+                    Text(
+                      currentUserEmail,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'Inter',
+                            color: FlutterFlowTheme.of(context).primary,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                    Divider(
+                      thickness: 1.0,
+                      color: FlutterFlowTheme.of(context).alternate,
+                    ),
+                    if (_model.userInvRef != null)
+                      StreamBuilder<List<TripInvitationRecord>>(
+                        stream: queryTripInvitationRecord(
+                          parent: _model.userInvRef,
+                          queryBuilder: (tripInvitationRecord) =>
+                              tripInvitationRecord.where(
+                            'status',
+                            isEqualTo: RequestStatus.Requested.serialize(),
+                          ),
                         ),
-                      ),
-                      builder: (context, snapshot) {
-                        // Customize what your widget looks like when it's loading.
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  FlutterFlowTheme.of(context).primary,
+                        builder: (context, snapshot) {
+                          // Customize what your widget looks like when it's loading.
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    FlutterFlowTheme.of(context).primary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }
-                        List<TripInvitationRecord>
-                            columnTripInvitationRecordList = snapshot.data!;
-                        if (columnTripInvitationRecordList.isEmpty) {
-                          return EmptyListWidget();
-                        }
+                            );
+                          }
+                          List<TripInvitationRecord>
+                              columnTripInvitationRecordList = snapshot.data!;
+                          if (columnTripInvitationRecordList.isEmpty) {
+                            return EmptyListWidget();
+                          }
 
-                        return Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: List.generate(
-                              columnTripInvitationRecordList.length,
-                              (columnIndex) {
-                            final columnTripInvitationRecord =
-                                columnTripInvitationRecordList[columnIndex];
-                            return FutureBuilder<UsersRecord>(
-                              future: UsersRecord.getDocumentOnce(
-                                  columnTripInvitationRecord.invitedBy!),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          FlutterFlowTheme.of(context).primary,
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: List.generate(
+                                columnTripInvitationRecordList.length,
+                                (columnIndex) {
+                              final columnTripInvitationRecord =
+                                  columnTripInvitationRecordList[columnIndex];
+                              return FutureBuilder<UsersRecord>(
+                                future: UsersRecord.getDocumentOnce(
+                                    columnTripInvitationRecord.invitedBy!),
+                                builder: (context, snapshot) {
+                                  // Customize what your widget looks like when it's loading.
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 50.0,
+                                        height: 50.0,
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            FlutterFlowTheme.of(context)
+                                                .primary,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }
+                                    );
+                                  }
 
-                                final userUsersRecord = snapshot.data!;
+                                  final userUsersRecord = snapshot.data!;
 
-                                return Container(
-                                  decoration: BoxDecoration(),
-                                  child: FutureBuilder<TripRecord>(
-                                    future: TripRecord.getDocumentOnce(
-                                        columnTripInvitationRecord.trip!),
-                                    builder: (context, snapshot) {
-                                      // Customize what your widget looks like when it's loading.
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                FlutterFlowTheme.of(context)
-                                                    .primary,
+                                  return Container(
+                                    decoration: BoxDecoration(),
+                                    child: FutureBuilder<TripRecord>(
+                                      future: TripRecord.getDocumentOnce(
+                                          columnTripInvitationRecord.trip!),
+                                      builder: (context, snapshot) {
+                                        // Customize what your widget looks like when it's loading.
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                            child: SizedBox(
+                                              width: 50.0,
+                                              height: 50.0,
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
+                                                  FlutterFlowTheme.of(context)
+                                                      .primary,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      }
+                                          );
+                                        }
 
-                                      final tripTripRecord = snapshot.data!;
+                                        final tripTripRecord = snapshot.data!;
 
-                                      return Container(
-                                        decoration: BoxDecoration(),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Expanded(
-                                              child: RichText(
-                                                textScaler:
-                                                    MediaQuery.of(context)
-                                                        .textScaler,
-                                                text: TextSpan(
+                                        return Container(
+                                          decoration: BoxDecoration(),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    TextSpan(
-                                                      text:
-                                                          userUsersRecord.email,
+                                                    RichText(
+                                                      textScaler:
+                                                          MediaQuery.of(context)
+                                                              .textScaler,
+                                                      text: TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text:
+                                                                userUsersRecord
+                                                                    .email,
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyMedium
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                          ),
+                                                          TextSpan(
+                                                            text:
+                                                                ' has invited you to join ',
+                                                            style: TextStyle(),
+                                                          ),
+                                                          TextSpan(
+                                                            text: tripTripRecord
+                                                                .name,
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          )
+                                                        ],
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyMedium
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      dateTimeFormat(
+                                                          "relative",
+                                                          columnTripInvitationRecord
+                                                              .dateInvited!),
                                                       style: FlutterFlowTheme
                                                               .of(context)
                                                           .bodyMedium
                                                           .override(
                                                             fontFamily: 'Inter',
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .alternate,
                                                             letterSpacing: 0.0,
-                                                            fontWeight:
-                                                                FontWeight.w500,
                                                           ),
                                                     ),
-                                                    TextSpan(
-                                                      text:
-                                                          ' has invited you to join ',
-                                                      style: TextStyle(),
-                                                    ),
-                                                    TextSpan(
-                                                      text: tripTripRecord.name,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    )
                                                   ],
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
                                                 ),
                                               ),
-                                            ),
-                                            FFButtonWidget(
-                                              onPressed: () async {
-                                                final firestoreBatch =
-                                                    FirebaseFirestore.instance
-                                                        .batch();
-                                                try {
-                                                  if (!tripTripRecord.members
-                                                      .contains(
-                                                          currentUserReference)) {
-                                                    firestoreBatch.update(
-                                                        tripTripRecord
-                                                            .reference,
-                                                        {
-                                                          ...mapToFirestore(
-                                                            {
-                                                              'members': FieldValue
-                                                                  .arrayUnion([
-                                                                currentUserReference
-                                                              ]),
-                                                            },
-                                                          ),
-                                                        });
-                                                  }
+                                              FFButtonWidget(
+                                                onPressed: () async {
+                                                  final firestoreBatch =
+                                                      FirebaseFirestore.instance
+                                                          .batch();
+                                                  try {
+                                                    if (!tripTripRecord.members
+                                                        .contains(
+                                                            currentUserReference)) {
+                                                      firestoreBatch.update(
+                                                          tripTripRecord
+                                                              .reference,
+                                                          {
+                                                            ...mapToFirestore(
+                                                              {
+                                                                'members':
+                                                                    FieldValue
+                                                                        .arrayUnion([
+                                                                  currentUserReference
+                                                                ]),
+                                                              },
+                                                            ),
+                                                          });
+                                                    }
 
-                                                  firestoreBatch.update(
-                                                      columnTripInvitationRecord
-                                                          .reference,
-                                                      createTripInvitationRecordData(
-                                                        status: RequestStatus
-                                                            .Accepted,
-                                                      ));
-                                                } finally {
-                                                  await firestoreBatch.commit();
-                                                }
-                                              },
-                                              text: 'Join',
-                                              options: FFButtonOptions(
-                                                height: 40.0,
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        16.0, 0.0, 16.0, 0.0),
-                                                iconPadding:
-                                                    EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                            0.0, 0.0, 0.0, 0.0),
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                textStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .override(
-                                                          fontFamily:
-                                                              'Inter Tight',
-                                                          color: Colors.white,
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                elevation: 0.0,
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                            ),
-                                            InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                await columnTripInvitationRecord
-                                                    .reference
-                                                    .update(
+                                                    firestoreBatch.update(
+                                                        columnTripInvitationRecord
+                                                            .reference,
                                                         createTripInvitationRecordData(
-                                                  status: RequestStatus.Denied,
-                                                ));
-                                              },
-                                              child: FaIcon(
-                                                FontAwesomeIcons.trash,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                size: 16.0,
+                                                          status: RequestStatus
+                                                              .Accepted,
+                                                        ));
+                                                  } finally {
+                                                    await firestoreBatch
+                                                        .commit();
+                                                  }
+                                                },
+                                                text: 'Join',
+                                                options: FFButtonOptions(
+                                                  height: 40.0,
+                                                  padding: EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          16.0, 0.0, 16.0, 0.0),
+                                                  iconPadding:
+                                                      EdgeInsetsDirectional
+                                                          .fromSTEB(0.0, 0.0,
+                                                              0.0, 0.0),
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  textStyle:
+                                                      FlutterFlowTheme.of(
+                                                              context)
+                                                          .titleSmall
+                                                          .override(
+                                                            fontFamily:
+                                                                'Inter Tight',
+                                                            color: Colors.white,
+                                                            letterSpacing: 0.0,
+                                                          ),
+                                                  elevation: 0.0,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
                                               ),
-                                            ),
-                                          ].divide(SizedBox(width: 8.0)),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          }).divide(SizedBox(height: 8.0)),
-                        );
-                      },
-                    ),
+                                              InkWell(
+                                                splashColor: Colors.transparent,
+                                                focusColor: Colors.transparent,
+                                                hoverColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                onTap: () async {
+                                                  await columnTripInvitationRecord
+                                                      .reference
+                                                      .update(
+                                                          createTripInvitationRecordData(
+                                                    status:
+                                                        RequestStatus.Denied,
+                                                  ));
+                                                },
+                                                child: FaIcon(
+                                                  FontAwesomeIcons.trash,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  size: 16.0,
+                                                ),
+                                              ),
+                                            ].divide(SizedBox(width: 8.0)),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            }).divide(SizedBox(height: 8.0)),
+                          );
+                        },
+                      ),
                     Divider(
-                      thickness: 2.0,
+                      thickness: 1.0,
                       color: FlutterFlowTheme.of(context).alternate,
                     ),
                     Row(

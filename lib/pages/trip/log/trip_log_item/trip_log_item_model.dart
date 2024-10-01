@@ -1,8 +1,8 @@
 import '/backend/backend.dart';
-import '/components/profile_icon_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/pages/user/profile_icon/profile_icon_widget.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'trip_log_item_widget.dart' show TripLogItemWidget;
 import 'package:flutter/material.dart';

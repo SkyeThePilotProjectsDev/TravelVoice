@@ -4,11 +4,11 @@ import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/enums/enums.dart';
 import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
-import '/components/profile_icon_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
+import '/pages/user/profile_icon/profile_icon_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,7 +22,12 @@ import 'new_trip_model.dart';
 export 'new_trip_model.dart';
 
 class NewTripWidget extends StatefulWidget {
-  const NewTripWidget({super.key});
+  const NewTripWidget({
+    super.key,
+    this.trip,
+  });
+
+  final TripRecord? trip;
 
   @override
   State<NewTripWidget> createState() => _NewTripWidgetState();
@@ -41,9 +46,13 @@ class _NewTripWidgetState extends State<NewTripWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.selectedDate = getCurrentTimestamp;
+      if (widget!.trip != null) {
+        _model.thisTrip = widget!.trip?.reference;
+      }
     });
 
-    _model.textController1 ??= TextEditingController();
+    _model.textController1 ??= TextEditingController(
+        text: widget!.trip != null ? widget!.trip?.name : '');
     _model.textFieldFocusNode ??= FocusNode();
 
     _model.textFieldShareTextController ??= TextEditingController();
@@ -93,7 +102,7 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                   ],
                 ),
                 Text(
-                  'New Trip',
+                  widget!.trip != null ? 'Edit Trip' : 'New Trip',
                   textAlign: TextAlign.center,
                   style: FlutterFlowTheme.of(context).displayMedium.override(
                         fontFamily: 'Inter Tight',
@@ -243,7 +252,9 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                       model: _model.datePickerModel,
                                       updateCallback: () => safeSetState(() {}),
                                       child: DatePickerWidget(
-                                        defaultDate: getCurrentTimestamp,
+                                        defaultDate: widget!.trip != null
+                                            ? widget!.trip!.tripDate!
+                                            : getCurrentTimestamp,
                                         onChange: (setDate) async {
                                           _model.selectedDate = setDate;
                                           safeSetState(() {});
@@ -286,269 +297,537 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                         ),
                                       ].divide(SizedBox(height: 8.0)),
                                     ),
-                                    Container(
-                                      width: 200.0,
-                                      child: TextFormField(
-                                        controller:
-                                            _model.textFieldShareTextController,
-                                        focusNode:
-                                            _model.textFieldShareFocusNode,
-                                        onChanged: (_) => EasyDebounce.debounce(
-                                          '_model.textFieldShareTextController',
-                                          Duration(milliseconds: 0),
-                                          () async {
-                                            _model.isValidEmail = true;
-                                            if (_model.formKey.currentState ==
-                                                    null ||
-                                                !_model.formKey.currentState!
-                                                    .validate()) {
-                                              _model.isValidEmail = false;
-                                            }
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Container(
+                                          width: 200.0,
+                                          child: TextFormField(
+                                            controller: _model
+                                                .textFieldShareTextController,
+                                            focusNode:
+                                                _model.textFieldShareFocusNode,
+                                            onChanged: (_) =>
+                                                EasyDebounce.debounce(
+                                              '_model.textFieldShareTextController',
+                                              Duration(milliseconds: 0),
+                                              () async {
+                                                _model.isValidEmail = true;
+                                                if (_model.formKey
+                                                            .currentState ==
+                                                        null ||
+                                                    !_model
+                                                        .formKey.currentState!
+                                                        .validate()) {
+                                                  _model.isValidEmail = false;
+                                                }
 
-                                            safeSetState(() {});
-                                          },
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                            onFieldSubmitted: (_) async {
+                                              if ((_model.textFieldShareTextController
+                                                              .text ==
+                                                          null ||
+                                                      _model.textFieldShareTextController
+                                                              .text ==
+                                                          '') ||
+                                                  !_model.isValidEmail!) {
+                                              } else if (functions.stringEquality(
+                                                  _model
+                                                      .textFieldShareTextController
+                                                      .text,
+                                                  currentUserEmail)) {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Invalid action'),
+                                                      content: Text(
+                                                          'You can\'t invite yourself!'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  alertDialogContext),
+                                                          child: Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else if (_model.shareWith
+                                                  .where((e) =>
+                                                      functions.stringEquality(
+                                                          _model
+                                                              .textFieldShareTextController
+                                                              .text,
+                                                          e))
+                                                  .toList()
+                                                  .isNotEmpty) {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Invalid action'),
+                                                      content: Text(
+                                                          'This email has already been selected'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  alertDialogContext),
+                                                          child: Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                _model.insertAtIndexInShareWith(
+                                                    0,
+                                                    _model
+                                                        .textFieldShareTextController
+                                                        .text);
+                                                safeSetState(() {});
+                                                safeSetState(() {
+                                                  _model
+                                                      .textFieldShareTextController
+                                                      ?.clear();
+                                                });
+                                              }
+                                            },
+                                            autofocus: false,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              isDense: false,
+                                              labelStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              hintText: 'example@email.com',
+                                              hintStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .alternate,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .alternate,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              filled: true,
+                                              fillColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryBackground,
+                                            ),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0.0,
+                                                ),
+                                            cursorColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryText,
+                                            validator: _model
+                                                .textFieldShareTextControllerValidator
+                                                .asValidator(context),
+                                          ),
                                         ),
-                                        onFieldSubmitted: (_) async {
-                                          if ((_model.textFieldShareTextController
-                                                          .text ==
-                                                      null ||
-                                                  _model.textFieldShareTextController
-                                                          .text ==
-                                                      '') ||
-                                              !_model.isValidEmail!) {
-                                          } else if (functions.stringEquality(
-                                              _model
-                                                  .textFieldShareTextController
-                                                  .text,
-                                              currentUserEmail)) {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (alertDialogContext) {
-                                                return AlertDialog(
-                                                  title: Text('Invalid action'),
-                                                  content: Text(
-                                                      'You can\'t invite yourself!'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              alertDialogContext),
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          } else if (_model.shareWith
-                                              .where((e) =>
-                                                  functions.stringEquality(
-                                                      _model
-                                                          .textFieldShareTextController
-                                                          .text,
-                                                      e))
-                                              .toList()
-                                              .isNotEmpty) {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (alertDialogContext) {
-                                                return AlertDialog(
-                                                  title: Text('Invalid action'),
-                                                  content: Text(
-                                                      'This email has already been selected'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              alertDialogContext),
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          } else {
-                                            _model.addToShareWith(_model
-                                                .textFieldShareTextController
-                                                .text);
-                                            safeSetState(() {});
-                                          }
-                                        },
-                                        autofocus: false,
-                                        textInputAction: TextInputAction.done,
-                                        obscureText: false,
-                                        decoration: InputDecoration(
-                                          isDense: false,
-                                          labelStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .override(
-                                                    fontFamily: 'Inter',
-                                                    letterSpacing: 0.0,
-                                                  ),
-                                          hintText: 'example@email.com',
-                                          hintStyle: FlutterFlowTheme.of(
-                                                  context)
-                                              .labelMedium
-                                              .override(
-                                                fontFamily: 'Inter',
+                                        if (_model.textFieldShareTextController
+                                                    .text !=
+                                                null &&
+                                            _model.textFieldShareTextController
+                                                    .text !=
+                                                '')
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text(
+                                                'Press the',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                              Icon(
+                                                Icons
+                                                    .subdirectory_arrow_left_rounded,
                                                 color:
                                                     FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                                letterSpacing: 0.0,
+                                                        .primaryText,
+                                                size: 24.0,
                                               ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .alternate,
-                                              width: 1.0,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
+                                              Text(
+                                                'button on your keyboard',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ],
                                           ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primary,
-                                              width: 1.0,
+                                      ],
+                                    ),
+                                    SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          if (_model.shareWith.isNotEmpty)
+                                            Builder(
+                                              builder: (context) {
+                                                final sharedWith =
+                                                    _model.shareWith.toList();
+
+                                                return Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: List.generate(
+                                                      sharedWith.length,
+                                                      (sharedWithIndex) {
+                                                    final sharedWithItem =
+                                                        sharedWith[
+                                                            sharedWithIndex];
+                                                    return Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Container(
+                                                          width: 30.0,
+                                                          height: 30.0,
+                                                          decoration:
+                                                              BoxDecoration(),
+                                                          child:
+                                                              ProfileIconWidget(
+                                                            key: Key(
+                                                                'Keycde_${sharedWithIndex}_of_${sharedWith.length}'),
+                                                            input:
+                                                                sharedWithItem,
+                                                            padding: 2,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            '${sharedWithItem} > Awaiting Request',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyMedium
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          splashColor: Colors
+                                                              .transparent,
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          hoverColor: Colors
+                                                              .transparent,
+                                                          highlightColor: Colors
+                                                              .transparent,
+                                                          onTap: () async {
+                                                            _model.removeAtIndexFromShareWith(
+                                                                sharedWithIndex);
+                                                            safeSetState(() {});
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              border:
+                                                                  Border.all(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .error,
+                                                              ),
+                                                            ),
+                                                            child: Align(
+                                                              alignment:
+                                                                  AlignmentDirectional(
+                                                                      0.0, 0.0),
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0,
+                                                                            3.0),
+                                                                child: FaIcon(
+                                                                  FontAwesomeIcons
+                                                                      .minus,
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                                  size: 16.0,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ].divide(
+                                                          SizedBox(width: 8.0)),
+                                                    );
+                                                  }).divide(
+                                                      SizedBox(height: 4.0)),
+                                                );
+                                              },
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
+                                          FutureBuilder<
+                                              List<TripInvitationRecord>>(
+                                            future:
+                                                queryTripInvitationRecordOnce(
+                                              queryBuilder: (tripInvitationRecord) =>
+                                                  tripInvitationRecord
+                                                      .where(
+                                                        'trip',
+                                                        isEqualTo: widget!
+                                                            .trip?.reference,
+                                                      )
+                                                      .whereIn(
+                                                          'status',
+                                                          RequestStatus.values
+                                                              .where((e) =>
+                                                                  (e ==
+                                                                      RequestStatus
+                                                                          .Requested) ||
+                                                                  (e ==
+                                                                      RequestStatus
+                                                                          .Accepted))
+                                                              .toList()
+                                                              .map((e) =>
+                                                                  e.serialize())
+                                                              .toList()),
+                                            ),
+                                            builder: (context, snapshot) {
+                                              // Customize what your widget looks like when it's loading.
+                                              if (!snapshot.hasData) {
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 50.0,
+                                                    height: 50.0,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                              Color>(
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              List<TripInvitationRecord>
+                                                  containerOldMembersTripInvitationRecordList =
+                                                  snapshot.data!;
+
+                                              return Container(
+                                                decoration: BoxDecoration(),
+                                                child: Visibility(
+                                                  visible:
+                                                      (widget!.trip != null) &&
+                                                          (widget!.trip!.members
+                                                              .isNotEmpty),
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      final oldMembers = containerOldMembersTripInvitationRecordList
+                                                          .where((e) =>
+                                                              (e.parentReference !=
+                                                                  functions
+                                                                      .getPlainInvetationsRef(
+                                                                          currentUserEmail)) &&
+                                                              !_model
+                                                                  .removedUsers
+                                                                  .contains(e
+                                                                      .reference))
+                                                          .toList();
+
+                                                      return Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        children: List.generate(
+                                                            oldMembers.length,
+                                                            (oldMembersIndex) {
+                                                          final oldMembersItem =
+                                                              oldMembers[
+                                                                  oldMembersIndex];
+                                                          return Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Container(
+                                                                width: 30.0,
+                                                                height: 30.0,
+                                                                decoration:
+                                                                    BoxDecoration(),
+                                                                child:
+                                                                    ProfileIconWidget(
+                                                                  key: Key(
+                                                                      'Key1pe_${oldMembersIndex}_of_${oldMembers.length}'),
+                                                                  input: oldMembersItem
+                                                                      .parentReference
+                                                                      .id,
+                                                                  padding: 2,
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  '${oldMembersItem.parentReference.id} > ${valueOrDefault<String>(
+                                                                    oldMembersItem
+                                                                        .status
+                                                                        ?.name,
+                                                                    'Error',
+                                                                  )}',
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'Inter',
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                              InkWell(
+                                                                splashColor: Colors
+                                                                    .transparent,
+                                                                focusColor: Colors
+                                                                    .transparent,
+                                                                hoverColor: Colors
+                                                                    .transparent,
+                                                                highlightColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                onTap:
+                                                                    () async {
+                                                                  _model.removeAtIndexFromShareWith(
+                                                                      oldMembersIndex);
+                                                                  safeSetState(
+                                                                      () {});
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .error,
+                                                                    ),
+                                                                  ),
+                                                                  child: Align(
+                                                                    alignment:
+                                                                        AlignmentDirectional(
+                                                                            0.0,
+                                                                            0.0),
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                                                          4.0,
+                                                                          4.0,
+                                                                          4.0,
+                                                                          3.0),
+                                                                      child:
+                                                                          FaIcon(
+                                                                        FontAwesomeIcons
+                                                                            .minus,
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .error,
+                                                                        size:
+                                                                            16.0,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ].divide(SizedBox(
+                                                                width: 8.0)),
+                                                          );
+                                                        }).divide(SizedBox(
+                                                            height: 4.0)),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           ),
-                                          errorBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .error,
-                                              width: 1.0,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          focusedErrorBorder:
-                                              OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .error,
-                                              width: 1.0,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          filled: true,
-                                          fillColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .secondaryBackground,
-                                        ),
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              letterSpacing: 0.0,
-                                            ),
-                                        cursorColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                        validator: _model
-                                            .textFieldShareTextControllerValidator
-                                            .asValidator(context),
+                                        ].divide(SizedBox(height: 4.0)),
                                       ),
                                     ),
-                                    if (_model.shareWith.isNotEmpty)
-                                      Builder(
-                                        builder: (context) {
-                                          final sharedWith =
-                                              _model.shareWith.toList();
-
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children:
-                                                List.generate(sharedWith.length,
-                                                    (sharedWithIndex) {
-                                              final sharedWithItem =
-                                                  sharedWith[sharedWithIndex];
-                                              return Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Container(
-                                                    width: 30.0,
-                                                    height: 30.0,
-                                                    decoration: BoxDecoration(),
-                                                    child: ProfileIconWidget(
-                                                      key: Key(
-                                                          'Keycde_${sharedWithIndex}_of_${sharedWith.length}'),
-                                                      input: sharedWithItem,
-                                                      padding: 2,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      sharedWithItem,
-                                                      style: FlutterFlowTheme
-                                                              .of(context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily: 'Inter',
-                                                            letterSpacing: 0.0,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    focusColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () async {
-                                                      _model
-                                                          .removeAtIndexFromShareWith(
-                                                              sharedWithIndex);
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .error,
-                                                        ),
-                                                      ),
-                                                      child: Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      4.0,
-                                                                      4.0,
-                                                                      4.0,
-                                                                      3.0),
-                                                          child: FaIcon(
-                                                            FontAwesomeIcons
-                                                                .minus,
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .error,
-                                                            size: 16.0,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ].divide(SizedBox(width: 8.0)),
-                                              );
-                                            }).divide(SizedBox(height: 4.0)),
-                                          );
-                                        },
-                                      ),
                                   ].divide(SizedBox(height: 16.0)),
                                 ),
                                 Divider(
@@ -598,12 +877,47 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                 ),
                 Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(32.0, 16.0, 32.0, 16.0),
+                      EdgeInsetsDirectional.fromSTEB(32.0, 16.0, 32.0, 0.0),
                   child: FFButtonWidget(
                     onPressed: (_model.textController1.text == null ||
                             _model.textController1.text == '')
                         ? null
                         : () async {
+                            var _shouldSetState = false;
+                            if (_model.textFieldShareTextController.text !=
+                                    null &&
+                                _model.textFieldShareTextController.text !=
+                                    '') {
+                              var confirmDialogResponse =
+                                  await showDialog<bool>(
+                                        context: context,
+                                        builder: (alertDialogContext) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                'You still have text in your share text box'),
+                                            content: Text(
+                                                'Are you sure you want to create this trip without submitting that email?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    alertDialogContext, false),
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    alertDialogContext, true),
+                                                child: Text('Confirm'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ) ??
+                                      false;
+                              if (!confirmDialogResponse) {
+                                if (_shouldSetState) safeSetState(() {});
+                                return;
+                              }
+                            }
                             if (_model.photo != null &&
                                 (_model.photo?.bytes?.isNotEmpty ?? false)) {
                               await actions.printToConsoleAction(
@@ -653,44 +967,56 @@ class _NewTripWidgetState extends State<NewTripWidget> {
 
                               _model.photoURL = _model.uploadedFileUrl;
                             }
+                            if (widget!.trip != null) {
+                              await widget!.trip!.reference
+                                  .update(createTripRecordData(
+                                name: _model.textController1.text,
+                                editDate: getCurrentTimestamp,
+                                image: _model.photoURL,
+                              ));
+                            } else {
+                              var tripRecordReference =
+                                  TripRecord.collection.doc();
+                              await tripRecordReference.set({
+                                ...createTripRecordData(
+                                  name: _model.textController1.text,
+                                  creationDate: getCurrentTimestamp,
+                                  editDate: getCurrentTimestamp,
+                                  image: _model.photoURL,
+                                  ownedBy: currentUserReference,
+                                  tripDate: _model.selectedDate,
+                                ),
+                                ...mapToFirestore(
+                                  {
+                                    'members': [currentUserReference],
+                                    'shareRequests': _model.shareWith,
+                                  },
+                                ),
+                              });
+                              _model.newTripRef =
+                                  TripRecord.getDocumentFromData({
+                                ...createTripRecordData(
+                                  name: _model.textController1.text,
+                                  creationDate: getCurrentTimestamp,
+                                  editDate: getCurrentTimestamp,
+                                  image: _model.photoURL,
+                                  ownedBy: currentUserReference,
+                                  tripDate: _model.selectedDate,
+                                ),
+                                ...mapToFirestore(
+                                  {
+                                    'members': [currentUserReference],
+                                    'shareRequests': _model.shareWith,
+                                  },
+                                ),
+                              }, tripRecordReference);
+                              _shouldSetState = true;
+                              FFAppState().currentTrip =
+                                  _model.newTripRef?.reference;
+                              _model.thisTrip = _model.newTripRef?.reference;
+                              safeSetState(() {});
+                            }
 
-                            var tripRecordReference =
-                                TripRecord.collection.doc();
-                            await tripRecordReference.set({
-                              ...createTripRecordData(
-                                name: _model.textController1.text,
-                                creationDate: getCurrentTimestamp,
-                                editDate: getCurrentTimestamp,
-                                image: _model.photoURL,
-                                ownedBy: currentUserReference,
-                                tripDate: _model.selectedDate,
-                              ),
-                              ...mapToFirestore(
-                                {
-                                  'members': [currentUserReference],
-                                  'shareRequests': _model.shareWith,
-                                },
-                              ),
-                            });
-                            _model.newTripA = TripRecord.getDocumentFromData({
-                              ...createTripRecordData(
-                                name: _model.textController1.text,
-                                creationDate: getCurrentTimestamp,
-                                editDate: getCurrentTimestamp,
-                                image: _model.photoURL,
-                                ownedBy: currentUserReference,
-                                tripDate: _model.selectedDate,
-                              ),
-                              ...mapToFirestore(
-                                {
-                                  'members': [currentUserReference],
-                                  'shareRequests': _model.shareWith,
-                                },
-                              ),
-                            }, tripRecordReference);
-                            FFAppState().currentTrip =
-                                _model.newTripA?.reference;
-                            safeSetState(() {});
                             _model.loopCounter = 0;
                             safeSetState(() {});
                             while (
@@ -700,11 +1026,12 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                                 null,
                                 _model.shareWith[_model.loopCounter],
                               );
+                              _shouldSetState = true;
 
                               await TripInvitationRecord.createDoc(
                                       _model.userInvsRef!)
                                   .set(createTripInvitationRecordData(
-                                trip: _model.newTripA?.reference,
+                                trip: _model.thisTrip,
                                 invitedBy: currentUserReference,
                                 dateInvited: getCurrentTimestamp,
                                 status: RequestStatus.Requested,
@@ -716,9 +1043,9 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                             }
                             context.pushNamed('Logs');
 
-                            safeSetState(() {});
+                            if (_shouldSetState) safeSetState(() {});
                           },
-                    text: 'Create trip',
+                    text: widget!.trip != null ? 'Save trip' : 'Create trip',
                     options: FFButtonOptions(
                       height: 40.0,
                       padding:
@@ -739,7 +1066,9 @@ class _NewTripWidgetState extends State<NewTripWidget> {
                     ),
                   ),
                 ),
-              ],
+              ]
+                  .addToStart(SizedBox(height: 16.0))
+                  .addToEnd(SizedBox(height: 16.0)),
             ),
           ),
         ),

@@ -161,7 +161,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'NewTrip',
               path: 'newTrip',
               requireAuth: true,
-              builder: (context, params) => NewTripWidget(),
+              asyncParams: {
+                'trip': getDoc(['trip'], TripRecord.fromSnapshot),
+              },
+              builder: (context, params) => NewTripWidget(
+                trip: params.getParam(
+                  'trip',
+                  ParamType.Document,
+                ),
+              ),
             ),
             FFRoute(
               name: 'EditTrip',
