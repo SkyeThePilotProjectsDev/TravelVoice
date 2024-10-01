@@ -41,7 +41,7 @@ class _TripsWidgetState extends State<TripsWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       await authManager.refreshUser();
       if (!currentUserEmailVerified) {
-        context.pushNamed('unverifiedUser');
+        context.goNamed('unverifiedUser');
 
         return;
       }
