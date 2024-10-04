@@ -47,11 +47,12 @@ class _WaveformState extends State<Waveform> {
   String? path;
 
   Future prep() async {
+    print("path: $path");
     if (path == null) return;
-    await pController.release();
+    // await pController.release();
     await pController.preparePlayer(
       path: path!,
-      shouldExtractWaveform: true,
+      // shouldExtractWaveform: true,
       noOfSamples: 100,
       volume: 1.0,
     );
@@ -62,6 +63,10 @@ class _WaveformState extends State<Waveform> {
     super.initState();
     rController = RecorderController();
     pController = PlayerController();
+    // pController.
+    pController.onCurrentDurationChanged.listen((i) {
+      print("DUREATION CHANGED: $i");
+    });
     pController.onCompletion.listen((_) {
       print("COMPLETE");
       // await pController.stopPlayer();
@@ -123,14 +128,18 @@ class _WaveformState extends State<Waveform> {
           () async {
             print("STARTTTT");
             // await prep();
+            print(
+                "State: ${pController.playerState}, Key: ${pController.playerKey}, Data: ${pController.waveformData}");
             await pController.startPlayer(finishMode: FinishMode.pause);
+            print(
+                "State: ${pController.playerState}, Key: ${pController.playerKey}, Data: ${pController.waveformData}");
             print("START DONE");
           },
         );
       } else {
         run.add(() async {
           await pController.pausePlayer();
-          await prep();
+          // await prep();
         });
       }
 
@@ -161,7 +170,7 @@ class _WaveformState extends State<Waveform> {
           showBottom: true,
           extendWaveform: true,
           showMiddleLine: false,
-          scaleFactor: 400,
+          scaleFactor: 100,
           gradient: ui.Gradient.linear(
             const Offset(70, 50),
             Offset(MediaQuery.of(context).size.width / 2, 0),
@@ -191,12 +200,13 @@ class _WaveformState extends State<Waveform> {
               playerController: pController,
               enableSeekGesture: true,
               waveformType: WaveformType.long,
-              waveformData: data,
+              continuousWaveform: true,
+              // waveformData: data,
               playerWaveStyle: PlayerWaveStyle(
                 fixedWaveColor: _p,
                 liveWaveColor: _s,
                 spacing: 6,
-                scaleFactor: 400,
+                scaleFactor: 200,
               ),
             );
           },

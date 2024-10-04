@@ -36,14 +36,9 @@ service cloud.firestore {
 
     match /trip/{parent}/log/{document} {
       allow create: if true;
-      allow read: if true;
+      allow read: if /databases/$(database)/documents/users/$(request.auth.uid) in get(/databases/$(database)/documents/trip/$(parent)).data.members;
       allow write: if false;
       allow delete: if false;
     }
-
-    match /{path=**}/log/{document} {
-      allow read: if true;
-    }
-
   }
 }

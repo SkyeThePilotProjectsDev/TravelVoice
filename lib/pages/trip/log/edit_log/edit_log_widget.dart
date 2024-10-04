@@ -244,7 +244,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                                   ),
                                                           fillColor: FlutterFlowTheme
                                                                   .of(context)
-                                                              .secondaryBackground,
+                                                              .primaryBackground,
                                                           playbackButtonColor:
                                                               FlutterFlowTheme.of(
                                                                       context)

@@ -1,3 +1,5 @@
+import '/custom_code/actions/index.dart' as actions;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,10 @@ void main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
   await initFirebase();
+
+  // Start initial custom actions code
+  await actions.setPortraitMode();
+  // End initial custom actions code
 
   await FlutterFlowTheme.initialize();
 
