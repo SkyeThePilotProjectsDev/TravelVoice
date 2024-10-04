@@ -140,6 +140,15 @@ String getDisplayName(UsersRecord? user) {
   return user.email;
 }
 
+PlaceSearchStruct? locationToPlace(LocationDataStruct? location) {
+  if (location == null) return null;
+  return PlaceSearchStruct(
+    geometry:
+        GeometryStruct(location: reverseLocationParser(location.location)),
+    formattedAddress: location.locationText,
+  );
+}
+
 bool stringEquality(
   String? a,
   String? b,
@@ -161,4 +170,12 @@ String? audioPathFix(String? input) {
 
 List<String> reverseStringList(List<String> input) {
   return input.reversed.toList();
+}
+
+LocationDataStruct? placeToLocation(PlaceSearchStruct? place) {
+  if (place == null) return null;
+  return LocationDataStruct(
+    location: locationParser(place.geometry.location),
+    locationText: place.formattedAddress,
+  );
 }

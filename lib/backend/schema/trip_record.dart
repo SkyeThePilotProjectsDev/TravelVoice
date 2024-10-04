@@ -22,11 +22,6 @@ class TripRecord extends FirestoreRecord {
   String get name => _name ?? '';
   bool hasName() => _name != null;
 
-  // "logs" field.
-  List<DocumentReference>? _logs;
-  List<DocumentReference> get logs => _logs ?? const [];
-  bool hasLogs() => _logs != null;
-
   // "travelGroup" field.
   List<TripUserStruct>? _travelGroup;
   List<TripUserStruct> get travelGroup => _travelGroup ?? const [];
@@ -69,7 +64,6 @@ class TripRecord extends FirestoreRecord {
 
   void _initializeFields() {
     _name = snapshotData['name'] as String?;
-    _logs = getDataList(snapshotData['logs']);
     _travelGroup = getStructList(
       snapshotData['travelGroup'],
       TripUserStruct.fromMap,
@@ -145,7 +139,6 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
   bool equals(TripRecord? e1, TripRecord? e2) {
     const listEquality = ListEquality();
     return e1?.name == e2?.name &&
-        listEquality.equals(e1?.logs, e2?.logs) &&
         listEquality.equals(e1?.travelGroup, e2?.travelGroup) &&
         listEquality.equals(e1?.members, e2?.members) &&
         e1?.creationDate == e2?.creationDate &&
@@ -159,7 +152,6 @@ class TripRecordDocumentEquality implements Equality<TripRecord> {
   @override
   int hash(TripRecord? e) => const ListEquality().hash([
         e?.name,
-        e?.logs,
         e?.travelGroup,
         e?.members,
         e?.creationDate,

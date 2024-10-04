@@ -15,13 +15,6 @@ service cloud.firestore {
       allow delete: if resource.data.ownedBy == /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    match /tripLog/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if resource.data.ownedBy == /databases/$(database)/documents/users/$(request.auth.uid);
-      allow delete: if resource.data.ownedBy == /databases/$(database)/documents/users/$(request.auth.uid);
-    }
-
     match /invitations/{document} {
       allow create: if true;
       allow read: if true;
@@ -37,6 +30,18 @@ service cloud.firestore {
     }
 
     match /{path=**}/tripInvitation/{document} {
+      allow read: if true;
+    }
+
+
+    match /trip/{parent}/log/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /{path=**}/log/{document} {
       allow read: if true;
     }
 

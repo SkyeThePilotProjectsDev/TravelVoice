@@ -489,13 +489,22 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                           highlightColor: Colors
                                                               .transparent,
                                                           onTap: () async {
-                                                            FFAppState()
-                                                                    .currentTrip =
-                                                                tripsItem
-                                                                    .reference;
-
                                                             context.pushNamed(
-                                                                'Logs');
+                                                              'Logs',
+                                                              queryParameters: {
+                                                                'trip':
+                                                                    serializeParam(
+                                                                  tripsItem,
+                                                                  ParamType
+                                                                      .Document,
+                                                                ),
+                                                              }.withoutNulls,
+                                                              extra: <String,
+                                                                  dynamic>{
+                                                                'trip':
+                                                                    tripsItem,
+                                                              },
+                                                            );
                                                           },
                                                           child: Builder(
                                                             builder: (context) {
@@ -697,7 +706,7 @@ class _TripsWidgetState extends State<TripsWidget> {
                                 hoverColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
                                 onTap: () async {
-                                  context.pushNamed('NewTrip');
+                                  context.pushNamed('EditTrip');
                                 },
                                 child: Container(
                                   width: 75.0,

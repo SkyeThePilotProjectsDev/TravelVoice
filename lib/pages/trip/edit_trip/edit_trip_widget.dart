@@ -3,16 +3,19 @@ import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/enums/enums.dart';
 import '/components/date_picker_widget.dart';
-import '/components/delete_confirmation_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
+import '/pages/user/profile_icon/profile_icon_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +25,10 @@ export 'edit_trip_model.dart';
 class EditTripWidget extends StatefulWidget {
   const EditTripWidget({
     super.key,
-    required this.trip,
+    this.trip,
   });
 
-  final DocumentReference? trip;
+  final TripRecord? trip;
 
   @override
   State<EditTripWidget> createState() => _EditTripWidgetState();
@@ -41,10 +44,20 @@ class _EditTripWidgetState extends State<EditTripWidget> {
     super.initState();
     _model = createModel(context, () => EditTripModel());
 
-    _model.textFieldNameFocusNode ??= FocusNode();
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.selectedDate = getCurrentTimestamp;
+      if (widget!.trip != null) {
+        _model.thisTrip = widget!.trip;
+      }
+    });
 
-    _model.textFieldEmailTextController ??= TextEditingController();
-    _model.textFieldEmailFocusNode ??= FocusNode();
+    _model.textController1 ??= TextEditingController(
+        text: widget!.trip != null ? widget!.trip?.name : '');
+    _model.textFieldFocusNode ??= FocusNode();
+
+    _model.textFieldShareTextController ??= TextEditingController();
+    _model.textFieldShareFocusNode ??= FocusNode();
   }
 
   @override
@@ -56,672 +69,591 @@ class _EditTripWidgetState extends State<EditTripWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<TripRecord>(
-      stream: TripRecord.getDocument(widget!.trip!),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    FlutterFlowTheme.of(context).primary,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-
-        final editTripTripRecord = snapshot.data!;
-
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Scaffold(
-            key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: SafeArea(
-              top: true,
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-                child: Column(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        body: SafeArea(
+          top: true,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.safePop();
-                              },
-                              child: Icon(
-                                Icons.chevron_left_rounded,
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                size: 40.0,
-                              ),
-                            ),
-                            Builder(
-                              builder: (context) => InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  await showDialog(
-                                    barrierColor: Color(0x80000000),
-                                    context: context,
-                                    builder: (dialogContext) {
-                                      return Dialog(
-                                        elevation: 0,
-                                        insetPadding: EdgeInsets.zero,
-                                        backgroundColor: Colors.transparent,
-                                        alignment:
-                                            AlignmentDirectional(0.0, 0.0)
-                                                .resolve(
-                                                    Directionality.of(context)),
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              FocusScope.of(dialogContext)
-                                                  .unfocus(),
-                                          child: Container(
-                                            width: MediaQuery.sizeOf(context)
-                                                    .width *
-                                                0.8,
-                                            child: DeleteConfirmationWidget(
-                                              onDelete: () async {
-                                                _model.allTripInvitations =
-                                                    await queryTripInvitationRecordOnce(
-                                                  queryBuilder:
-                                                      (tripInvitationRecord) =>
-                                                          tripInvitationRecord
-                                                              .where(
-                                                    'trip',
-                                                    isEqualTo: widget!.trip,
-                                                  ),
-                                                );
-                                                _model.loopCounter = 0;
-                                                while (_model.loopCounter <
-                                                    _model.allTripInvitations!
-                                                        .length) {
-                                                  await _model
-                                                      .allTripInvitations![
-                                                          _model.loopCounter]
-                                                      .reference
-                                                      .delete();
-                                                  _model.loopCounter =
-                                                      _model.loopCounter + 1;
-                                                }
-                                                await widget!.trip!.delete();
-
-                                                context.goNamed('Trips');
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-
-                                  safeSetState(() {});
-                                },
-                                child: FaIcon(
-                                  FontAwesomeIcons.trash,
-                                  color: FlutterFlowTheme.of(context).error,
-                                  size: 24.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                    InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        context.safePop();
+                      },
+                      child: Icon(
+                        Icons.chevron_left_rounded,
+                        color: FlutterFlowTheme.of(context).primaryText,
+                        size: 40.0,
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              'Edit Trip Details',
-                              textAlign: TextAlign.start,
-                              style: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .override(
-                                    fontFamily: 'Inter Tight',
-                                    letterSpacing: 0.0,
-                                  ),
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
+                    if (widget!.trip != null)
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          final firestoreBatch =
+                              FirebaseFirestore.instance.batch();
+                          try {
+                            _model.pendingRequests =
+                                await queryTripInvitationRecordOnce(
+                              queryBuilder: (tripInvitationRecord) =>
+                                  tripInvitationRecord
+                                      .where(
+                                        'trip',
+                                        isEqualTo: widget!.trip?.reference,
+                                      )
+                                      .where(
+                                        'status',
+                                        isEqualTo:
+                                            RequestStatus.Requested.serialize(),
+                                      ),
+                            );
+                            _model.loopCounter = 0;
+                            while (_model.loopCounter <
+                                _model.pendingRequests!.length) {
+                              firestoreBatch.update(
+                                  _model.pendingRequests![_model.loopCounter]
+                                      .reference,
+                                  createTripInvitationRecordData(
+                                    status: RequestStatus.Cancelled,
+                                  ));
+                              _model.loopCounter = _model.loopCounter + 1;
+                            }
+                            firestoreBatch.delete(widget!.trip!.reference);
+                            context.safePop();
+                          } finally {
+                            await firestoreBatch.commit();
+                          }
+
+                          safeSetState(() {});
+                        },
+                        child: FaIcon(
+                          FontAwesomeIcons.trashAlt,
+                          color: FlutterFlowTheme.of(context).error,
+                          size: 26.0,
+                        ),
+                      ),
+                  ],
+                ),
+                Text(
+                  widget!.trip != null ? 'Edit Trip' : 'New Trip',
+                  textAlign: TextAlign.center,
+                  style: FlutterFlowTheme.of(context).displayMedium.override(
+                        fontFamily: 'Inter Tight',
+                        letterSpacing: 0.0,
+                      ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Form(
+                          key: _model.formKey,
+                          autovalidateMode: AutovalidateMode.disabled,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 16.0, 0.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Column(
                                   mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 16.0, 0.0),
+                                    Text(
+                                      'What is the name of this trip?',
+                                      textAlign: TextAlign.start,
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .override(
+                                            fontFamily: 'Inter',
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                    Container(
+                                      width: 200.0,
+                                      child: TextFormField(
+                                        controller: _model.textController1,
+                                        focusNode: _model.textFieldFocusNode,
+                                        onChanged: (_) => EasyDebounce.debounce(
+                                          '_model.textController1',
+                                          Duration(milliseconds: 0),
+                                          () => safeSetState(() {}),
+                                        ),
+                                        autofocus: true,
+                                        obscureText: false,
+                                        decoration: InputDecoration(
+                                          isDense: false,
+                                          labelStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .override(
+                                                    fontFamily: 'Inter',
+                                                    letterSpacing: 0.0,
+                                                  ),
+                                          hintText: 'Trip name',
+                                          hintStyle: FlutterFlowTheme.of(
+                                                  context)
+                                              .labelMedium
+                                              .override(
+                                                fontFamily: 'Inter',
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .alternate,
+                                                letterSpacing: 0.0,
+                                              ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .alternate,
+                                              width: 1.0,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primary,
+                                              width: 1.0,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .error,
+                                              width: 1.0,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .error,
+                                              width: 1.0,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          filled: true,
+                                          fillColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .secondaryBackground,
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              fontFamily: 'Inter',
+                                              letterSpacing: 0.0,
+                                            ),
+                                        cursorColor:
+                                            FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                        validator: _model
+                                            .textController1Validator
+                                            .asValidator(context),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(height: 8.0)),
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      'When was this trip?',
+                                      textAlign: TextAlign.start,
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .override(
+                                            fontFamily: 'Inter',
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                    wrapWithModel(
+                                      model: _model.datePickerModel,
+                                      updateCallback: () => safeSetState(() {}),
+                                      child: DatePickerWidget(
+                                        defaultDate: widget!.trip != null
+                                            ? widget!.trip!.tripDate!
+                                            : getCurrentTimestamp,
+                                        onChange: (setDate) async {
+                                          _model.selectedDate = setDate;
+                                          safeSetState(() {});
+                                        },
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(height: 8.0)),
+                                ),
+                                Divider(
+                                  thickness: 1.0,
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Share this trip with someone?',
+                                          style: FlutterFlowTheme.of(context)
+                                              .titleLarge
+                                              .override(
+                                                fontFamily: 'Inter Tight',
+                                                letterSpacing: 0.0,
+                                              ),
+                                        ),
+                                        Text(
+                                          'Enter their Travel Voice email below.',
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .override(
+                                                fontFamily: 'Inter',
+                                                letterSpacing: 0.0,
+                                              ),
+                                        ),
+                                      ].divide(SizedBox(height: 8.0)),
+                                    ),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Container(
+                                          width: 200.0,
+                                          child: TextFormField(
+                                            controller: _model
+                                                .textFieldShareTextController,
+                                            focusNode:
+                                                _model.textFieldShareFocusNode,
+                                            onChanged: (_) =>
+                                                EasyDebounce.debounce(
+                                              '_model.textFieldShareTextController',
+                                              Duration(milliseconds: 0),
+                                              () async {
+                                                _model.isValidEmail = true;
+                                                if (_model.formKey
+                                                            .currentState ==
+                                                        null ||
+                                                    !_model
+                                                        .formKey.currentState!
+                                                        .validate()) {
+                                                  _model.isValidEmail = false;
+                                                }
+
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                            onFieldSubmitted: (_) async {
+                                              if ((_model.textFieldShareTextController
+                                                              .text ==
+                                                          null ||
+                                                      _model.textFieldShareTextController
+                                                              .text ==
+                                                          '') ||
+                                                  !_model.isValidEmail!) {
+                                              } else if (functions.stringEquality(
+                                                  _model
+                                                      .textFieldShareTextController
+                                                      .text,
+                                                  currentUserEmail)) {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Invalid action'),
+                                                      content: Text(
+                                                          'You can\'t invite yourself!'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  alertDialogContext),
+                                                          child: Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else if (_model.shareWith
+                                                  .where((e) =>
+                                                      functions.stringEquality(
+                                                          _model
+                                                              .textFieldShareTextController
+                                                              .text,
+                                                          e))
+                                                  .toList()
+                                                  .isNotEmpty) {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          'Invalid action'),
+                                                      content: Text(
+                                                          'This email has already been selected'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  alertDialogContext),
+                                                          child: Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                _model.insertAtIndexInShareWith(
+                                                    0,
+                                                    _model
+                                                        .textFieldShareTextController
+                                                        .text);
+                                                safeSetState(() {});
+                                                safeSetState(() {
+                                                  _model
+                                                      .textFieldShareTextController
+                                                      ?.clear();
+                                                });
+                                              }
+                                            },
+                                            autofocus: false,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              isDense: false,
+                                              labelStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              hintText: 'example@email.com',
+                                              hintStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .alternate,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .alternate,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              filled: true,
+                                              fillColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryBackground,
+                                            ),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0.0,
+                                                ),
+                                            cursorColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryText,
+                                            validator: _model
+                                                .textFieldShareTextControllerValidator
+                                                .asValidator(context),
+                                          ),
+                                        ),
+                                        if (_model.textFieldShareTextController
+                                                    .text !=
+                                                null &&
+                                            _model.textFieldShareTextController
+                                                    .text !=
+                                                '')
+                                          Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text(
+                                                'Press the',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .alternate,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                              Icon(
+                                                Icons
+                                                    .subdirectory_arrow_left_rounded,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .alternate,
+                                                size: 24.0,
+                                              ),
+                                              Text(
+                                                'button on your keyboard',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .alternate,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                      ],
+                                    ),
+                                    SingleChildScrollView(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                              Text(
-                                                'What is the name of this trip?',
-                                                textAlign: TextAlign.start,
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                              ),
-                                              Container(
-                                                width: 200.0,
-                                                child: TextFormField(
-                                                  controller: _model
-                                                          .textFieldNameTextController ??=
-                                                      TextEditingController(
-                                                    text:
-                                                        editTripTripRecord.name,
-                                                  ),
-                                                  focusNode: _model
-                                                      .textFieldNameFocusNode,
-                                                  autofocus: false,
-                                                  obscureText: false,
-                                                  decoration: InputDecoration(
-                                                    isDense: false,
-                                                    labelStyle: FlutterFlowTheme
-                                                            .of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                    hintText: 'Trip name',
-                                                    hintStyle: FlutterFlowTheme
-                                                            .of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .alternate,
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .alternate,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primary,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    errorBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .error,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    focusedErrorBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .error,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    filled: true,
-                                                    fillColor: FlutterFlowTheme
-                                                            .of(context)
-                                                        .secondaryBackground,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                                  cursorColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primaryText,
-                                                  validator: _model
-                                                      .textFieldNameTextControllerValidator
-                                                      .asValidator(context),
-                                                ),
-                                              ),
-                                            ].divide(SizedBox(height: 16.0)),
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                              Text(
-                                                'When was this trip?',
-                                                textAlign: TextAlign.start,
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                              ),
-                                              wrapWithModel(
-                                                model: _model.datePickerModel,
-                                                updateCallback: () =>
-                                                    safeSetState(() {}),
-                                                child: DatePickerWidget(
-                                                  defaultDate:
-                                                      getCurrentTimestamp,
-                                                  onChange: (setDate) async {
-                                                    _model.newDate = setDate;
-                                                  },
-                                                ),
-                                              ),
-                                            ].divide(SizedBox(height: 8.0)),
-                                          ),
-                                          Divider(
-                                            thickness: 1.0,
-                                            color: FlutterFlowTheme.of(context)
-                                                .alternate,
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                              Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Text(
-                                                    'Share this trip with someone?',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .titleLarge
-                                                        .override(
-                                                          fontFamily:
-                                                              'Inter Tight',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                  ),
-                                                  Text(
-                                                    'Enter their Travel Voice email below.',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyLarge
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Container(
-                                                width: 200.0,
-                                                child: TextFormField(
-                                                  controller: _model
-                                                      .textFieldEmailTextController,
-                                                  focusNode: _model
-                                                      .textFieldEmailFocusNode,
-                                                  onFieldSubmitted: (_) async {
-                                                    _model.addToNewMembers(_model
-                                                        .textFieldEmailTextController
-                                                        .text);
-                                                    safeSetState(() {});
-                                                    safeSetState(() {
-                                                      _model
-                                                          .textFieldEmailTextController
-                                                          ?.text = '';
-                                                      _model.textFieldEmailTextController
-                                                              ?.selection =
-                                                          TextSelection.collapsed(
-                                                              offset: _model
-                                                                  .textFieldEmailTextController!
-                                                                  .text
-                                                                  .length);
-                                                    });
-                                                  },
-                                                  autofocus: false,
-                                                  obscureText: false,
-                                                  decoration: InputDecoration(
-                                                    isDense: false,
-                                                    labelStyle: FlutterFlowTheme
-                                                            .of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                    hintText:
-                                                        'example@email.com',
-                                                    hintStyle: FlutterFlowTheme
-                                                            .of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily: 'Inter',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .alternate,
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .alternate,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primary,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    errorBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .error,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    focusedErrorBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .error,
-                                                        width: 1.0,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                    ),
-                                                    filled: true,
-                                                    fillColor: FlutterFlowTheme
-                                                            .of(context)
-                                                        .secondaryBackground,
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                                  keyboardType: TextInputType
-                                                      .emailAddress,
-                                                  cursorColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .primaryText,
-                                                  validator: _model
-                                                      .textFieldEmailTextControllerValidator
-                                                      .asValidator(context),
-                                                ),
-                                              ),
-                                            ].divide(SizedBox(height: 16.0)),
-                                          ),
-                                          SingleChildScrollView(
-                                            child: Column(
+                                          if (_model.shareWith.isNotEmpty)
+                                            Column(
                                               mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
                                               children: [
-                                                StreamBuilder<
-                                                    List<TripInvitationRecord>>(
-                                                  stream:
-                                                      queryTripInvitationRecord(
-                                                    queryBuilder: (tripInvitationRecord) =>
-                                                        tripInvitationRecord
-                                                            .where(
-                                                              'trip',
-                                                              isEqualTo:
-                                                                  widget!.trip,
-                                                            )
-                                                            .whereIn(
-                                                                'status',
-                                                                RequestStatus
-                                                                    .values
-                                                                    .where((e) =>
-                                                                        (e ==
-                                                                            RequestStatus
-                                                                                .Requested) ||
-                                                                        (e ==
-                                                                            RequestStatus
-                                                                                .Accepted))
-                                                                    .toList()
-                                                                    .map((e) =>
-                                                                        e.serialize())
-                                                                    .toList()),
-                                                  ),
-                                                  builder: (context, snapshot) {
-                                                    // Customize what your widget looks like when it's loading.
-                                                    if (!snapshot.hasData) {
-                                                      return Center(
-                                                        child: SizedBox(
-                                                          width: 50.0,
-                                                          height: 50.0,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            valueColor:
-                                                                AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                    List<TripInvitationRecord>
-                                                        columnTripInvitationRecordList =
-                                                        snapshot.data!;
-
-                                                    return Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: List.generate(
-                                                          columnTripInvitationRecordList
-                                                              .length,
-                                                          (columnIndex) {
-                                                        final columnTripInvitationRecord =
-                                                            columnTripInvitationRecordList[
-                                                                columnIndex];
-                                                        return Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          children: [
-                                                            InkWell(
-                                                              splashColor: Colors
-                                                                  .transparent,
-                                                              focusColor: Colors
-                                                                  .transparent,
-                                                              hoverColor: Colors
-                                                                  .transparent,
-                                                              highlightColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              onTap: () async {
-                                                                await columnTripInvitationRecord
-                                                                    .reference
-                                                                    .update(
-                                                                        createTripInvitationRecordData(
-                                                                  status: RequestStatus
-                                                                      .Cancelled,
-                                                                ));
-                                                              },
-                                                              child: Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  border: Border
-                                                                      .all(
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                  ),
-                                                                ),
-                                                                child: Padding(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              4.0),
-                                                                  child: FaIcon(
-                                                                    FontAwesomeIcons
-                                                                        .trash,
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                    size: 12.0,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              columnTripInvitationRecord
-                                                                  .parentReference
-                                                                  .id,
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                            Text(
-                                                              '-',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                            Text(
-                                                              valueOrDefault<
-                                                                  String>(
-                                                                columnTripInvitationRecord
-                                                                    .status
-                                                                    ?.name,
-                                                                '[status]',
-                                                              ),
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                          ].divide(SizedBox(
-                                                              width: 8.0)),
-                                                        );
-                                                      }),
-                                                    );
-                                                  },
+                                                Text(
+                                                  'Invite',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyLarge
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                 ),
                                                 Builder(
                                                   builder: (context) {
-                                                    final newMembersList =
-                                                        _model.newMembers
-                                                            .toList();
+                                                    final sharedWith = _model
+                                                        .shareWith
+                                                        .toList();
 
                                                     return Column(
                                                       mainAxisSize:
                                                           MainAxisSize.max,
                                                       children: List.generate(
-                                                          newMembersList.length,
-                                                          (newMembersListIndex) {
-                                                        final newMembersListItem =
-                                                            newMembersList[
-                                                                newMembersListIndex];
+                                                          sharedWith.length,
+                                                          (sharedWithIndex) {
+                                                        final sharedWithItem =
+                                                            sharedWith[
+                                                                sharedWithIndex];
                                                         return Row(
                                                           mainAxisSize:
                                                               MainAxisSize.max,
                                                           children: [
+                                                            Container(
+                                                              width: 30.0,
+                                                              height: 30.0,
+                                                              decoration:
+                                                                  BoxDecoration(),
+                                                              child:
+                                                                  ProfileIconWidget(
+                                                                key: Key(
+                                                                    'Keycde_${sharedWithIndex}_of_${sharedWith.length}'),
+                                                                input:
+                                                                    sharedWithItem,
+                                                                padding: 2,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                '${sharedWithItem} > Awaiting Request',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodyMedium
+                                                                    .override(
+                                                                      fontFamily:
+                                                                          'Inter',
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                    ),
+                                                              ),
+                                                            ),
                                                             InkWell(
                                                               splashColor: Colors
                                                                   .transparent,
@@ -733,8 +665,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                   Colors
                                                                       .transparent,
                                                               onTap: () async {
-                                                                _model.removeAtIndexFromNewMembers(
-                                                                    newMembersListIndex);
+                                                                _model.removeAtIndexFromShareWith(
+                                                                    sharedWithIndex);
                                                                 safeSetState(
                                                                     () {});
                                                               },
@@ -747,262 +679,520 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                       .all(
                                                                     color: FlutterFlowTheme.of(
                                                                             context)
-                                                                        .primaryText,
+                                                                        .error,
                                                                   ),
                                                                 ),
-                                                                child: Padding(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              4.0),
-                                                                  child: FaIcon(
-                                                                    FontAwesomeIcons
-                                                                        .trash,
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                    size: 12.0,
+                                                                child: Align(
+                                                                  alignment:
+                                                                      AlignmentDirectional(
+                                                                          0.0,
+                                                                          0.0),
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0,
+                                                                            3.0),
+                                                                    child:
+                                                                        FaIcon(
+                                                                      FontAwesomeIcons
+                                                                          .minus,
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .error,
+                                                                      size:
+                                                                          16.0,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
-                                                            Text(
-                                                              newMembersListItem,
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                            Text(
-                                                              '-',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                            Text(
-                                                              'Awaiting request',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
                                                           ].divide(SizedBox(
                                                               width: 8.0)),
                                                         );
-                                                      }),
+                                                      }).divide(SizedBox(
+                                                          height: 4.0)),
                                                     );
                                                   },
                                                 ),
-                                              ],
+                                              ].divide(SizedBox(height: 8.0)),
                                             ),
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: 200.0,
-                                                height: 200.0,
+                                          FutureBuilder<
+                                              List<TripInvitationRecord>>(
+                                            future:
+                                                queryTripInvitationRecordOnce(
+                                              queryBuilder: (tripInvitationRecord) =>
+                                                  tripInvitationRecord
+                                                      .where(
+                                                        'trip',
+                                                        isEqualTo: widget!
+                                                            .trip?.reference,
+                                                      )
+                                                      .whereIn(
+                                                          'status',
+                                                          RequestStatus.values
+                                                              .where((e) =>
+                                                                  (e ==
+                                                                      RequestStatus
+                                                                          .Requested) ||
+                                                                  (e ==
+                                                                      RequestStatus
+                                                                          .Accepted))
+                                                              .toList()
+                                                              .map((e) =>
+                                                                  e.serialize())
+                                                              .toList()),
+                                            ),
+                                            builder: (context, snapshot) {
+                                              // Customize what your widget looks like when it's loading.
+                                              if (!snapshot.hasData) {
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 50.0,
+                                                    height: 50.0,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                              Color>(
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              List<TripInvitationRecord>
+                                                  containerOldMembersTripInvitationRecordList =
+                                                  snapshot.data!;
+
+                                              return Container(
                                                 decoration: BoxDecoration(),
-                                                child: wrapWithModel(
-                                                  model:
-                                                      _model.imageUploaderModel,
-                                                  updateCallback: () =>
-                                                      safeSetState(() {}),
-                                                  child: ImageUploaderWidget(
-                                                    defaultImage:
-                                                        editTripTripRecord
-                                                            .image,
-                                                    onUpload: (file) async {
-                                                      _model.newImage = file;
-                                                      safeSetState(() {});
-                                                    },
-                                                    onRemove: () async {
-                                                      _model.newImage = null;
-                                                      safeSetState(() {});
-                                                    },
+                                                child: Visibility(
+                                                  visible:
+                                                      (widget!.trip != null) &&
+                                                          (widget!.trip!.members
+                                                              .isNotEmpty),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .stretch,
+                                                    children: [
+                                                      Text(
+                                                        'Members',
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyLarge
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Inter',
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                      ),
+                                                      Builder(
+                                                        builder: (context) {
+                                                          final oldMembers = containerOldMembersTripInvitationRecordList
+                                                              .where((e) =>
+                                                                  (e.parentReference !=
+                                                                      functions
+                                                                          .getPlainInvetationsRef(
+                                                                              currentUserEmail)) &&
+                                                                  !_model
+                                                                      .removedUsers
+                                                                      .contains(
+                                                                          e.reference))
+                                                              .toList();
+
+                                                          return Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: List.generate(
+                                                                oldMembers
+                                                                    .length,
+                                                                (oldMembersIndex) {
+                                                              final oldMembersItem =
+                                                                  oldMembers[
+                                                                      oldMembersIndex];
+                                                              return Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .max,
+                                                                children: [
+                                                                  Container(
+                                                                    width: 30.0,
+                                                                    height:
+                                                                        30.0,
+                                                                    decoration:
+                                                                        BoxDecoration(),
+                                                                    child:
+                                                                        ProfileIconWidget(
+                                                                      key: Key(
+                                                                          'Key1pe_${oldMembersIndex}_of_${oldMembers.length}'),
+                                                                      input: oldMembersItem
+                                                                          .parentReference
+                                                                          .id,
+                                                                      padding:
+                                                                          2,
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      '${oldMembersItem.parentReference.id} > ${valueOrDefault<String>(
+                                                                        oldMembersItem
+                                                                            .status
+                                                                            ?.name,
+                                                                        'Error',
+                                                                      )}',
+                                                                      style: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyMedium
+                                                                          .override(
+                                                                            fontFamily:
+                                                                                'Inter',
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                  InkWell(
+                                                                    splashColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    focusColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    hoverColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    highlightColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    onTap:
+                                                                        () async {
+                                                                      _model.removeAtIndexFromShareWith(
+                                                                          oldMembersIndex);
+                                                                      safeSetState(
+                                                                          () {});
+                                                                    },
+                                                                    child:
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        border:
+                                                                            Border.all(
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).error,
+                                                                        ),
+                                                                      ),
+                                                                      child:
+                                                                          Align(
+                                                                        alignment: AlignmentDirectional(
+                                                                            0.0,
+                                                                            0.0),
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: EdgeInsetsDirectional.fromSTEB(
+                                                                              4.0,
+                                                                              4.0,
+                                                                              4.0,
+                                                                              3.0),
+                                                                          child:
+                                                                              FaIcon(
+                                                                            FontAwesomeIcons.minus,
+                                                                            color:
+                                                                                FlutterFlowTheme.of(context).error,
+                                                                            size:
+                                                                                16.0,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ].divide(SizedBox(
+                                                                    width:
+                                                                        8.0)),
+                                                              );
+                                                            }).divide(SizedBox(
+                                                                height: 4.0)),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              );
+                                            },
                                           ),
-                                        ]
-                                            .divide(SizedBox(height: 16.0))
-                                            .around(SizedBox(height: 16.0)),
+                                        ].divide(SizedBox(height: 4.0)),
+                                      ),
+                                    ),
+                                  ].divide(SizedBox(height: 16.0)),
+                                ),
+                                Divider(
+                                  thickness: 1.0,
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 200.0,
+                                      height: 200.0,
+                                      decoration: BoxDecoration(),
+                                      child: wrapWithModel(
+                                        model: _model.imageUploaderModel,
+                                        updateCallback: () =>
+                                            safeSetState(() {}),
+                                        child: ImageUploaderWidget(
+                                          onUpload: (file) async {
+                                            if (file != null &&
+                                                (file.bytes?.isNotEmpty ??
+                                                    false)) {
+                                              _model.photo = file;
+                                              safeSetState(() {});
+                                            }
+                                          },
+                                          onRemove: () async {
+                                            _model.photo = null;
+                                            safeSetState(() {});
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
+                              ]
+                                  .divide(SizedBox(height: 32.0))
+                                  .addToStart(SizedBox(height: 16.0))
+                                  .addToEnd(SizedBox(height: 16.0)),
                             ),
-                          ]
-                              .divide(SizedBox(height: 32.0))
-                              .addToStart(SizedBox(height: 16.0))
-                              .addToEnd(SizedBox(height: 16.0)),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            0.0, 16.0, 0.0, 16.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  32.0, 0.0, 32.0, 0.0),
-                              child: FFButtonWidget(
-                                onPressed: () async {
-                                  if (_model.newImage != null &&
-                                      (_model.newImage?.bytes?.isNotEmpty ??
-                                          false)) {
-                                    {
-                                      safeSetState(
-                                          () => _model.isDataUploading = true);
-                                      var selectedUploadedFiles =
-                                          <FFUploadedFile>[];
-                                      var selectedMedia = <SelectedFile>[];
-                                      var downloadUrls = <String>[];
-                                      try {
-                                        selectedUploadedFiles =
-                                            _model.newImage!.bytes!.isNotEmpty
-                                                ? [_model.newImage!]
-                                                : <FFUploadedFile>[];
-                                        selectedMedia =
-                                            selectedFilesFromUploadedFiles(
-                                          selectedUploadedFiles,
-                                        );
-                                        downloadUrls = (await Future.wait(
-                                          selectedMedia.map(
-                                            (m) async => await uploadData(
-                                                m.storagePath, m.bytes),
-                                          ),
-                                        ))
-                                            .where((u) => u != null)
-                                            .map((u) => u!)
-                                            .toList();
-                                      } finally {
-                                        _model.isDataUploading = false;
-                                      }
-                                      if (selectedUploadedFiles.length ==
-                                              selectedMedia.length &&
-                                          downloadUrls.length ==
-                                              selectedMedia.length) {
-                                        safeSetState(() {
-                                          _model.uploadedLocalFile =
-                                              selectedUploadedFiles.first;
-                                          _model.uploadedFileUrl =
-                                              downloadUrls.first;
-                                        });
-                                      } else {
-                                        safeSetState(() {});
-                                        return;
-                                      }
-                                    }
-
-                                    await widget!.trip!
-                                        .update(createTripRecordData(
-                                      name: _model
-                                          .textFieldNameTextController.text,
-                                      editDate: getCurrentTimestamp,
-                                      image: _model.uploadedFileUrl,
-                                    ));
-                                  } else if (_model
-                                      .imageUploaderModel.removedImage) {
-                                    await widget!.trip!
-                                        .update(createTripRecordData(
-                                      name: _model
-                                          .textFieldNameTextController.text,
-                                      editDate: getCurrentTimestamp,
-                                      image: null,
-                                    ));
-                                  } else {
-                                    await widget!.trip!
-                                        .update(createTripRecordData(
-                                      name: _model
-                                          .textFieldNameTextController.text,
-                                      editDate: getCurrentTimestamp,
-                                    ));
-                                  }
-
-                                  _model.loopCounter = 0;
-                                  safeSetState(() {});
-                                  while (_model.loopCounter <
-                                      _model.newMembers.length) {
-                                    _model.userInvsRef = await actions
-                                        .getOrCreateUserInvitationsRef(
-                                      null,
-                                      _model.newMembers[_model.loopCounter],
-                                    );
-
-                                    await TripInvitationRecord.createDoc(
-                                            _model.userInvsRef!)
-                                        .set(createTripInvitationRecordData(
-                                      trip: widget!.trip,
-                                      invitedBy: currentUserReference,
-                                      dateInvited: getCurrentTimestamp,
-                                      status: RequestStatus.Requested,
-                                    ));
-                                    _model.loopCounter = _model.loopCounter + 1;
-                                  }
-
-                                  context.pushNamed('Logs');
-
-                                  safeSetState(() {});
-                                },
-                                text: 'Save trip',
-                                options: FFButtonOptions(
-                                  height: 40.0,
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      16.0, 0.0, 16.0, 0.0),
-                                  iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 0.0),
-                                  color: FlutterFlowTheme.of(context).primary,
-                                  textStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .override(
-                                        fontFamily: 'Inter Tight',
-                                        color: Colors.white,
-                                        letterSpacing: 0.0,
-                                      ),
-                                  elevation: 0.0,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(32.0, 16.0, 32.0, 0.0),
+                  child: FFButtonWidget(
+                    onPressed: (_model.textController1.text == null ||
+                            _model.textController1.text == '')
+                        ? null
+                        : () async {
+                            var _shouldSetState = false;
+                            if (_model.textFieldShareTextController.text !=
+                                    null &&
+                                _model.textFieldShareTextController.text !=
+                                    '') {
+                              var confirmDialogResponse =
+                                  await showDialog<bool>(
+                                        context: context,
+                                        builder: (alertDialogContext) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                'You still have text in your share text box'),
+                                            content: Text(
+                                                'Are you sure you want to create this trip without submitting that email?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    alertDialogContext, false),
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    alertDialogContext, true),
+                                                child: Text('Confirm'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ) ??
+                                      false;
+                              if (!confirmDialogResponse) {
+                                if (_shouldSetState) safeSetState(() {});
+                                return;
+                              }
+                            }
+                            if (_model.photo != null &&
+                                (_model.photo?.bytes?.isNotEmpty ?? false)) {
+                              await actions.printToConsoleAction(
+                                'has photo',
+                              );
+                              {
+                                safeSetState(
+                                    () => _model.isDataUploading = true);
+                                var selectedUploadedFiles = <FFUploadedFile>[];
+                                var selectedMedia = <SelectedFile>[];
+                                var downloadUrls = <String>[];
+                                try {
+                                  selectedUploadedFiles =
+                                      _model.photo!.bytes!.isNotEmpty
+                                          ? [_model.photo!]
+                                          : <FFUploadedFile>[];
+                                  selectedMedia =
+                                      selectedFilesFromUploadedFiles(
+                                    selectedUploadedFiles,
+                                  );
+                                  downloadUrls = (await Future.wait(
+                                    selectedMedia.map(
+                                      (m) async => await uploadData(
+                                          m.storagePath, m.bytes),
+                                    ),
+                                  ))
+                                      .where((u) => u != null)
+                                      .map((u) => u!)
+                                      .toList();
+                                } finally {
+                                  _model.isDataUploading = false;
+                                }
+                                if (selectedUploadedFiles.length ==
+                                        selectedMedia.length &&
+                                    downloadUrls.length ==
+                                        selectedMedia.length) {
+                                  safeSetState(() {
+                                    _model.uploadedLocalFile =
+                                        selectedUploadedFiles.first;
+                                    _model.uploadedFileUrl = downloadUrls.first;
+                                  });
+                                } else {
+                                  safeSetState(() {});
+                                  return;
+                                }
+                              }
+
+                              _model.photoURL = _model.uploadedFileUrl;
+                            }
+                            if (widget!.trip != null) {
+                              await widget!.trip!.reference
+                                  .update(createTripRecordData(
+                                name: _model.textController1.text,
+                                editDate: getCurrentTimestamp,
+                                image: _model.photoURL,
+                              ));
+                            } else {
+                              var tripRecordReference =
+                                  TripRecord.collection.doc();
+                              await tripRecordReference.set({
+                                ...createTripRecordData(
+                                  name: _model.textController1.text,
+                                  creationDate: getCurrentTimestamp,
+                                  editDate: getCurrentTimestamp,
+                                  image: _model.photoURL,
+                                  ownedBy: currentUserReference,
+                                  tripDate: _model.selectedDate,
+                                ),
+                                ...mapToFirestore(
+                                  {
+                                    'members': [currentUserReference],
+                                    'shareRequests': _model.shareWith,
+                                  },
+                                ),
+                              });
+                              _model.newTripRef =
+                                  TripRecord.getDocumentFromData({
+                                ...createTripRecordData(
+                                  name: _model.textController1.text,
+                                  creationDate: getCurrentTimestamp,
+                                  editDate: getCurrentTimestamp,
+                                  image: _model.photoURL,
+                                  ownedBy: currentUserReference,
+                                  tripDate: _model.selectedDate,
+                                ),
+                                ...mapToFirestore(
+                                  {
+                                    'members': [currentUserReference],
+                                    'shareRequests': _model.shareWith,
+                                  },
+                                ),
+                              }, tripRecordReference);
+                              _shouldSetState = true;
+                              _model.thisTrip = _model.newTripRef;
+                              safeSetState(() {});
+                            }
+
+                            _model.loopCounter = 0;
+                            safeSetState(() {});
+                            while (
+                                _model.loopCounter < _model.shareWith.length) {
+                              _model.userInvsRef =
+                                  await actions.getOrCreateUserInvitationsRef(
+                                null,
+                                _model.shareWith[_model.loopCounter],
+                              );
+                              _shouldSetState = true;
+
+                              await TripInvitationRecord.createDoc(
+                                      _model.userInvsRef!)
+                                  .set(createTripInvitationRecordData(
+                                trip: _model.thisTrip?.reference,
+                                invitedBy: currentUserReference,
+                                dateInvited: getCurrentTimestamp,
+                                status: RequestStatus.Requested,
+                              ));
+                              _model.loopCounter = _model.loopCounter + 1;
+                            }
+                            if (Navigator.of(context).canPop()) {
+                              context.pop();
+                            }
+                            context.pushNamed(
+                              'Logs',
+                              queryParameters: {
+                                'trip': serializeParam(
+                                  _model.thisTrip,
+                                  ParamType.Document,
+                                ),
+                              }.withoutNulls,
+                              extra: <String, dynamic>{
+                                'trip': _model.thisTrip,
+                              },
+                            );
+
+                            if (_shouldSetState) safeSetState(() {});
+                          },
+                    text: widget!.trip != null ? 'Save trip' : 'Create trip',
+                    options: FFButtonOptions(
+                      height: 40.0,
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                      iconPadding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                      color: FlutterFlowTheme.of(context).primary,
+                      textStyle:
+                          FlutterFlowTheme.of(context).titleSmall.override(
+                                fontFamily: 'Inter Tight',
+                                color: Colors.white,
+                                letterSpacing: 0.0,
+                              ),
+                      elevation: 0.0,
+                      borderRadius: BorderRadius.circular(8.0),
+                      disabledColor: FlutterFlowTheme.of(context).tertiary,
+                      disabledTextColor: FlutterFlowTheme.of(context).alternate,
+                    ),
+                  ),
+                ),
+              ]
+                  .addToStart(SizedBox(height: 16.0))
+                  .addToEnd(SizedBox(height: 16.0)),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

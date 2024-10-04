@@ -113,7 +113,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'Logs',
               path: 'logs',
               requireAuth: true,
-              builder: (context, params) => LogsWidget(),
+              asyncParams: {
+                'trip': getDoc(['trip'], TripRecord.fromSnapshot),
+              },
+              builder: (context, params) => LogsWidget(
+                trip: params.getParam(
+                  'trip',
+                  ParamType.Document,
+                ),
+              ),
             ),
             FFRoute(
               name: 'ForgotPassword',
@@ -140,14 +148,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ),
             ),
             FFRoute(
-              name: 'CreateLog',
-              path: 'createLog',
-              builder: (context, params) => CreateLogWidget(
+              name: 'EditLog',
+              path: 'editLog',
+              asyncParams: {
+                'log': getDoc(['trip', 'log'], LogRecord.fromSnapshot),
+              },
+              builder: (context, params) => EditLogWidget(
                 trip: params.getParam(
                   'trip',
                   ParamType.DocumentReference,
                   isList: false,
                   collectionNamePath: ['trip'],
+                ),
+                log: params.getParam(
+                  'log',
+                  ParamType.Document,
                 ),
               ),
             ),
@@ -158,29 +173,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => TripsWidget(),
             ),
             FFRoute(
-              name: 'NewTrip',
-              path: 'newTrip',
+              name: 'EditTrip',
+              path: 'editTrip',
               requireAuth: true,
               asyncParams: {
                 'trip': getDoc(['trip'], TripRecord.fromSnapshot),
               },
-              builder: (context, params) => NewTripWidget(
-                trip: params.getParam(
-                  'trip',
-                  ParamType.Document,
-                ),
-              ),
-            ),
-            FFRoute(
-              name: 'EditTrip',
-              path: 'editTrip',
-              requireAuth: true,
               builder: (context, params) => EditTripWidget(
                 trip: params.getParam(
                   'trip',
-                  ParamType.DocumentReference,
-                  isList: false,
-                  collectionNamePath: ['trip'],
+                  ParamType.Document,
                 ),
               ),
             ),
@@ -190,23 +192,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => RequestPasswordChangeWidget(),
             ),
             FFRoute(
-              name: 'EditLog',
-              path: 'editLog',
-              asyncParams: {
-                'log': getDoc(['tripLog'], TripLogRecord.fromSnapshot),
-              },
-              builder: (context, params) => EditLogWidget(
-                log: params.getParam(
-                  'log',
-                  ParamType.Document,
-                ),
-              ),
-            ),
-            FFRoute(
               name: 'ViewLog',
               path: 'viewLog',
               asyncParams: {
-                'log': getDoc(['tripLog'], TripLogRecord.fromSnapshot),
+                'log': getDoc(['trip', 'log'], LogRecord.fromSnapshot),
               },
               builder: (context, params) => ViewLogWidget(
                 log: params.getParam(

@@ -9,8 +9,8 @@ import '/backend/schema/enums/enums.dart';
 import 'index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
-class TripLogRecord extends FirestoreRecord {
-  TripLogRecord._(
+class LogRecord extends FirestoreRecord {
+  LogRecord._(
     DocumentReference reference,
     Map<String, dynamic> data,
   ) : super(reference, data) {
@@ -67,6 +67,8 @@ class TripLogRecord extends FirestoreRecord {
   DateTime? get creationDate => _creationDate;
   bool hasCreationDate() => _creationDate != null;
 
+  DocumentReference get parentReference => reference.parent.parent!;
+
   void _initializeFields() {
     _recordings = getDataList(snapshotData['recordings']);
     _location = LocationDataStruct.maybeFromMap(snapshotData['location']);
@@ -80,41 +82,45 @@ class TripLogRecord extends FirestoreRecord {
     _creationDate = snapshotData['creationDate'] as DateTime?;
   }
 
-  static CollectionReference get collection =>
-      FirebaseFirestore.instance.collection('tripLog');
+  static Query<Map<String, dynamic>> collection([DocumentReference? parent]) =>
+      parent != null
+          ? parent.collection('log')
+          : FirebaseFirestore.instance.collectionGroup('log');
 
-  static Stream<TripLogRecord> getDocument(DocumentReference ref) =>
-      ref.snapshots().map((s) => TripLogRecord.fromSnapshot(s));
+  static DocumentReference createDoc(DocumentReference parent, {String? id}) =>
+      parent.collection('log').doc(id);
 
-  static Future<TripLogRecord> getDocumentOnce(DocumentReference ref) =>
-      ref.get().then((s) => TripLogRecord.fromSnapshot(s));
+  static Stream<LogRecord> getDocument(DocumentReference ref) =>
+      ref.snapshots().map((s) => LogRecord.fromSnapshot(s));
 
-  static TripLogRecord fromSnapshot(DocumentSnapshot snapshot) =>
-      TripLogRecord._(
+  static Future<LogRecord> getDocumentOnce(DocumentReference ref) =>
+      ref.get().then((s) => LogRecord.fromSnapshot(s));
+
+  static LogRecord fromSnapshot(DocumentSnapshot snapshot) => LogRecord._(
         snapshot.reference,
         mapFromFirestore(snapshot.data() as Map<String, dynamic>),
       );
 
-  static TripLogRecord getDocumentFromData(
+  static LogRecord getDocumentFromData(
     Map<String, dynamic> data,
     DocumentReference reference,
   ) =>
-      TripLogRecord._(reference, mapFromFirestore(data));
+      LogRecord._(reference, mapFromFirestore(data));
 
   @override
   String toString() =>
-      'TripLogRecord(reference: ${reference.path}, data: $snapshotData)';
+      'LogRecord(reference: ${reference.path}, data: $snapshotData)';
 
   @override
   int get hashCode => reference.path.hashCode;
 
   @override
   bool operator ==(other) =>
-      other is TripLogRecord &&
+      other is LogRecord &&
       reference.path.hashCode == other.reference.path.hashCode;
 }
 
-Map<String, dynamic> createTripLogRecordData({
+Map<String, dynamic> createLogRecordData({
   LocationDataStruct? location,
   DateTime? eventDate,
   String? notes,
@@ -145,11 +151,11 @@ Map<String, dynamic> createTripLogRecordData({
   return firestoreData;
 }
 
-class TripLogRecordDocumentEquality implements Equality<TripLogRecord> {
-  const TripLogRecordDocumentEquality();
+class LogRecordDocumentEquality implements Equality<LogRecord> {
+  const LogRecordDocumentEquality();
 
   @override
-  bool equals(TripLogRecord? e1, TripLogRecord? e2) {
+  bool equals(LogRecord? e1, LogRecord? e2) {
     const listEquality = ListEquality();
     return listEquality.equals(e1?.recordings, e2?.recordings) &&
         e1?.location == e2?.location &&
@@ -164,7 +170,7 @@ class TripLogRecordDocumentEquality implements Equality<TripLogRecord> {
   }
 
   @override
-  int hash(TripLogRecord? e) => const ListEquality().hash([
+  int hash(LogRecord? e) => const ListEquality().hash([
         e?.recordings,
         e?.location,
         e?.eventDate,
@@ -178,5 +184,5 @@ class TripLogRecordDocumentEquality implements Equality<TripLogRecord> {
       ]);
 
   @override
-  bool isValidKey(Object? o) => o is TripLogRecord;
+  bool isValidKey(Object? o) => o is LogRecord;
 }

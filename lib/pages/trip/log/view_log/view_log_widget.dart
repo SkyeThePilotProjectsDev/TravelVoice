@@ -1,4 +1,3 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -16,7 +15,7 @@ class ViewLogWidget extends StatefulWidget {
     required this.log,
   });
 
-  final TripLogRecord? log;
+  final LogRecord? log;
 
   @override
   State<ViewLogWidget> createState() => _ViewLogWidgetState();
@@ -32,12 +31,9 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
     super.initState();
     _model = createModel(context, () => ViewLogModel());
 
-    _model.textFieldNotesTextController1 ??= TextEditingController();
-    _model.textFieldNotesFocusNode1 ??= FocusNode();
-
-    _model.textFieldNotesTextController2 ??=
+    _model.textFieldNotesTextController ??=
         TextEditingController(text: widget!.log?.notes);
-    _model.textFieldNotesFocusNode2 ??= FocusNode();
+    _model.textFieldNotesFocusNode ??= FocusNode();
   }
 
   @override
@@ -67,43 +63,35 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FFButtonWidget(
-                        onPressed: () async {
-                          context.pushNamed('Logs');
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          context.safePop();
                         },
-                        text: 'Back',
-                        icon: Icon(
-                          Icons.arrow_back,
-                          size: 15.0,
-                        ),
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              24.0, 0.0, 24.0, 0.0),
-                          iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: Colors.transparent,
-                          textStyle: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .override(
-                                fontFamily: 'Inter Tight',
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                letterSpacing: 0.0,
-                              ),
-                          elevation: 0.0,
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primary,
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.circular(16.0),
+                        child: Icon(
+                          Icons.chevron_left_rounded,
+                          color: FlutterFlowTheme.of(context).primaryText,
+                          size: 40.0,
                         ),
                       ),
-                      if (widget!.log?.ownedBy == currentUserReference)
-                        FFButtonWidget(
-                          onPressed: () async {
+                      Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
                             context.pushNamed(
                               'EditLog',
                               queryParameters: {
+                                'trip': serializeParam(
+                                  widget!.log?.parentReference,
+                                  ParamType.DocumentReference,
+                                ),
                                 'log': serializeParam(
                                   widget!.log,
                                   ParamType.Document,
@@ -114,34 +102,13 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                               },
                             );
                           },
-                          text: 'Edit',
-                          icon: Icon(
+                          child: Icon(
                             Icons.edit,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            height: 40.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                24.0, 0.0, 24.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Colors.transparent,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  fontFamily: 'Inter Tight',
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  letterSpacing: 0.0,
-                                ),
-                            elevation: 0.0,
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).primary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(16.0),
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            size: 30.0,
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -297,117 +264,6 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'AI Summary:',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                        TextFormField(
-                                          controller: _model
-                                              .textFieldNotesTextController1,
-                                          focusNode:
-                                              _model.textFieldNotesFocusNode1,
-                                          autofocus: false,
-                                          readOnly: true,
-                                          obscureText: false,
-                                          decoration: InputDecoration(
-                                            isDense: false,
-                                            labelStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      fontFamily: 'Inter',
-                                                      letterSpacing: 0.0,
-                                                    ),
-                                            hintText: 'Not yet implemented',
-                                            hintStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      fontFamily: 'Inter',
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .alternate,
-                                                      letterSpacing: 0.0,
-                                                    ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            filled: true,
-                                            fillColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .secondaryBackground,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0.0,
-                                              ),
-                                          maxLines: null,
-                                          minLines: 3,
-                                          cursorColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .primaryText,
-                                          validator: _model
-                                              .textFieldNotesTextController1Validator
-                                              .asValidator(context),
-                                        ),
-                                      ],
-                                    ),
-                                    Divider(
-                                      thickness: 2.0,
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                    ),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
                                           'Notes:',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
@@ -418,9 +274,9 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                         ),
                                         TextFormField(
                                           controller: _model
-                                              .textFieldNotesTextController2,
+                                              .textFieldNotesTextController,
                                           focusNode:
-                                              _model.textFieldNotesFocusNode2,
+                                              _model.textFieldNotesFocusNode,
                                           autofocus: false,
                                           readOnly: true,
                                           obscureText: false,
@@ -503,7 +359,7 @@ class _ViewLogWidgetState extends State<ViewLogWidget> {
                                               FlutterFlowTheme.of(context)
                                                   .primaryText,
                                           validator: _model
-                                              .textFieldNotesTextController2Validator
+                                              .textFieldNotesTextControllerValidator
                                               .asValidator(context),
                                         ),
                                       ],

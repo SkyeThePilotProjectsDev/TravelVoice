@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
+import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
@@ -10,12 +11,10 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'edit_log_widget.dart' show EditLogWidget;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -47,9 +46,13 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
 
   bool placeSelected = false;
 
+  String? newImage;
+
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();
+  // Stores action output result for [Bottom Sheet - createRecording] action in EditLog widget.
+  String? recordingInit;
   // Stores action output result for [Bottom Sheet - createRecording] action in Button widget.
   String? recording;
   // State field(s) for TextField_City widget.
@@ -58,20 +61,8 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
   String? Function(BuildContext, String?)? textFieldCityTextControllerValidator;
   // Model for PlaceSuggestions component.
   late PlaceSuggestionsModel placeSuggestionsModel;
-  // State field(s) for TextField_Year widget.
-  FocusNode? textFieldYearFocusNode;
-  TextEditingController? textFieldYearTextController;
-  String? Function(BuildContext, String?)? textFieldYearTextControllerValidator;
-  // State field(s) for TextField_Month widget.
-  FocusNode? textFieldMonthFocusNode;
-  TextEditingController? textFieldMonthTextController;
-  String? Function(BuildContext, String?)?
-      textFieldMonthTextControllerValidator;
-  // State field(s) for TextField_Day widget.
-  FocusNode? textFieldDayFocusNode;
-  TextEditingController? textFieldDayTextController;
-  String? Function(BuildContext, String?)? textFieldDayTextControllerValidator;
-  DateTime? datePicked;
+  // Model for DatePicker component.
+  late DatePickerModel datePickerModel;
   // State field(s) for TextField_Notes widget.
   FocusNode? textFieldNotesFocusNode;
   TextEditingController? textFieldNotesTextController;
@@ -84,12 +75,13 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
       FFUploadedFile(bytes: Uint8List.fromList([]));
   String uploadedFileUrl = '';
 
-  // Stores action output result for [Backend Call - Read Document] action in Button widget.
-  TripLogRecord? updatedLog;
+  // Stores action output result for [Backend Call - Create Document] action in Button widget.
+  LogRecord? newLog;
 
   @override
   void initState(BuildContext context) {
     placeSuggestionsModel = createModel(context, () => PlaceSuggestionsModel());
+    datePickerModel = createModel(context, () => DatePickerModel());
     imageUploaderModel = createModel(context, () => ImageUploaderModel());
   }
 
@@ -99,15 +91,7 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
     textFieldCityTextController?.dispose();
 
     placeSuggestionsModel.dispose();
-    textFieldYearFocusNode?.dispose();
-    textFieldYearTextController?.dispose();
-
-    textFieldMonthFocusNode?.dispose();
-    textFieldMonthTextController?.dispose();
-
-    textFieldDayFocusNode?.dispose();
-    textFieldDayTextController?.dispose();
-
+    datePickerModel.dispose();
     textFieldNotesFocusNode?.dispose();
     textFieldNotesTextController?.dispose();
 

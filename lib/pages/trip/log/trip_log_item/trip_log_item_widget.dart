@@ -16,7 +16,7 @@ class TripLogItemWidget extends StatefulWidget {
     this.log,
   });
 
-  final TripLogRecord? log;
+  final LogRecord? log;
 
   @override
   State<TripLogItemWidget> createState() => _TripLogItemWidgetState();
