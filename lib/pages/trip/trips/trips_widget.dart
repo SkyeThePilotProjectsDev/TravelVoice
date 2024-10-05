@@ -454,16 +454,23 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                         0.0, 0.0, 16.0, 0.0),
                                                 child: Builder(
                                                   builder: (context) {
-                                                    final trips =
-                                                        tripsQueryTripRecordList
-                                                            .where((e) =>
-                                                                functions.contains(
-                                                                    e.name,
-                                                                    _model
-                                                                        .textController
-                                                                        .text,
-                                                                    false))
-                                                            .toList();
+                                                    final trips = tripsQueryTripRecordList
+                                                        .where((e) =>
+                                                            functions.contains(
+                                                                e.name,
+                                                                _model
+                                                                    .textController
+                                                                    .text,
+                                                                false))
+                                                        .toList()
+                                                        .sortedList(
+                                                            keyOf: (e) => e
+                                                                        .tripDate !=
+                                                                    null
+                                                                ? e.tripDate!
+                                                                : getCurrentTimestamp,
+                                                            desc: true)
+                                                        .toList();
                                                     if (trips.isEmpty) {
                                                       return EmptyListWidget();
                                                     }

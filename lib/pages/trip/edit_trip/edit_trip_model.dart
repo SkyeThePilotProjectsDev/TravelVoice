@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/enums/enums.dart';
+import '/backend/schema/structs/index.dart';
 import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';

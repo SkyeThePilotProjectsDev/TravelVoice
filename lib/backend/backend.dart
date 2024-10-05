@@ -10,6 +10,7 @@ import 'schema/trip_record.dart';
 import 'schema/invitations_record.dart';
 import 'schema/trip_invitation_record.dart';
 import 'schema/log_record.dart';
+import 'schema/mail_record.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart' hide Order;
@@ -23,6 +24,7 @@ export 'schema/trip_record.dart';
 export 'schema/invitations_record.dart';
 export 'schema/trip_invitation_record.dart';
 export 'schema/log_record.dart';
+export 'schema/mail_record.dart';
 
 /// Functions to query UsersRecords (as a Stream and as a Future).
 Future<int> queryUsersRecordCount({
@@ -210,6 +212,43 @@ Future<List<LogRecord>> queryLogRecordOnce({
     queryCollectionOnce(
       LogRecord.collection(parent),
       LogRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+/// Functions to query MailRecords (as a Stream and as a Future).
+Future<int> queryMailRecordCount({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+}) =>
+    queryCollectionCount(
+      MailRecord.collection,
+      queryBuilder: queryBuilder,
+      limit: limit,
+    );
+
+Stream<List<MailRecord>> queryMailRecord({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollection(
+      MailRecord.collection,
+      MailRecord.fromSnapshot,
+      queryBuilder: queryBuilder,
+      limit: limit,
+      singleRecord: singleRecord,
+    );
+
+Future<List<MailRecord>> queryMailRecordOnce({
+  Query Function(Query)? queryBuilder,
+  int limit = -1,
+  bool singleRecord = false,
+}) =>
+    queryCollectionOnce(
+      MailRecord.collection,
+      MailRecord.fromSnapshot,
       queryBuilder: queryBuilder,
       limit: limit,
       singleRecord: singleRecord,

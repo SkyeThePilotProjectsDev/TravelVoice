@@ -179,3 +179,30 @@ LocationDataStruct? placeToLocation(PlaceSearchStruct? place) {
     locationText: place.formattedAddress,
   );
 }
+
+String buildInvite(
+  String from,
+  String? image,
+  String tripName,
+) {
+  String background = image == null || image.isEmpty
+      ? "background-color: #8fbfbf;"
+      : "background: url('${image}') no-repeat center; background-size: cover;";
+  return """<div width="100%" style="background-color: #8fbfbf;">
+    <center>
+      <h1 style="color: white; font-weight: bold; font-size: 500%; padding: 30px;">Travelvoice</h1>
+    </center>
+  </div>
+
+  <center>
+    <span style="font-size: 200%;"><strong>$from</strong> invites you to join their trip</span>
+  </center>
+
+  <div style="width: 100%; $background">
+    <center>
+      <h1 style="padding: 30px 0; font-size: 200%; color: white;">$tripName</h1> 
+    </center>
+  </div>
+  <h2>Open your Travelvoice app to accept the invitation</h2>
+  <h4>Download the Travelvoice app here {{Play Store URL}} or here {{App store URL}}</h4>""";
+}

@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/enums/enums.dart';
+import '/backend/schema/structs/index.dart';
 import '/components/date_picker_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -49,6 +50,11 @@ class _EditTripWidgetState extends State<EditTripWidget> {
       _model.selectedDate = getCurrentTimestamp;
       if (widget!.trip != null) {
         _model.thisTrip = widget!.trip;
+        _model.selectedDate =
+            (widget!.trip != null) && (widget!.trip?.tripDate != null)
+                ? widget!.trip?.tripDate
+                : getCurrentTimestamp;
+        _model.photoURL = widget!.trip?.image;
       }
     });
 
@@ -302,7 +308,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       model: _model.datePickerModel,
                                       updateCallback: () => safeSetState(() {}),
                                       child: DatePickerWidget(
-                                        defaultDate: widget!.trip != null
+                                        defaultDate: (widget!.trip != null) &&
+                                                (widget!.trip?.tripDate != null)
                                             ? widget!.trip!.tripDate!
                                             : getCurrentTimestamp,
                                         onChange: (setDate) async {
@@ -995,173 +1002,212 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                         ? null
                         : () async {
                             var _shouldSetState = false;
-                            if (_model.textFieldShareTextController.text !=
-                                    null &&
-                                _model.textFieldShareTextController.text !=
-                                    '') {
-                              var confirmDialogResponse =
-                                  await showDialog<bool>(
-                                        context: context,
-                                        builder: (alertDialogContext) {
-                                          return AlertDialog(
-                                            title: Text(
-                                                'You still have text in your share text box'),
-                                            content: Text(
-                                                'Are you sure you want to create this trip without submitting that email?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    alertDialogContext, false),
-                                                child: Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    alertDialogContext, true),
-                                                child: Text('Confirm'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ) ??
-                                      false;
-                              if (!confirmDialogResponse) {
-                                if (_shouldSetState) safeSetState(() {});
-                                return;
-                              }
-                            }
-                            if (_model.photo != null &&
-                                (_model.photo?.bytes?.isNotEmpty ?? false)) {
-                              await actions.printToConsoleAction(
-                                'has photo',
-                              );
-                              {
-                                safeSetState(
-                                    () => _model.isDataUploading = true);
-                                var selectedUploadedFiles = <FFUploadedFile>[];
-                                var selectedMedia = <SelectedFile>[];
-                                var downloadUrls = <String>[];
-                                try {
-                                  selectedUploadedFiles =
-                                      _model.photo!.bytes!.isNotEmpty
-                                          ? [_model.photo!]
-                                          : <FFUploadedFile>[];
-                                  selectedMedia =
-                                      selectedFilesFromUploadedFiles(
-                                    selectedUploadedFiles,
-                                  );
-                                  downloadUrls = (await Future.wait(
-                                    selectedMedia.map(
-                                      (m) async => await uploadData(
-                                          m.storagePath, m.bytes),
-                                    ),
-                                  ))
-                                      .where((u) => u != null)
-                                      .map((u) => u!)
-                                      .toList();
-                                } finally {
-                                  _model.isDataUploading = false;
-                                }
-                                if (selectedUploadedFiles.length ==
-                                        selectedMedia.length &&
-                                    downloadUrls.length ==
-                                        selectedMedia.length) {
-                                  safeSetState(() {
-                                    _model.uploadedLocalFile =
-                                        selectedUploadedFiles.first;
-                                    _model.uploadedFileUrl = downloadUrls.first;
-                                  });
-                                } else {
-                                  safeSetState(() {});
+                            final firestoreBatch =
+                                FirebaseFirestore.instance.batch();
+                            try {
+                              if (_model.textFieldShareTextController.text !=
+                                      null &&
+                                  _model.textFieldShareTextController.text !=
+                                      '') {
+                                var confirmDialogResponse =
+                                    await showDialog<bool>(
+                                          context: context,
+                                          builder: (alertDialogContext) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  'You still have text in your share text box'),
+                                              content: Text(
+                                                  'Are you sure you want to create this trip without submitting that email?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          alertDialogContext,
+                                                          false),
+                                                  child: Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          alertDialogContext,
+                                                          true),
+                                                  child: Text('Confirm'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ) ??
+                                        false;
+                                if (!confirmDialogResponse) {
+                                  if (_shouldSetState) safeSetState(() {});
                                   return;
                                 }
                               }
+                              if (_model.photo != null &&
+                                  (_model.photo?.bytes?.isNotEmpty ?? false)) {
+                                await actions.printToConsoleAction(
+                                  'has photo',
+                                );
+                                {
+                                  safeSetState(
+                                      () => _model.isDataUploading = true);
+                                  var selectedUploadedFiles =
+                                      <FFUploadedFile>[];
+                                  var selectedMedia = <SelectedFile>[];
+                                  var downloadUrls = <String>[];
+                                  try {
+                                    selectedUploadedFiles =
+                                        _model.photo!.bytes!.isNotEmpty
+                                            ? [_model.photo!]
+                                            : <FFUploadedFile>[];
+                                    selectedMedia =
+                                        selectedFilesFromUploadedFiles(
+                                      selectedUploadedFiles,
+                                    );
+                                    downloadUrls = (await Future.wait(
+                                      selectedMedia.map(
+                                        (m) async => await uploadData(
+                                            m.storagePath, m.bytes),
+                                      ),
+                                    ))
+                                        .where((u) => u != null)
+                                        .map((u) => u!)
+                                        .toList();
+                                  } finally {
+                                    _model.isDataUploading = false;
+                                  }
+                                  if (selectedUploadedFiles.length ==
+                                          selectedMedia.length &&
+                                      downloadUrls.length ==
+                                          selectedMedia.length) {
+                                    safeSetState(() {
+                                      _model.uploadedLocalFile =
+                                          selectedUploadedFiles.first;
+                                      _model.uploadedFileUrl =
+                                          downloadUrls.first;
+                                    });
+                                  } else {
+                                    safeSetState(() {});
+                                    return;
+                                  }
+                                }
 
-                              _model.photoURL = _model.uploadedFileUrl;
-                            }
-                            if (widget!.trip != null) {
-                              await widget!.trip!.reference
-                                  .update(createTripRecordData(
-                                name: _model.textController1.text,
-                                editDate: getCurrentTimestamp,
-                                image: _model.photoURL,
-                              ));
-                            } else {
-                              var tripRecordReference =
-                                  TripRecord.collection.doc();
-                              await tripRecordReference.set({
-                                ...createTripRecordData(
-                                  name: _model.textController1.text,
-                                  creationDate: getCurrentTimestamp,
-                                  editDate: getCurrentTimestamp,
-                                  image: _model.photoURL,
-                                  ownedBy: currentUserReference,
-                                  tripDate: _model.selectedDate,
-                                ),
-                                ...mapToFirestore(
-                                  {
-                                    'members': [currentUserReference],
-                                    'shareRequests': _model.shareWith,
-                                  },
-                                ),
-                              });
-                              _model.newTripRef =
-                                  TripRecord.getDocumentFromData({
-                                ...createTripRecordData(
-                                  name: _model.textController1.text,
-                                  creationDate: getCurrentTimestamp,
-                                  editDate: getCurrentTimestamp,
-                                  image: _model.photoURL,
-                                  ownedBy: currentUserReference,
-                                  tripDate: _model.selectedDate,
-                                ),
-                                ...mapToFirestore(
-                                  {
-                                    'members': [currentUserReference],
-                                    'shareRequests': _model.shareWith,
-                                  },
-                                ),
-                              }, tripRecordReference);
-                              _shouldSetState = true;
-                              _model.thisTrip = _model.newTripRef;
+                                _model.photoURL = _model.uploadedFileUrl;
+                              }
+                              if (widget!.trip != null) {
+                                firestoreBatch.update(
+                                    widget!.trip!.reference,
+                                    createTripRecordData(
+                                      name: _model.textController1.text,
+                                      editDate: getCurrentTimestamp,
+                                      image: _model.photoURL,
+                                    ));
+                              } else {
+                                var tripRecordReference =
+                                    TripRecord.collection.doc();
+                                firestoreBatch.set(tripRecordReference, {
+                                  ...createTripRecordData(
+                                    name: _model.textController1.text,
+                                    creationDate: getCurrentTimestamp,
+                                    editDate: getCurrentTimestamp,
+                                    image: _model.photoURL,
+                                    ownedBy: currentUserReference,
+                                    tripDate: _model.selectedDate,
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'members': [currentUserReference],
+                                      'shareRequests': _model.shareWith,
+                                    },
+                                  ),
+                                });
+                                _model.newTripRef =
+                                    TripRecord.getDocumentFromData({
+                                  ...createTripRecordData(
+                                    name: _model.textController1.text,
+                                    creationDate: getCurrentTimestamp,
+                                    editDate: getCurrentTimestamp,
+                                    image: _model.photoURL,
+                                    ownedBy: currentUserReference,
+                                    tripDate: _model.selectedDate,
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'members': [currentUserReference],
+                                      'shareRequests': _model.shareWith,
+                                    },
+                                  ),
+                                }, tripRecordReference);
+                                _shouldSetState = true;
+                                _model.thisTrip = _model.newTripRef;
+                                safeSetState(() {});
+                              }
+
+                              _model.loopCounter = 0;
                               safeSetState(() {});
-                            }
+                              while (_model.loopCounter <
+                                  _model.shareWith.length) {
+                                _model.userInvsRef =
+                                    await actions.getOrCreateUserInvitationsRef(
+                                  null,
+                                  _model.shareWith[_model.loopCounter],
+                                );
+                                _shouldSetState = true;
 
-                            _model.loopCounter = 0;
-                            safeSetState(() {});
-                            while (
-                                _model.loopCounter < _model.shareWith.length) {
-                              _model.userInvsRef =
-                                  await actions.getOrCreateUserInvitationsRef(
-                                null,
-                                _model.shareWith[_model.loopCounter],
+                                firestoreBatch.set(
+                                    TripInvitationRecord.createDoc(
+                                        _model.userInvsRef!),
+                                    createTripInvitationRecordData(
+                                      trip: _model.thisTrip?.reference,
+                                      invitedBy: currentUserReference,
+                                      dateInvited: getCurrentTimestamp,
+                                      status: RequestStatus.Requested,
+                                    ));
+
+                                firestoreBatch
+                                    .set(MailRecord.collection.doc(), {
+                                  ...createMailRecordData(
+                                    message: updateMessageStruct(
+                                      MessageStruct(
+                                        subject:
+                                            '${currentUserEmail} invites you to ${_model.textController1.text}',
+                                        html: functions.buildInvite(
+                                            currentUserEmail,
+                                            _model.photoURL,
+                                            _model.textController1.text),
+                                      ),
+                                      clearUnsetFields: false,
+                                      create: true,
+                                    ),
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'to': [
+                                        _model.shareWith[_model.loopCounter]
+                                      ],
+                                    },
+                                  ),
+                                });
+                                _model.loopCounter = _model.loopCounter + 1;
+                              }
+                              if (Navigator.of(context).canPop()) {
+                                context.pop();
+                              }
+                              context.pushNamed(
+                                'Logs',
+                                queryParameters: {
+                                  'trip': serializeParam(
+                                    _model.thisTrip,
+                                    ParamType.Document,
+                                  ),
+                                }.withoutNulls,
+                                extra: <String, dynamic>{
+                                  'trip': _model.thisTrip,
+                                },
                               );
-                              _shouldSetState = true;
-
-                              await TripInvitationRecord.createDoc(
-                                      _model.userInvsRef!)
-                                  .set(createTripInvitationRecordData(
-                                trip: _model.thisTrip?.reference,
-                                invitedBy: currentUserReference,
-                                dateInvited: getCurrentTimestamp,
-                                status: RequestStatus.Requested,
-                              ));
-                              _model.loopCounter = _model.loopCounter + 1;
+                            } finally {
+                              await firestoreBatch.commit();
                             }
-                            if (Navigator.of(context).canPop()) {
-                              context.pop();
-                            }
-                            context.pushNamed(
-                              'Logs',
-                              queryParameters: {
-                                'trip': serializeParam(
-                                  _model.thisTrip,
-                                  ParamType.Document,
-                                ),
-                              }.withoutNulls,
-                              extra: <String, dynamic>{
-                                'trip': _model.thisTrip,
-                              },
-                            );
 
                             if (_shouldSetState) safeSetState(() {});
                           },
