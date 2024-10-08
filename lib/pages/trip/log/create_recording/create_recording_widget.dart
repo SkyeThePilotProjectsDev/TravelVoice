@@ -70,6 +70,25 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.chevron_left_rounded,
+                  color: FlutterFlowTheme.of(context).primaryText,
+                  size: 40.0,
+                ),
+              ),
+            ],
+          ),
           Expanded(
             child: Form(
               key: _model.formKey,
@@ -81,29 +100,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                Navigator.pop(context);
-                              },
-                              child: Icon(
-                                Icons.chevron_left_rounded,
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                size: 40.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       InkWell(
                         splashColor: Colors.transparent,
                         focusColor: Colors.transparent,
