@@ -172,7 +172,7 @@ class _WaveformState extends State<Waveform> {
           showBottom: true,
           extendWaveform: true,
           showMiddleLine: false,
-          scaleFactor: 100,
+          scaleFactor: 70,
           gradient: ui.Gradient.linear(
             const Offset(70, 50),
             Offset(MediaQuery.of(context).size.width / 2, 0),
@@ -208,7 +208,7 @@ class _WaveformState extends State<Waveform> {
                 fixedWaveColor: _p,
                 liveWaveColor: _s,
                 spacing: 6,
-                scaleFactor: 200,
+                scaleFactor: 300,
               ),
             );
           },
