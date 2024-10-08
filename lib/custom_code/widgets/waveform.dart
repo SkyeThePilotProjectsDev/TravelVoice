@@ -65,6 +65,14 @@ class _WaveformState extends State<Waveform> {
   Offset _totalBackDistance = Offset.zero;
   Offset _dragOffset = Offset.zero;
 
+  Future<void> customSeekTo(int progress) async {
+    if (progress < 0) return;
+    if (true) {
+      await AudioWaveformsInterface.instance
+          .seekTo(pController.playerKey, progress);
+    }
+  }
+
   void _handleHorizontalDragStart(DragStartDetails details) =>
       _initialDragPosition = details.localPosition.dx;
 
@@ -77,7 +85,7 @@ class _WaveformState extends State<Waveform> {
     scrollScale = 1.0;
     if (mounted) setState(() {});
 
-    pController.seekTo(
+    customSeekTo(
       (pController.maxDuration * _proportion).toInt(),
     );
   }
@@ -132,7 +140,7 @@ class _WaveformState extends State<Waveform> {
     _proportion = details.localPosition.dx / (widget.width ?? 1);
     var seekPosition = pController.maxDuration * _proportion;
 
-    pController.seekTo(seekPosition.toInt());
+    customSeekTo(seekPosition.toInt());
   }
 
   Future prep() async {
