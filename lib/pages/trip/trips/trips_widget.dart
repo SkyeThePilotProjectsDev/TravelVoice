@@ -10,7 +10,6 @@ import '/pages/user/profile_icon/profile_icon_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -116,15 +115,24 @@ class _TripsWidgetState extends State<TripsWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      'Trips',
-                                      style: FlutterFlowTheme.of(context)
-                                          .displaySmall
-                                          .override(
-                                            fontFamily: 'Inter Tight',
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    child: InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () async {
+                                        context.pushNamed('test');
+                                      },
+                                      child: Text(
+                                        'Trips',
+                                        style: FlutterFlowTheme.of(context)
+                                            .displaySmall
+                                            .override(
+                                              fontFamily: 'Inter Tight',
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
                                     ),
                                   ),
                                   Container(
@@ -486,197 +494,205 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                           (tripsIndex) {
                                                         final tripsItem =
                                                             trips[tripsIndex];
-                                                        return InkWell(
-                                                          splashColor: Colors
-                                                              .transparent,
-                                                          focusColor: Colors
-                                                              .transparent,
-                                                          hoverColor: Colors
-                                                              .transparent,
-                                                          highlightColor: Colors
-                                                              .transparent,
-                                                          onTap: () async {
-                                                            context.pushNamed(
-                                                              'Logs',
-                                                              queryParameters: {
-                                                                'trip':
-                                                                    serializeParam(
-                                                                  tripsItem,
-                                                                  ParamType
-                                                                      .Document,
-                                                                ),
-                                                              }.withoutNulls,
-                                                              extra: <String,
-                                                                  dynamic>{
-                                                                'trip':
+                                                        return Container(
+                                                          height: 100.0,
+                                                          decoration:
+                                                              BoxDecoration(),
+                                                          child: InkWell(
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            focusColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            onTap: () async {
+                                                              context.pushNamed(
+                                                                'Logs',
+                                                                queryParameters:
+                                                                    {
+                                                                  'trip':
+                                                                      serializeParam(
                                                                     tripsItem,
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Builder(
-                                                            builder: (context) {
-                                                              if (tripsItem
-                                                                          .image !=
-                                                                      null &&
-                                                                  tripsItem
-                                                                          .image !=
-                                                                      '') {
-                                                                return Material(
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                  elevation:
-                                                                      4.0,
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            8.0),
+                                                                    ParamType
+                                                                        .Document,
                                                                   ),
-                                                                  child:
-                                                                      Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      image:
-                                                                          DecorationImage(
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        image:
-                                                                            CachedNetworkImageProvider(
-                                                                          tripsItem
-                                                                              .image,
+                                                                }.withoutNulls,
+                                                                extra: <String,
+                                                                    dynamic>{
+                                                                  'trip':
+                                                                      tripsItem,
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Builder(
+                                                              builder:
+                                                                  (context) {
+                                                                if (tripsItem
+                                                                            .image !=
+                                                                        null &&
+                                                                    tripsItem
+                                                                            .image !=
+                                                                        '') {
+                                                                  return Material(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    elevation:
+                                                                        4.0,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                    ),
+                                                                    child:
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
+                                                                      ),
+                                                                      child:
+                                                                          Stack(
+                                                                        children: [
+                                                                          Hero(
+                                                                            tag:
+                                                                                tripsItem.image,
+                                                                            transitionOnUserGestures:
+                                                                                true,
+                                                                            child:
+                                                                                ClipRRect(
+                                                                              borderRadius: BorderRadius.circular(8.0),
+                                                                              child: Image.network(
+                                                                                tripsItem.image,
+                                                                                width: MediaQuery.sizeOf(context).width * 1.0,
+                                                                                height: MediaQuery.sizeOf(context).height * 1.0,
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding: EdgeInsetsDirectional.fromSTEB(
+                                                                                8.0,
+                                                                                4.0,
+                                                                                8.0,
+                                                                                4.0),
+                                                                            child:
+                                                                                Column(
+                                                                              mainAxisSize: MainAxisSize.max,
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                              children: [
+                                                                                AutoSizeText(
+                                                                                  tripsItem.name,
+                                                                                  maxLines: 1,
+                                                                                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                                                                        fontFamily: 'Inter Tight',
+                                                                                        color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                        fontSize: 30.0,
+                                                                                        letterSpacing: 0.0,
+                                                                                      ),
+                                                                                ),
+                                                                                Row(
+                                                                                  mainAxisSize: MainAxisSize.max,
+                                                                                  children: [
+                                                                                    Icon(
+                                                                                      Icons.calendar_month,
+                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                      size: 16.0,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      dateTimeFormat("MMMMd", tripsItem.creationDate!),
+                                                                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                            fontFamily: 'Inter',
+                                                                                            color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                            letterSpacing: 0.0,
+                                                                                          ),
+                                                                                    ),
+                                                                                  ].divide(SizedBox(width: 8.0)),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                } else {
+                                                                  return Material(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    elevation:
+                                                                        4.0,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8.0),
+                                                                    ),
+                                                                    child:
+                                                                        Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .primary,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
+                                                                      ),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                                                            8.0,
+                                                                            4.0,
+                                                                            8.0,
+                                                                            4.0),
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.max,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.stretch,
+                                                                          children: [
+                                                                            AutoSizeText(
+                                                                              tripsItem.name,
+                                                                              maxLines: 1,
+                                                                              style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                                                                    fontFamily: 'Inter Tight',
+                                                                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                    fontSize: 30.0,
+                                                                                    letterSpacing: 0.0,
+                                                                                  ),
+                                                                            ),
+                                                                            Row(
+                                                                              mainAxisSize: MainAxisSize.max,
+                                                                              children: [
+                                                                                Icon(
+                                                                                  Icons.calendar_month,
+                                                                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                  size: 16.0,
+                                                                                ),
+                                                                                Text(
+                                                                                  dateTimeFormat("MMMMd", tripsItem.creationDate!),
+                                                                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                        fontFamily: 'Inter',
+                                                                                        color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                        letterSpacing: 0.0,
+                                                                                      ),
+                                                                                ),
+                                                                              ].divide(SizedBox(width: 8.0)),
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
                                                                     ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                                                          8.0,
-                                                                          4.0,
-                                                                          8.0,
-                                                                          4.0),
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.stretch,
-                                                                        children:
-                                                                            [
-                                                                          AutoSizeText(
-                                                                            tripsItem.name,
-                                                                            maxLines:
-                                                                                1,
-                                                                            style: FlutterFlowTheme.of(context).headlineMedium.override(
-                                                                                  fontFamily: 'Inter Tight',
-                                                                                  color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                  fontSize: 30.0,
-                                                                                  letterSpacing: 0.0,
-                                                                                ),
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.max,
-                                                                            children:
-                                                                                [
-                                                                              Icon(
-                                                                                Icons.calendar_month,
-                                                                                color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                size: 16.0,
-                                                                              ),
-                                                                              Text(
-                                                                                dateTimeFormat("MMMMd", tripsItem.creationDate!),
-                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                      fontFamily: 'Inter',
-                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                      letterSpacing: 0.0,
-                                                                                    ),
-                                                                              ),
-                                                                            ].divide(SizedBox(width: 8.0)),
-                                                                          ),
-                                                                        ].divide(SizedBox(height: 32.0)),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              } else {
-                                                                return Material(
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                  elevation:
-                                                                      4.0,
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            8.0),
-                                                                  ),
-                                                                  child:
-                                                                      Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .primary,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                                                          8.0,
-                                                                          4.0,
-                                                                          8.0,
-                                                                          4.0),
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.stretch,
-                                                                        children:
-                                                                            [
-                                                                          AutoSizeText(
-                                                                            tripsItem.name,
-                                                                            maxLines:
-                                                                                1,
-                                                                            style: FlutterFlowTheme.of(context).headlineMedium.override(
-                                                                                  fontFamily: 'Inter Tight',
-                                                                                  color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                  fontSize: 30.0,
-                                                                                  letterSpacing: 0.0,
-                                                                                ),
-                                                                          ),
-                                                                          Row(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.max,
-                                                                            children:
-                                                                                [
-                                                                              Icon(
-                                                                                Icons.calendar_month,
-                                                                                color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                size: 16.0,
-                                                                              ),
-                                                                              Text(
-                                                                                dateTimeFormat("MMMMd", tripsItem.creationDate!),
-                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                      fontFamily: 'Inter',
-                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
-                                                                                      letterSpacing: 0.0,
-                                                                                    ),
-                                                                              ),
-                                                                            ].divide(SizedBox(width: 8.0)),
-                                                                          ),
-                                                                        ].divide(SizedBox(height: 32.0)),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            },
+                                                                  );
+                                                                }
+                                                              },
+                                                            ),
                                                           ),
                                                         );
                                                       }).divide(SizedBox(

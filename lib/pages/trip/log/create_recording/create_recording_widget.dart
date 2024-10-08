@@ -355,297 +355,319 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(32.0, 0.0, 32.0, 0.0),
-            child: Container(
-              height: 125.0,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: AlignmentDirectional(
-                        valueOrDefault<double>(
-                          _model.newRecording != null &&
-                                  _model.newRecording != ''
-                              ? 1.0
-                              : 0.0,
-                          0.0,
-                        ),
-                        0.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        _model.newRecording = null;
-                        safeSetState(() {});
-                        _model.timerController.onResetTimer();
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 100),
-                        curve: Curves.easeInOut,
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).error,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.trashAlt,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 30.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional(
-                        valueOrDefault<double>(
-                          _model.newRecording != null &&
-                                  _model.newRecording != ''
-                              ? -1.0
-                              : 0.0,
-                          0.0,
-                        ),
-                        0.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        Navigator.pop(
-                            context,
-                            _model.newRecording != null &&
-                                    _model.newRecording != ''
-                                ? _model.newRecording
-                                : functions.defaultRecording());
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 100),
-                        curve: Curves.easeInOut,
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: Icon(
-                            Icons.check_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 36.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional(0.0, 0.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        if (_model.newRecording != null &&
-                            _model.newRecording != '') {
-                          if (_model.isPlaying) {
-                            await actions.printToConsoleAction(
-                              'Stopping play',
-                            );
-                            _model.isPlaying = false;
-                            _model.playerState = MediaPlayerActions.pause;
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedContainer(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                width: valueOrDefault<double>(
+                  _model.newRecording != null && _model.newRecording != ''
+                      ? MediaQuery.sizeOf(context).width
+                      : 120.0,
+                  120.0,
+                ),
+                height: valueOrDefault<double>(
+                  _model.newRecording != null && _model.newRecording != ''
+                      ? MediaQuery.sizeOf(context).width
+                      : 125.0,
+                  120.0,
+                ),
+                decoration: BoxDecoration(),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: AlignmentDirectional(1.0, 0.0),
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 32.0, 0.0),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            _model.newRecording = null;
                             safeSetState(() {});
-                          } else {
-                            await actions.printToConsoleAction(
-                              'Starting play',
-                            );
-                            _model.isPlaying = true;
-                            _model.playerState = MediaPlayerActions.play;
-                            safeSetState(() {});
-                          }
-                        } else {
-                          if (_model.isRecording) {
-                            await actions.printToConsoleAction(
-                              'Stopping recording',
-                            );
-                            _model.timerController.onStopTimer();
-                            _model.isRecording = false;
-                            _model.playerState = MediaPlayerActions.pause;
-                            safeSetState(() {});
-                          } else {
-                            await actions.printToConsoleAction(
-                              'Starting recording',
-                            );
                             _model.timerController.onResetTimer();
-
-                            _model.timerController.onStartTimer();
-                            _model.isRecording = true;
-                            _model.playerState = MediaPlayerActions.record;
-                            safeSetState(() {});
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: 125.0,
-                        height: 125.0,
-                        child: Stack(
-                          children: [
-                            Opacity(
-                              opacity: valueOrDefault<double>(
-                                _model.isRecording &&
-                                        (_model.newRecording == null ||
-                                            _model.newRecording == '')
-                                    ? 1.0
-                                    : 0.0,
-                                0.0,
-                              ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.easeInOut,
-                                  width: 125.0,
-                                  height: 125.0,
-                                  decoration: BoxDecoration(
-                                    color: Color(0x80FF5963),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Transform.scale(
-                                    scaleX: 0.8,
-                                    scaleY: 0.8,
-                                    child: Container(
-                                      width: MediaQuery.sizeOf(context).width *
-                                          1.0,
-                                      height: MediaQuery.sizeOf(context).width *
-                                          1.0,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.square_rounded,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 75.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                            width: _model.newRecording != null &&
+                                    _model.newRecording != ''
+                                ? 64.0
+                                : 32.0,
+                            height: _model.newRecording != null &&
+                                    _model.newRecording != ''
+                                ? 64.0
+                                : 32.0,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).error,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Align(
+                              alignment: AlignmentDirectional(0.0, 0.0),
+                              child: FaIcon(
+                                FontAwesomeIcons.trashAlt,
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                size: 30.0,
                               ),
                             ),
-                            Opacity(
-                              opacity: valueOrDefault<double>(
-                                _model.isRecording ||
-                                        (_model.newRecording != null &&
-                                            _model.newRecording != '')
-                                    ? 0.0
-                                    : 1.0,
-                                1.0,
-                              ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.easeInOut,
-                                  width: 125.0,
-                                  height: 125.0,
-                                  decoration: BoxDecoration(
-                                    color: Color(0x808FBFBF),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Transform.scale(
-                                    scaleX: 0.8,
-                                    scaleY: 0.8,
-                                    child: Container(
-                                      width: MediaQuery.sizeOf(context).width *
-                                          1.0,
-                                      height: MediaQuery.sizeOf(context).width *
-                                          1.0,
-                                      decoration: BoxDecoration(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.mic,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 75.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Opacity(
-                              opacity: valueOrDefault<double>(
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional(-1.0, 0.0),
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(32.0, 0.0, 0.0, 0.0),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            Navigator.pop(
+                                context,
                                 _model.newRecording != null &&
                                         _model.newRecording != ''
-                                    ? 1.0
-                                    : 0.0,
-                                0.0,
+                                    ? _model.newRecording
+                                    : functions.defaultRecording());
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                            width: _model.newRecording != null &&
+                                    _model.newRecording != ''
+                                ? 64.0
+                                : 32.0,
+                            height: _model.newRecording != null &&
+                                    _model.newRecording != ''
+                                ? 64.0
+                                : 32.0,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Align(
+                              alignment: AlignmentDirectional(0.0, 0.0),
+                              child: Icon(
+                                Icons.check_rounded,
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                size: 36.0,
                               ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.easeInOut,
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Align(
-                                    alignment: AlignmentDirectional(0.0, 0.0),
-                                    child: Builder(
-                                      builder: (context) {
-                                        if (_model.isPlaying) {
-                                          return Align(
-                                            alignment:
-                                                AlignmentDirectional(0.0, 0.0),
-                                            child: Icon(
-                                              Icons.pause_rounded,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryText,
-                                              size: 50.0,
-                                            ),
-                                          );
-                                        } else {
-                                          return Align(
-                                            alignment:
-                                                AlignmentDirectional(0.0, 0.0),
-                                            child: Icon(
-                                              Icons.play_arrow_rounded,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryText,
-                                              size: 50.0,
-                                            ),
-                                          );
-                                        }
-                                      },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional(0.0, 0.0),
+                      child: InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          if (_model.newRecording != null &&
+                              _model.newRecording != '') {
+                            if (_model.isPlaying) {
+                              await actions.printToConsoleAction(
+                                'Stopping play',
+                              );
+                              _model.isPlaying = false;
+                              _model.playerState = MediaPlayerActions.pause;
+                              safeSetState(() {});
+                            } else {
+                              await actions.printToConsoleAction(
+                                'Starting play',
+                              );
+                              _model.isPlaying = true;
+                              _model.playerState = MediaPlayerActions.play;
+                              safeSetState(() {});
+                            }
+                          } else {
+                            if (_model.isRecording) {
+                              await actions.printToConsoleAction(
+                                'Stopping recording',
+                              );
+                              _model.timerController.onStopTimer();
+                              _model.isRecording = false;
+                              _model.playerState = MediaPlayerActions.pause;
+                              safeSetState(() {});
+                            } else {
+                              await actions.printToConsoleAction(
+                                'Starting recording',
+                              );
+                              _model.timerController.onResetTimer();
+
+                              _model.timerController.onStartTimer();
+                              _model.isRecording = true;
+                              _model.playerState = MediaPlayerActions.record;
+                              safeSetState(() {});
+                            }
+                          }
+                        },
+                        child: Container(
+                          width: 125.0,
+                          height: 125.0,
+                          child: Stack(
+                            children: [
+                              Opacity(
+                                opacity: valueOrDefault<double>(
+                                  _model.isRecording &&
+                                          (_model.newRecording == null ||
+                                              _model.newRecording == '')
+                                      ? 1.0
+                                      : 0.0,
+                                  0.0,
+                                ),
+                                child: Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Container(
+                                    width: 125.0,
+                                    height: 125.0,
+                                    decoration: BoxDecoration(
+                                      color: Color(0x80FF5963),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Transform.scale(
+                                      scaleX: 0.8,
+                                      scaleY: 0.8,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        height:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context)
+                                              .error,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.square_rounded,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 75.0,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Opacity(
+                                opacity: valueOrDefault<double>(
+                                  _model.isRecording ||
+                                          (_model.newRecording != null &&
+                                              _model.newRecording != '')
+                                      ? 0.0
+                                      : 1.0,
+                                  1.0,
+                                ),
+                                child: Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Container(
+                                    width: 125.0,
+                                    height: 125.0,
+                                    decoration: BoxDecoration(
+                                      color: Color(0x808FBFBF),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Transform.scale(
+                                      scaleX: 0.8,
+                                      scaleY: 0.8,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        height:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context)
+                                              .primary,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.mic,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          size: 75.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Opacity(
+                                opacity: valueOrDefault<double>(
+                                  _model.newRecording != null &&
+                                          _model.newRecording != ''
+                                      ? 1.0
+                                      : 0.0,
+                                  0.0,
+                                ),
+                                child: Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Container(
+                                    width: 70.0,
+                                    height: 70.0,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          FlutterFlowTheme.of(context).primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.0, 0.0),
+                                      child: Builder(
+                                        builder: (context) {
+                                          if (_model.isPlaying) {
+                                            return Align(
+                                              alignment: AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Icon(
+                                                Icons.pause_rounded,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                size: 50.0,
+                                              ),
+                                            );
+                                          } else {
+                                            return Align(
+                                              alignment: AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Icon(
+                                                Icons.play_arrow_rounded,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                size: 50.0,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ].addToStart(SizedBox(height: 16.0)).addToEnd(SizedBox(height: 16.0)),
       ),

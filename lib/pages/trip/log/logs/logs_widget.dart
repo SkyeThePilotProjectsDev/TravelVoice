@@ -4,7 +4,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/trip/log/trip_log_item/trip_log_item_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -53,58 +52,103 @@ class _LogsWidgetState extends State<LogsWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Builder(
-                builder: (context) {
-                  if (widget!.trip?.image != null &&
-                      widget!.trip?.image != '') {
-                    return Container(
-                      height: 200.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
-                            widget!.trip!.image,
+              Container(
+                height: 200.0,
+                decoration: BoxDecoration(),
+                child: Builder(
+                  builder: (context) {
+                    if (widget!.trip?.image != null &&
+                        widget!.trip?.image != '') {
+                      return Stack(
+                        children: [
+                          Hero(
+                            tag: widget!.trip!.image,
+                            transitionOnUserGestures: true,
+                            child: Image.network(
+                              widget!.trip!.image,
+                              width: MediaQuery.sizeOf(context).width * 1.0,
+                              height: MediaQuery.sizeOf(context).height * 1.0,
+                              fit: BoxFit.cover,
+                            ),
                           ),
+                          Container(
+                            decoration: BoxDecoration(),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24.0, 0.0, 24.0, 0.0),
+                                    child: Text(
+                                      valueOrDefault<String>(
+                                        widget!.trip?.name,
+                                        '[Trip name]',
+                                      ),
+                                      maxLines: 3,
+                                      style: FlutterFlowTheme.of(context)
+                                          .displaySmall
+                                          .override(
+                                            fontFamily: 'Inter Tight',
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                                if (widget!.trip?.tripDate != null)
+                                  Align(
+                                    alignment: AlignmentDirectional(0.0, 0.0),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          24.0, 0.0, 24.0, 0.0),
+                                      child: Text(
+                                        dateTimeFormat("MMMM yyyy",
+                                            widget!.trip!.tripDate!),
+                                        maxLines: 3,
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleLarge
+                                            .override(
+                                              fontFamily: 'Inter Tight',
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              letterSpacing: 0.0,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Container(
+                        height: 200.0,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).primary,
                         ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              child: Text(
-                                valueOrDefault<String>(
-                                  widget!.trip?.name,
-                                  '[Trip name]',
-                                ),
-                                maxLines: 3,
-                                style: FlutterFlowTheme.of(context)
-                                    .displaySmall
-                                    .override(
-                                      fontFamily: 'Inter Tight',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                            ),
-                          ),
-                          if (widget!.trip?.tripDate != null)
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                             Align(
                               alignment: AlignmentDirectional(0.0, 0.0),
                               child: Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     24.0, 0.0, 24.0, 0.0),
                                 child: Text(
-                                  dateTimeFormat(
-                                      "MMMM yyyy", widget!.trip!.tripDate!),
+                                  valueOrDefault<String>(
+                                    widget!.trip?.name,
+                                    '[Trip name]',
+                                  ),
                                   maxLines: 3,
                                   style: FlutterFlowTheme.of(context)
-                                      .titleLarge
+                                      .displaySmall
                                       .override(
                                         fontFamily: 'Inter Tight',
                                         color: FlutterFlowTheme.of(context)
@@ -114,67 +158,33 @@ class _LogsWidgetState extends State<LogsWidget> {
                                 ),
                               ),
                             ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      height: 200.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primary,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              child: Text(
-                                valueOrDefault<String>(
-                                  widget!.trip?.name,
-                                  '[Trip name]',
-                                ),
-                                maxLines: 3,
-                                style: FlutterFlowTheme.of(context)
-                                    .displaySmall
-                                    .override(
-                                      fontFamily: 'Inter Tight',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                            ),
-                          ),
-                          if (widget!.trip?.tripDate != null)
-                            Align(
-                              alignment: AlignmentDirectional(0.0, 0.0),
-                              child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                child: Text(
-                                  dateTimeFormat(
-                                      "MMMM yyyy", widget!.trip!.tripDate!),
-                                  maxLines: 3,
-                                  style: FlutterFlowTheme.of(context)
-                                      .titleLarge
-                                      .override(
-                                        fontFamily: 'Inter Tight',
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        letterSpacing: 0.0,
-                                      ),
+                            if (widget!.trip?.tripDate != null)
+                              Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      24.0, 0.0, 24.0, 0.0),
+                                  child: Text(
+                                    dateTimeFormat(
+                                        "MMMM yyyy", widget!.trip!.tripDate!),
+                                    maxLines: 3,
+                                    style: FlutterFlowTheme.of(context)
+                                        .titleLarge
+                                        .override(
+                                          fontFamily: 'Inter Tight',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          letterSpacing: 0.0,
+                                        ),
+                                  ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
               Expanded(
                 child: Padding(
