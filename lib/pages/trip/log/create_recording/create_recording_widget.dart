@@ -370,7 +370,7 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                 ),
                 height: valueOrDefault<double>(
                   _model.newRecording != null && _model.newRecording != ''
-                      ? MediaQuery.sizeOf(context).width
+                      ? 90.0
                       : 125.0,
                   120.0,
                 ),
