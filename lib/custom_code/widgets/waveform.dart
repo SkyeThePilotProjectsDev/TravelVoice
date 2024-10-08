@@ -48,8 +48,96 @@ class _WaveformState extends State<Waveform> {
   MediaPlayerActions? state;
   String? path;
 
+  PlayerWaveStyle Function({Color p, Color s}) playerWaveStyle =
+      ({p = Colors.black, s = Colors.black}) => PlayerWaveStyle(
+            fixedWaveColor: p,
+            liveWaveColor: s,
+            spacing: 6,
+            scaleFactor: 300,
+          );
+
+  double _initialDragPosition = 0.0;
+  double _scrollDirection = 0.0;
+  bool _isScrolled = false;
+  double scrollScale = 1.0;
+  double _proportion = 0.0;
+
+  Offset _totalBackDistance = Offset.zero;
+  Offset _dragOffset = Offset.zero;
+
+  void _handleHorizontalDragStart(DragStartDetails details) =>
+      _initialDragPosition = details.localPosition.dx;
+
+  void _handleDragGestures(DragUpdateDetails details) {
+    _handleScrollUpdate(details);
+  }
+
+  void _handleOnDragEnd() {
+    _isScrolled = false;
+    scrollScale = 1.0;
+    if (mounted) setState(() {});
+
+    pController.seekTo(
+      (pController.maxDuration * _proportion).toInt(),
+    );
+  }
+
+  ///This method handles horizontal scrolling of the wave
+  void _handleScrollUpdate(DragUpdateDetails details) {
+    // Direction of the scroll. Negative value indicates scroll left to right
+    // and positive value indicates scroll right to left
+    _scrollDirection = details.localPosition.dx - _initialDragPosition;
+    pController.setRefresh(false);
+    _isScrolled = true;
+
+    scrollScale = playerWaveStyle().scrollScale;
+
+    // left to right
+    if (-_totalBackDistance.dx +
+                _dragOffset.dx +
+                details.delta.dx +
+                (playerWaveStyle().spacing) <
+            playerWaveStyle().spacing / 2 &&
+        _scrollDirection > 0) {
+      _dragOffset += details.delta;
+    }
+
+    // right to left
+    else if (-_totalBackDistance.dx +
+                _dragOffset.dx +
+                (playerWaveStyle().spacing * pController.waveformData.length) +
+                details.delta.dx >
+            -playerWaveStyle().spacing / 2 &&
+        _scrollDirection < 0) {
+      _dragOffset += details.delta;
+    }
+
+    // Indicates location of first wave
+    var start = -_totalBackDistance.dx +
+        _dragOffset.dx -
+        (playerWaveStyle().spacing / 2);
+
+    if (_scrollDirection < 0) {
+      _proportion = (start.abs() + details.delta.dx) /
+          (pController.waveformData.length * playerWaveStyle().spacing);
+    } else {
+      _proportion = (details.delta.dx - start) /
+          (pController.waveformData.length * playerWaveStyle().spacing);
+    }
+    if (mounted) setState(() {});
+  }
+
+  /// This method handles tap seek gesture
+  void _handleScrubberSeekStart(TapUpDetails details) {
+    _proportion = details.localPosition.dx / (widget.width ?? 1);
+    var seekPosition = pController.maxDuration * _proportion;
+
+    pController.seekTo(seekPosition.toInt());
+  }
+
   Future prep() async {
     print("path: $path");
+    _initialDragPosition = 0.0;
     if (path == null) return;
     // await pController.release();
     await pController.preparePlayer(
@@ -194,21 +282,27 @@ class _WaveformState extends State<Waveform> {
 
             if (data == null) return Container();
 
-            return AudioFileWaveforms(
-              size: Size(
-                widget.width ?? 100,
-                widget.widgetHeight ?? 100,
-              ),
-              playerController: pController,
-              enableSeekGesture: true,
-              waveformType: WaveformType.long,
-              continuousWaveform: true,
-              // waveformData: data,
-              playerWaveStyle: PlayerWaveStyle(
-                fixedWaveColor: _p,
-                liveWaveColor: _s,
-                spacing: 6,
-                scaleFactor: 300,
+            return GestureDetector(
+              onHorizontalDragUpdate: _handleDragGestures,
+              onTapUp: _handleScrubberSeekStart,
+              onHorizontalDragStart: _handleHorizontalDragStart,
+              onHorizontalDragEnd: (_) => _handleOnDragEnd(),
+              child: AudioFileWaveforms(
+                size: Size(
+                  widget.width ?? 100,
+                  widget.widgetHeight ?? 100,
+                ),
+                playerController: pController,
+                enableSeekGesture: true,
+                waveformType: WaveformType.long,
+                continuousWaveform: true,
+                // waveformData: data,
+                playerWaveStyle: PlayerWaveStyle(
+                  fixedWaveColor: _p,
+                  liveWaveColor: _s,
+                  spacing: 6,
+                  scaleFactor: 300,
+                ),
               ),
             );
           },
