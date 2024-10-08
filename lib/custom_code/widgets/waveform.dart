@@ -26,6 +26,7 @@ class Waveform extends StatefulWidget {
     required this.state,
     required this.onRecordingComplete,
     required this.onPlayingComplete,
+    required this.widgetHeight,
   });
 
   final double? width;
@@ -34,6 +35,7 @@ class Waveform extends StatefulWidget {
   final MediaPlayerActions state;
   final Future Function(String? audioPath) onRecordingComplete;
   final Future Function() onPlayingComplete;
+  final double widgetHeight;
 
   @override
   State<Waveform> createState() => _WaveformState();
@@ -157,7 +159,7 @@ class _WaveformState extends State<Waveform> {
       return AudioWaveforms(
         size: Size(
           widget.width ?? 100,
-          widget.height ?? 100,
+          widget.widgetHeight ?? 100,
         ),
         recorderController: rController,
         enableGesture: true,
@@ -195,7 +197,7 @@ class _WaveformState extends State<Waveform> {
             return AudioFileWaveforms(
               size: Size(
                 widget.width ?? 100,
-                widget.height ?? 100,
+                widget.widgetHeight ?? 100,
               ),
               playerController: pController,
               enableSeekGesture: true,

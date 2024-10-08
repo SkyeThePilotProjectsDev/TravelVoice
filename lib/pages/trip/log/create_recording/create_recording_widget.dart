@@ -123,8 +123,13 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               ),
                         ),
                       ),
-                      Container(
-                        height: 300.0,
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                        height: _model.newRecording != null &&
+                                _model.newRecording != ''
+                            ? 0.0
+                            : 300.0,
                         decoration: BoxDecoration(),
                         child: Builder(
                           builder: (context) {
@@ -275,49 +280,58 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                         ),
                       ),
-                      Builder(
-                        builder: (context) {
-                          if (!isWeb) {
-                            return Container(
-                              width: MediaQuery.sizeOf(context).width * 1.0,
-                              height: 100.0,
-                              child: custom_widgets.Waveform(
+                      Container(
+                        height: _model.newRecording != null &&
+                                _model.newRecording != ''
+                            ? 300.0
+                            : 75.0,
+                        decoration: BoxDecoration(),
+                        child: Builder(
+                          builder: (context) {
+                            if (!isWeb) {
+                              return Container(
                                 width: MediaQuery.sizeOf(context).width * 1.0,
                                 height: 100.0,
-                                audio: _model.newRecording,
-                                state: _model.playerState!,
-                                onRecordingComplete: (audioPath) async {
-                                  _model.newRecording =
-                                      functions.audioPathFix(audioPath);
-                                  _model.isPlaying = false;
-                                  safeSetState(() {});
-                                },
-                                onPlayingComplete: () async {
-                                  _model.isPlaying = false;
-                                  _model.playerState = MediaPlayerActions.pause;
-                                  safeSetState(() {});
-                                },
-                              ),
-                            );
-                          } else {
-                            return Text(
-                              'This functionality is only supported within the app',
-                              textAlign: TextAlign.center,
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .override(
-                                    fontFamily: 'Inter',
-                                    color: FlutterFlowTheme.of(context).error,
-                                    fontSize: 25.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                            );
-                          }
-                        },
-                      ),
-                      Divider(
-                        thickness: 2.0,
-                        color: FlutterFlowTheme.of(context).alternate,
+                                child: custom_widgets.Waveform(
+                                  width: MediaQuery.sizeOf(context).width * 1.0,
+                                  height: 100.0,
+                                  audio: _model.newRecording,
+                                  state: _model.playerState!,
+                                  widgetHeight: _model.newRecording != null &&
+                                          _model.newRecording != ''
+                                      ? 300.0
+                                      : 75.0,
+                                  onRecordingComplete: (audioPath) async {
+                                    _model.newRecording =
+                                        functions.audioPathFix(audioPath);
+                                    _model.isPlaying = false;
+                                    safeSetState(() {});
+                                  },
+                                  onPlayingComplete: () async {
+                                    _model.isPlaying = false;
+                                    _model.playerState =
+                                        MediaPlayerActions.pause;
+                                    safeSetState(() {});
+                                  },
+                                ),
+                              );
+                            } else {
+                              return AutoSizeText(
+                                'This functionality is only supported within the app',
+                                textAlign: TextAlign.center,
+                                minFontSize: 5.0,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Inter',
+                                      color: FlutterFlowTheme.of(context).error,
+                                      fontSize: 25.0,
+                                      letterSpacing: 0.0,
+                                    ),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       Align(
                         alignment: AlignmentDirectional(0.0, 0.0),
