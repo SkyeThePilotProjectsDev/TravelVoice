@@ -73,7 +73,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
           },
         ).then((value) => safeSetState(() => _model.recordingInit = value));
 
-        if (_model.recording != null && _model.recording != '') {
+        if (_model.recordingInit != null && _model.recordingInit != '') {
           _model.addToRecordings(_model.recordingInit!);
           safeSetState(() {});
         }
