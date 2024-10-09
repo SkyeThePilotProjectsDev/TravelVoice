@@ -213,63 +213,87 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                         children: [
                                                           Expanded(
                                                             child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondaryBackground,
-                                                              ),
-                                                              child:
-                                                                  FlutterFlowAudioPlayer(
-                                                                audio: Audio
-                                                                    .network(
-                                                                  takenRecordingsItem,
-                                                                  metas: Metas(
-                                                                    title:
-                                                                        'Recording ${(takenRecordingsIndex + 1).toString()}',
+                                                              height: 85.0,
+                                                              child: Stack(
+                                                                children: [
+                                                                  Align(
+                                                                    alignment:
+                                                                        AlignmentDirectional(
+                                                                            0.0,
+                                                                            0.0),
+                                                                    child:
+                                                                        Container(
+                                                                      width:
+                                                                          50.0,
+                                                                      height:
+                                                                          50.0,
+                                                                      child: custom_widgets
+                                                                          .LoadingWidget(
+                                                                        width:
+                                                                            50.0,
+                                                                        height:
+                                                                            50.0,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                titleTextStyle:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleLarge
-                                                                        .override(
-                                                                          fontFamily:
-                                                                              'Inter Tight',
-                                                                          letterSpacing:
-                                                                              0.0,
+                                                                  Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .secondaryBackground,
+                                                                    ),
+                                                                    child:
+                                                                        FlutterFlowAudioPlayer(
+                                                                      audio: Audio
+                                                                          .network(
+                                                                        takenRecordingsItem,
+                                                                        metas:
+                                                                            Metas(
+                                                                          title:
+                                                                              'Recording ${(takenRecordingsIndex + 1).toString()}',
                                                                         ),
-                                                                playbackDurationTextStyle:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .labelMedium
-                                                                        .override(
-                                                                          fontFamily:
-                                                                              'Inter',
-                                                                          color:
-                                                                              FlutterFlowTheme.of(context).secondary,
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                        ),
-                                                                fillColor: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .primaryBackground,
-                                                                playbackButtonColor:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primary,
-                                                                activeTrackColor:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primary,
-                                                                inactiveTrackColor:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .alternate,
-                                                                elevation: 0.0,
-                                                                playInBackground:
-                                                                    PlayInBackground
-                                                                        .disabledRestoreOnForeground,
+                                                                      ),
+                                                                      titleTextStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleLarge
+                                                                          .override(
+                                                                            fontFamily:
+                                                                                'Inter Tight',
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                          ),
+                                                                      playbackDurationTextStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .override(
+                                                                            fontFamily:
+                                                                                'Inter',
+                                                                            color:
+                                                                                FlutterFlowTheme.of(context).secondary,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                          ),
+                                                                      fillColor:
+                                                                          FlutterFlowTheme.of(context)
+                                                                              .primaryBackground,
+                                                                      playbackButtonColor:
+                                                                          FlutterFlowTheme.of(context)
+                                                                              .primary,
+                                                                      activeTrackColor:
+                                                                          FlutterFlowTheme.of(context)
+                                                                              .primary,
+                                                                      inactiveTrackColor:
+                                                                          FlutterFlowTheme.of(context)
+                                                                              .alternate,
+                                                                      elevation:
+                                                                          0.0,
+                                                                      playInBackground:
+                                                                          PlayInBackground
+                                                                              .disabledRestoreOnForeground,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                           ),
