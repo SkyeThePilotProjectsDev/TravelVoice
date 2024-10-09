@@ -378,3 +378,7 @@ a[x-apple-data-detectors],
  </body>
 </html>""";
 }
+
+String emptyAudio() {
+  return "";
+}

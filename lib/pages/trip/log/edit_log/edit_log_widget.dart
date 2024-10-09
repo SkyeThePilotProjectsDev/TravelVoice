@@ -11,6 +11,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
+import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -55,6 +56,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
         safeSetState(() {});
       } else {
         _model.selectedDate = getCurrentTimestamp;
+        _model.addToRecordings(functions.emptyAudio());
         safeSetState(() {});
         await showModalBottomSheet(
           isScrollControlled: true,
@@ -77,6 +79,8 @@ class _EditLogWidgetState extends State<EditLogWidget> {
           _model.addToRecordings(_model.recordingInit!);
           safeSetState(() {});
         }
+        await _model.cleanAudio(context);
+        safeSetState(() {});
       }
     });
 
@@ -198,131 +202,154 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                                 final takenRecordingsItem =
                                                     takenRecordings[
                                                         takenRecordingsIndex];
-                                                return Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryBackground,
-                                                        ),
-                                                        child:
-                                                            FlutterFlowAudioPlayer(
-                                                          audio: Audio.network(
-                                                            takenRecordingsItem,
-                                                            metas: Metas(
-                                                              title:
-                                                                  'Recording ${(takenRecordingsIndex + 1).toString()}',
+                                                return Builder(
+                                                  builder: (context) {
+                                                    if (takenRecordingsItem !=
+                                                        functions
+                                                            .emptyAudio()) {
+                                                      return Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryBackground,
+                                                              ),
+                                                              child:
+                                                                  FlutterFlowAudioPlayer(
+                                                                audio: Audio
+                                                                    .network(
+                                                                  takenRecordingsItem,
+                                                                  metas: Metas(
+                                                                    title:
+                                                                        'Recording ${(takenRecordingsIndex + 1).toString()}',
+                                                                  ),
+                                                                ),
+                                                                titleTextStyle:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleLarge
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Inter Tight',
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                        ),
+                                                                playbackDurationTextStyle:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Inter',
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).secondary,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                        ),
+                                                                fillColor: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primaryBackground,
+                                                                playbackButtonColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .primary,
+                                                                activeTrackColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .primary,
+                                                                inactiveTrackColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .alternate,
+                                                                elevation: 0.0,
+                                                                playInBackground:
+                                                                    PlayInBackground
+                                                                        .disabledRestoreOnForeground,
+                                                              ),
                                                             ),
                                                           ),
-                                                          titleTextStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleLarge
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter Tight',
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                          playbackDurationTextStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .secondary,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                          fillColor: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryBackground,
-                                                          playbackButtonColor:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primary,
-                                                          activeTrackColor:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primary,
-                                                          inactiveTrackColor:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .alternate,
-                                                          elevation: 0.0,
-                                                          playInBackground:
-                                                              PlayInBackground
-                                                                  .disabledRestoreOnForeground,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {
-                                                        var confirmDialogResponse =
-                                                            await showDialog<
-                                                                    bool>(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (alertDialogContext) {
-                                                                    return AlertDialog(
-                                                                      title: Text(
-                                                                          'Are you sure you want to delete this recording?'),
-                                                                      content: Text(
-                                                                          'You won\'t be able to get it back.'),
-                                                                      actions: [
-                                                                        TextButton(
-                                                                          onPressed: () => Navigator.pop(
-                                                                              alertDialogContext,
-                                                                              false),
-                                                                          child:
-                                                                              Text('Cancel'),
-                                                                        ),
-                                                                        TextButton(
-                                                                          onPressed: () => Navigator.pop(
-                                                                              alertDialogContext,
-                                                                              true),
-                                                                          child:
-                                                                              Text('Delete'),
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  },
-                                                                ) ??
-                                                                false;
-                                                        if (confirmDialogResponse) {
-                                                          _model.removeAtIndexFromRecordings(
-                                                              takenRecordingsIndex);
-                                                          safeSetState(() {});
-                                                        }
-                                                      },
-                                                      child: FaIcon(
-                                                        FontAwesomeIcons.trash,
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
-                                                        size: 20.0,
-                                                      ),
-                                                    ),
-                                                  ].divide(
-                                                      SizedBox(width: 8.0)),
+                                                          InkWell(
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            focusColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            onTap: () async {
+                                                              var confirmDialogResponse =
+                                                                  await showDialog<
+                                                                          bool>(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (alertDialogContext) {
+                                                                          return AlertDialog(
+                                                                            title:
+                                                                                Text('Are you sure you want to delete this recording?'),
+                                                                            content:
+                                                                                Text('You won\'t be able to get it back.'),
+                                                                            actions: [
+                                                                              TextButton(
+                                                                                onPressed: () => Navigator.pop(alertDialogContext, false),
+                                                                                child: Text('Cancel'),
+                                                                              ),
+                                                                              TextButton(
+                                                                                onPressed: () => Navigator.pop(alertDialogContext, true),
+                                                                                child: Text('Delete'),
+                                                                              ),
+                                                                            ],
+                                                                          );
+                                                                        },
+                                                                      ) ??
+                                                                      false;
+                                                              if (confirmDialogResponse) {
+                                                                _model.removeAtIndexFromRecordings(
+                                                                    takenRecordingsIndex);
+                                                                safeSetState(
+                                                                    () {});
+                                                              }
+                                                            },
+                                                            child: FaIcon(
+                                                              FontAwesomeIcons
+                                                                  .trash,
+                                                              color: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .primaryText,
+                                                              size: 20.0,
+                                                            ),
+                                                          ),
+                                                        ].divide(SizedBox(
+                                                            width: 8.0)),
+                                                      );
+                                                    } else {
+                                                      return Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Container(
+                                                            width: 50.0,
+                                                            height: 50.0,
+                                                            child: custom_widgets
+                                                                .LoadingWidget(
+                                                              width: 50.0,
+                                                              height: 50.0,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }
+                                                  },
                                                 );
                                               }).divide(SizedBox(height: 4.0)),
                                             );
@@ -355,12 +382,17 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                             ).then((value) => safeSetState(() =>
                                                 _model.recording = value));
 
+                                            _model.addToRecordings(
+                                                functions.emptyAudio());
+                                            safeSetState(() {});
                                             if (_model.recording != null &&
                                                 _model.recording != '') {
                                               _model.addToRecordings(
                                                   _model.recording!);
                                               safeSetState(() {});
                                             }
+                                            await _model.cleanAudio(context);
+                                            safeSetState(() {});
 
                                             safeSetState(() {});
                                           },
