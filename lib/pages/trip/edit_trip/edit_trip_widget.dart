@@ -148,42 +148,48 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                   child: GestureDetector(
                                     onTap: () =>
                                         FocusScope.of(dialogContext).unfocus(),
-                                    child: DeleteConfirmationWidget(
-                                      onDelete: () async {
-                                        _model.pendingRequests =
-                                            await queryTripInvitationRecordOnce(
-                                          queryBuilder:
-                                              (tripInvitationRecord) =>
-                                                  tripInvitationRecord
-                                                      .where(
-                                                        'trip',
-                                                        isEqualTo: widget!
-                                                            .trip?.reference,
-                                                      )
-                                                      .where(
-                                                        'status',
-                                                        isEqualTo: RequestStatus
-                                                                .Requested
-                                                            .serialize(),
-                                                      ),
-                                        );
-                                        _model.loopCounter = 0;
-                                        while (_model.loopCounter <
-                                            _model.pendingRequests!.length) {
-                                          await _model
-                                              .pendingRequests![
-                                                  _model.loopCounter]
-                                              .reference
-                                              .update(
-                                                  createTripInvitationRecordData(
-                                            status: RequestStatus.Cancelled,
-                                          ));
-                                          _model.loopCounter =
-                                              _model.loopCounter + 1;
-                                        }
-                                        await widget!.trip!.reference.delete();
-                                        context.safePop();
-                                      },
+                                    child: Container(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          0.5,
+                                      child: DeleteConfirmationWidget(
+                                        onDelete: () async {
+                                          _model.pendingRequests =
+                                              await queryTripInvitationRecordOnce(
+                                            queryBuilder:
+                                                (tripInvitationRecord) =>
+                                                    tripInvitationRecord
+                                                        .where(
+                                                          'trip',
+                                                          isEqualTo: widget!
+                                                              .trip?.reference,
+                                                        )
+                                                        .where(
+                                                          'status',
+                                                          isEqualTo:
+                                                              RequestStatus
+                                                                      .Requested
+                                                                  .serialize(),
+                                                        ),
+                                          );
+                                          _model.loopCounter = 0;
+                                          while (_model.loopCounter <
+                                              _model.pendingRequests!.length) {
+                                            await _model
+                                                .pendingRequests![
+                                                    _model.loopCounter]
+                                                .reference
+                                                .update(
+                                                    createTripInvitationRecordData(
+                                              status: RequestStatus.Cancelled,
+                                            ));
+                                            _model.loopCounter =
+                                                _model.loopCounter + 1;
+                                          }
+                                          await widget!.trip!.reference
+                                              .delete();
+                                          context.safePop();
+                                        },
+                                      ),
                                     ),
                                   ),
                                 );

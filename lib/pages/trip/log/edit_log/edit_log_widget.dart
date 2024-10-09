@@ -3,6 +3,7 @@ import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
 import '/components/date_picker_widget.dart';
+import '/components/delete_confirmation_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
@@ -123,43 +124,46 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          var confirmDialogResponse = await showDialog<bool>(
-                                context: context,
-                                builder: (alertDialogContext) {
-                                  return AlertDialog(
-                                    title: Text('Discard Log'),
-                                    content: Text(
-                                        'If you leave this page this log\'s data will be lost'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(
-                                            alertDialogContext, false),
-                                        child: Text('Cancel'),
+                      Builder(
+                        builder: (context) => InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return Dialog(
+                                  elevation: 0,
+                                  insetPadding: EdgeInsets.zero,
+                                  backgroundColor: Colors.transparent,
+                                  alignment: AlignmentDirectional(0.0, 0.0)
+                                      .resolve(Directionality.of(context)),
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        FocusScope.of(dialogContext).unfocus(),
+                                    child: Container(
+                                      width: MediaQuery.sizeOf(context).width *
+                                          0.5,
+                                      child: DeleteConfirmationWidget(
+                                        text:
+                                            'Are you sure you want to delete this log?',
+                                        onDelete: () async {
+                                          context.safePop();
+                                        },
                                       ),
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(
-                                            alertDialogContext, true),
-                                        child: Text('Confirm'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ) ??
-                              false;
-                          if (confirmDialogResponse) {
-                            context.safePop();
-                          }
-                        },
-                        child: Icon(
-                          Icons.chevron_left_rounded,
-                          color: FlutterFlowTheme.of(context).primaryText,
-                          size: 40.0,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(
+                            Icons.chevron_left_rounded,
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            size: 40.0,
+                          ),
                         ),
                       ),
                     ],
