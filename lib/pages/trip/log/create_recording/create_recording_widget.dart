@@ -280,6 +280,32 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                           },
                         ),
                       ),
+                      Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: FlutterFlowTimer(
+                          initialTime: _model.timerInitialTimeMs,
+                          getDisplayTime: (value) =>
+                              StopWatchTimer.getDisplayTime(
+                            value,
+                            hours: false,
+                            minute: false,
+                          ),
+                          controller: _model.timerController,
+                          updateStateInterval: Duration(milliseconds: 1000),
+                          onChanged: (value, displayTime, shouldUpdate) {
+                            _model.timerMilliseconds = value;
+                            _model.timerValue = displayTime;
+                            if (shouldUpdate) safeSetState(() {});
+                          },
+                          textAlign: TextAlign.start,
+                          style: FlutterFlowTheme.of(context)
+                              .headlineSmall
+                              .override(
+                                fontFamily: 'Inter Tight',
+                                letterSpacing: 0.0,
+                              ),
+                        ),
+                      ),
                       Container(
                         height: _model.newRecording != null &&
                                 _model.newRecording != ''
@@ -331,32 +357,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               );
                             }
                           },
-                        ),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional(0.0, 0.0),
-                        child: FlutterFlowTimer(
-                          initialTime: _model.timerInitialTimeMs,
-                          getDisplayTime: (value) =>
-                              StopWatchTimer.getDisplayTime(
-                            value,
-                            hours: false,
-                            minute: false,
-                          ),
-                          controller: _model.timerController,
-                          updateStateInterval: Duration(milliseconds: 1000),
-                          onChanged: (value, displayTime, shouldUpdate) {
-                            _model.timerMilliseconds = value;
-                            _model.timerValue = displayTime;
-                            if (shouldUpdate) safeSetState(() {});
-                          },
-                          textAlign: TextAlign.start,
-                          style: FlutterFlowTheme.of(context)
-                              .headlineSmall
-                              .override(
-                                fontFamily: 'Inter Tight',
-                                letterSpacing: 0.0,
-                              ),
                         ),
                       ),
                     ].divide(SizedBox(height: 16.0)),

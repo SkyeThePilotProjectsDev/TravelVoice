@@ -1,8 +1,9 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_audio_player.dart';
+import '/backend/schema/enums/enums.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/user/profile_icon/profile_icon_widget.dart';
+import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -187,51 +188,90 @@ class _TripLogItemWidgetState extends State<TripLogItemWidget> {
                 ),
               ],
             ),
-            ClipRRect(
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                height: valueOrDefault<double>(
-                  _model.isExpanded ? 120.0 : 0.0,
-                  120.0,
-                ),
-                decoration: BoxDecoration(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FlutterFlowAudioPlayer(
-                      audio: Audio.network(
-                        widget!.log!.recordings.first,
-                        metas: Metas(
-                          title: '',
-                        ),
+            if (widget!.log?.recordings != null &&
+                (widget!.log?.recordings)!.isNotEmpty)
+              ClipRRect(
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  height: valueOrDefault<double>(
+                    _model.isExpanded ? 120.0 : 0.0,
+                    120.0,
+                  ),
+                  decoration: BoxDecoration(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () async {
+                              if (_model.playerState ==
+                                  MediaPlayerActions.pause) {
+                                _model.playerState = MediaPlayerActions.play;
+                                safeSetState(() {});
+                              } else {
+                                _model.playerState = MediaPlayerActions.pause;
+                                safeSetState(() {});
+                              }
+                            },
+                            child: Container(
+                              width: 40.0,
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).alternate,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Builder(
+                                  builder: (context) {
+                                    if (_model.playerState ==
+                                        MediaPlayerActions.pause) {
+                                      return Icon(
+                                        Icons.play_arrow_rounded,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 24.0,
+                                      );
+                                    } else {
+                                      return Icon(
+                                        Icons.pause_rounded,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 24.0,
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 300.0,
+                            height: 75.0,
+                            child: custom_widgets.Waveform(
+                              width: 300.0,
+                              height: 75.0,
+                              audio: widget!.log?.recordings?.first,
+                              widgetHeight: 75.0,
+                              state: _model.playerState!,
+                              onRecordingComplete: (audioPath) async {},
+                              onPlayingComplete: () async {},
+                            ),
+                          ),
+                        ].divide(SizedBox(width: 8.0)),
                       ),
-                      titleTextStyle:
-                          FlutterFlowTheme.of(context).titleLarge.override(
-                                fontFamily: 'Inter Tight',
-                                letterSpacing: 0.0,
-                              ),
-                      playbackDurationTextStyle:
-                          FlutterFlowTheme.of(context).labelMedium.override(
-                                fontFamily: 'Inter',
-                                color: FlutterFlowTheme.of(context).secondary,
-                                letterSpacing: 0.0,
-                              ),
-                      fillColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                      playbackButtonColor: FlutterFlowTheme.of(context).primary,
-                      activeTrackColor: FlutterFlowTheme.of(context).primary,
-                      inactiveTrackColor:
-                          FlutterFlowTheme.of(context).alternate,
-                      elevation: 0.0,
-                      playInBackground:
-                          PlayInBackground.disabledRestoreOnForeground,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
