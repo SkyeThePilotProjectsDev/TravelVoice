@@ -153,6 +153,11 @@ class _LogInWidgetState extends State<LogInWidget> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
+                                          filled: true,
+                                          fillColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .inputFill,
+                                          contentPadding: EdgeInsets.all(20.0),
                                           prefixIcon: Icon(
                                             Icons.person,
                                           ),
@@ -244,6 +249,11 @@ class _LogInWidgetState extends State<LogInWidget> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
+                                          filled: true,
+                                          fillColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .inputFill,
+                                          contentPadding: EdgeInsets.all(20.0),
                                           prefixIcon: Icon(
                                             Icons.lock,
                                           ),
@@ -363,9 +373,7 @@ class _LogInWidgetState extends State<LogInWidget> {
                                     },
                                     text: 'Login',
                                     options: FFButtonOptions(
-                                      height: 40.0,
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          24.0, 0.0, 24.0, 0.0),
+                                      padding: EdgeInsets.all(20.0),
                                       iconPadding:
                                           EdgeInsetsDirectional.fromSTEB(
                                               0.0, 0.0, 0.0, 0.0),
@@ -381,9 +389,11 @@ class _LogInWidgetState extends State<LogInWidget> {
                                           ),
                                       elevation: 0.0,
                                       borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondary,
                                         width: 2.0,
                                       ),
-                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderRadius: BorderRadius.circular(40.0),
                                     ),
                                   ),
                                 ].divide(SizedBox(height: 40.0)),

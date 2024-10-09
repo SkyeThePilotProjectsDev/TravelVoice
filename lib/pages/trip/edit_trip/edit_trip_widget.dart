@@ -4,6 +4,7 @@ import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/enums/enums.dart';
 import '/backend/schema/structs/index.dart';
 import '/components/date_picker_widget.dart';
+import '/components/delete_confirmation_widget.dart';
 import '/components/image_uploader_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -106,64 +107,99 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                         size: 40.0,
                       ),
                     ),
+                    Text(
+                      widget!.trip != null ? 'Edit Trip' : 'New Trip',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).titleSmall.override(
+                            fontFamily: 'Inter Tight',
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                    Container(
+                      width: 40.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
                     if (widget!.trip != null)
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          final firestoreBatch =
-                              FirebaseFirestore.instance.batch();
-                          try {
-                            _model.pendingRequests =
-                                await queryTripInvitationRecordOnce(
-                              queryBuilder: (tripInvitationRecord) =>
-                                  tripInvitationRecord
-                                      .where(
-                                        'trip',
-                                        isEqualTo: widget!.trip?.reference,
-                                      )
-                                      .where(
-                                        'status',
-                                        isEqualTo:
-                                            RequestStatus.Requested.serialize(),
-                                      ),
+                      Builder(
+                        builder: (context) => InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return Dialog(
+                                  elevation: 0,
+                                  insetPadding: EdgeInsets.zero,
+                                  backgroundColor: Colors.transparent,
+                                  alignment: AlignmentDirectional(0.0, 0.0)
+                                      .resolve(Directionality.of(context)),
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        FocusScope.of(dialogContext).unfocus(),
+                                    child: DeleteConfirmationWidget(
+                                      onDelete: () async {
+                                        _model.pendingRequests =
+                                            await queryTripInvitationRecordOnce(
+                                          queryBuilder:
+                                              (tripInvitationRecord) =>
+                                                  tripInvitationRecord
+                                                      .where(
+                                                        'trip',
+                                                        isEqualTo: widget!
+                                                            .trip?.reference,
+                                                      )
+                                                      .where(
+                                                        'status',
+                                                        isEqualTo: RequestStatus
+                                                                .Requested
+                                                            .serialize(),
+                                                      ),
+                                        );
+                                        _model.loopCounter = 0;
+                                        while (_model.loopCounter <
+                                            _model.pendingRequests!.length) {
+                                          await _model
+                                              .pendingRequests![
+                                                  _model.loopCounter]
+                                              .reference
+                                              .update(
+                                                  createTripInvitationRecordData(
+                                            status: RequestStatus.Cancelled,
+                                          ));
+                                          _model.loopCounter =
+                                              _model.loopCounter + 1;
+                                        }
+                                        await widget!.trip!.reference.delete();
+                                        context.safePop();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                             );
-                            _model.loopCounter = 0;
-                            while (_model.loopCounter <
-                                _model.pendingRequests!.length) {
-                              firestoreBatch.update(
-                                  _model.pendingRequests![_model.loopCounter]
-                                      .reference,
-                                  createTripInvitationRecordData(
-                                    status: RequestStatus.Cancelled,
-                                  ));
-                              _model.loopCounter = _model.loopCounter + 1;
-                            }
-                            firestoreBatch.delete(widget!.trip!.reference);
-                            context.safePop();
-                          } finally {
-                            await firestoreBatch.commit();
-                          }
 
-                          safeSetState(() {});
-                        },
-                        child: FaIcon(
-                          FontAwesomeIcons.trashAlt,
-                          color: FlutterFlowTheme.of(context).error,
-                          size: 26.0,
+                            safeSetState(() {});
+                          },
+                          child: FaIcon(
+                            FontAwesomeIcons.trashAlt,
+                            color: FlutterFlowTheme.of(context).error,
+                            size: 20.0,
+                          ),
                         ),
                       ),
                   ],
-                ),
-                Text(
-                  widget!.trip != null ? 'Edit Trip' : 'New Trip',
-                  textAlign: TextAlign.center,
-                  style: FlutterFlowTheme.of(context).displayMedium.override(
-                        fontFamily: 'Inter Tight',
-                        letterSpacing: 0.0,
-                      ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -186,7 +222,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
-                                      'What is the name of this trip?',
+                                      'What is the name of the trip?',
                                       textAlign: TextAlign.start,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
@@ -295,7 +331,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
-                                      'When was this trip?',
+                                      'What is the period of the trip?',
                                       textAlign: TextAlign.start,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
@@ -649,7 +685,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                             ),
                                                             Expanded(
                                                               child: Text(
-                                                                '${sharedWithItem} > Awaiting Request',
+                                                                '${sharedWithItem}',
                                                                 style: FlutterFlowTheme.of(
                                                                         context)
                                                                     .bodyMedium
@@ -854,22 +890,40 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                     ),
                                                                   ),
                                                                   Expanded(
-                                                                    child: Text(
-                                                                      '${oldMembersItem.parentReference.id} > ${valueOrDefault<String>(
-                                                                        oldMembersItem
-                                                                            .status
-                                                                            ?.name,
-                                                                        'Error',
-                                                                      )}',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .override(
-                                                                            fontFamily:
-                                                                                'Inter',
-                                                                            letterSpacing:
-                                                                                0.0,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          64.0,
+                                                                          0.0),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Text(
+                                                                              '${oldMembersItem.parentReference.id}',
+                                                                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                    fontFamily: 'Inter',
+                                                                                    color: oldMembersItem.status == RequestStatus.Requested ? FlutterFlowTheme.of(context).alternate : FlutterFlowTheme.of(context).primaryText,
+                                                                                    letterSpacing: 0.0,
+                                                                                  ),
+                                                                            ),
                                                                           ),
+                                                                          if (oldMembersItem.status ==
+                                                                              RequestStatus.Requested)
+                                                                            Icon(
+                                                                              Icons.mail,
+                                                                              color: FlutterFlowTheme.of(context).alternate,
+                                                                              size: 20.0,
+                                                                            ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                   InkWell(

@@ -63,6 +63,7 @@ class _WaveformState extends State<Waveform> {
   @override
   void initState() {
     super.initState();
+    if (widget.audio != null) path = widget.audio;
     rController = RecorderController();
     pController = PlayerController();
     // pController.
@@ -184,32 +185,32 @@ class _WaveformState extends State<Waveform> {
       if (path == null) return Container();
       return InkWell(
         onTap: () => print(widget.state),
-        child: FutureBuilder(
-          future: pController.extractWaveformData(
-            path: path!,
-            noOfSamples: 100,
+        // child: FutureBuilder(
+        //   future: pController.extractWaveformData(
+        //     path: path!,
+        //     noOfSamples: 100,
+        //   ),
+        //   builder: (ctx, sc) {
+        //     List<double>? data = sc.data;
+
+        //     if (data == null) return Container();
+
+        child: CustomAudioFileWaveforms(
+          width: widget.width ?? 100,
+          height: widget.widgetHeight ?? 100,
+          playerController: pController,
+          enableSeekGesture: true,
+          waveformType: WaveformType.long,
+          continuousWaveform: true,
+          // waveformData: data,
+          playerWaveStyle: PlayerWaveStyle(
+            fixedWaveColor: _p,
+            liveWaveColor: _s,
+            spacing: 6,
+            scaleFactor: 300,
           ),
-          builder: (ctx, sc) {
-            List<double>? data = sc.data;
-
-            if (data == null) return Container();
-
-            return CustomAudioFileWaveforms(
-              width: widget.width ?? 100,
-              height: widget.widgetHeight ?? 100,
-              playerController: pController,
-              enableSeekGesture: true,
-              waveformType: WaveformType.long,
-              continuousWaveform: true,
-              // waveformData: data,
-              playerWaveStyle: PlayerWaveStyle(
-                fixedWaveColor: _p,
-                liveWaveColor: _s,
-                spacing: 6,
-                scaleFactor: 300,
-              ),
-            );
-          },
+          //   );
+          // },
         ),
       );
     }

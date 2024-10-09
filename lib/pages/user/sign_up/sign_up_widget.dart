@@ -166,6 +166,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
+                                            filled: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .inputFill,
+                                            contentPadding:
+                                                EdgeInsets.all(20.0),
                                             prefixIcon: Icon(
                                               Icons.person,
                                             ),
@@ -255,6 +261,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
+                                            filled: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .inputFill,
+                                            contentPadding:
+                                                EdgeInsets.all(20.0),
                                             prefixIcon: Icon(
                                               Icons.person,
                                             ),
@@ -347,6 +359,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
+                                            filled: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .inputFill,
+                                            contentPadding:
+                                                EdgeInsets.all(20.0),
                                             prefixIcon: Icon(
                                               Icons.lock,
                                             ),
@@ -457,6 +475,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                             ),
+                                            filled: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .inputFill,
+                                            contentPadding:
+                                                EdgeInsets.all(20.0),
                                             prefixIcon: Icon(
                                               Icons.lock,
                                             ),

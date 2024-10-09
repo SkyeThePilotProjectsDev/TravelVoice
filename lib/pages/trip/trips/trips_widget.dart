@@ -554,6 +554,8 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                                         Container(
                                                                       decoration:
                                                                           BoxDecoration(
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .primary,
                                                                         borderRadius:
                                                                             BorderRadius.circular(8.0),
                                                                       ),

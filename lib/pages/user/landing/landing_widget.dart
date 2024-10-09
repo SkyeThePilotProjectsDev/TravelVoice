@@ -77,7 +77,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                                   Text(
                                     'Travel Voice',
                                     style: FlutterFlowTheme.of(context)
-                                        .displayLarge
+                                        .displayMedium
                                         .override(
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
@@ -106,7 +106,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                               text: 'Login',
                               options: FFButtonOptions(
                                 width: MediaQuery.sizeOf(context).width * 0.7,
-                                padding: EdgeInsets.all(24.0),
+                                padding: EdgeInsets.all(20.0),
                                 iconPadding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 0.0),
                                 color: FlutterFlowTheme.of(context).primary,
@@ -133,7 +133,7 @@ class _LandingWidgetState extends State<LandingWidget> {
                               text: 'Sign up',
                               options: FFButtonOptions(
                                 width: MediaQuery.sizeOf(context).width * 0.7,
-                                padding: EdgeInsets.all(24.0),
+                                padding: EdgeInsets.all(18.0),
                                 iconPadding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 0.0),
                                 color: FlutterFlowTheme.of(context).secondary,
