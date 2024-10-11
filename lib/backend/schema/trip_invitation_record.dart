@@ -37,6 +37,11 @@ class TripInvitationRecord extends FirestoreRecord {
   RequestStatus? get status => _status;
   bool hasStatus() => _status != null;
 
+  // "user" field.
+  DocumentReference? _user;
+  DocumentReference? get user => _user;
+  bool hasUser() => _user != null;
+
   DocumentReference get parentReference => reference.parent.parent!;
 
   void _initializeFields() {
@@ -44,6 +49,7 @@ class TripInvitationRecord extends FirestoreRecord {
     _invitedBy = snapshotData['invitedBy'] as DocumentReference?;
     _dateInvited = snapshotData['dateInvited'] as DateTime?;
     _status = deserializeEnum<RequestStatus>(snapshotData['status']);
+    _user = snapshotData['user'] as DocumentReference?;
   }
 
   static Query<Map<String, dynamic>> collection([DocumentReference? parent]) =>
@@ -90,6 +96,7 @@ Map<String, dynamic> createTripInvitationRecordData({
   DocumentReference? invitedBy,
   DateTime? dateInvited,
   RequestStatus? status,
+  DocumentReference? user,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -97,6 +104,7 @@ Map<String, dynamic> createTripInvitationRecordData({
       'invitedBy': invitedBy,
       'dateInvited': dateInvited,
       'status': status,
+      'user': user,
     }.withoutNulls,
   );
 
@@ -112,12 +120,13 @@ class TripInvitationRecordDocumentEquality
     return e1?.trip == e2?.trip &&
         e1?.invitedBy == e2?.invitedBy &&
         e1?.dateInvited == e2?.dateInvited &&
-        e1?.status == e2?.status;
+        e1?.status == e2?.status &&
+        e1?.user == e2?.user;
   }
 
   @override
   int hash(TripInvitationRecord? e) => const ListEquality()
-      .hash([e?.trip, e?.invitedBy, e?.dateInvited, e?.status]);
+      .hash([e?.trip, e?.invitedBy, e?.dateInvited, e?.status, e?.user]);
 
   @override
   bool isValidKey(Object? o) => o is TripInvitationRecord;

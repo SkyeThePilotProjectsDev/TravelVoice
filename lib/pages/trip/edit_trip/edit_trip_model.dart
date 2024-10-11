@@ -42,18 +42,20 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
 
   int loopCounter = 0;
 
-  List<DocumentReference> removedUsers = [];
-  void addToRemovedUsers(DocumentReference item) => removedUsers.add(item);
-  void removeFromRemovedUsers(DocumentReference item) =>
+  List<TripInvitationRecord> removedUsers = [];
+  void addToRemovedUsers(TripInvitationRecord item) => removedUsers.add(item);
+  void removeFromRemovedUsers(TripInvitationRecord item) =>
       removedUsers.remove(item);
   void removeAtIndexFromRemovedUsers(int index) => removedUsers.removeAt(index);
-  void insertAtIndexInRemovedUsers(int index, DocumentReference item) =>
+  void insertAtIndexInRemovedUsers(int index, TripInvitationRecord item) =>
       removedUsers.insert(index, item);
   void updateRemovedUsersAtIndex(
-          int index, Function(DocumentReference) updateFn) =>
+          int index, Function(TripInvitationRecord) updateFn) =>
       removedUsers[index] = updateFn(removedUsers[index]);
 
   TripRecord? thisTrip;
+
+  int loop2 = 0;
 
   ///  State fields for stateful widgets in this page.
 
@@ -96,6 +98,8 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
   TripRecord? newTripRef;
   // Stores action output result for [Custom Action - getOrCreateUserInvitationsRef] action in Button widget.
   DocumentReference? userInvsRef;
+  // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
+  List<LogRecord>? userLogs;
 
   @override
   void initState(BuildContext context) {

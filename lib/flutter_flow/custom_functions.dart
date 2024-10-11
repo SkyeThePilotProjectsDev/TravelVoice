@@ -410,3 +410,28 @@ List<String>? stringListReduce(
 String audioToString(String? audio) {
   return audio ?? "";
 }
+
+List<TripInvitationRecord> filterOutTripInvitations(
+  List<TripInvitationRecord>? invitations,
+  List<TripInvitationRecord>? filterOut,
+) {
+  if (invitations == null) return [];
+  if (filterOut == null) return invitations;
+
+  return invitations
+      .where((i) => filterOut.where((f) => f.reference == i.reference).isEmpty)
+      .toList();
+}
+
+bool stringsContainInvitation(
+  List<String>? strings,
+  DocumentReference? invitation,
+) {
+  if (strings == null) return false;
+  if (invitation == null) return false;
+
+  return strings
+      .where(
+          (s) => s.toLowerCase().trim() == invitation.id.toLowerCase().trim())
+      .isNotEmpty;
+}

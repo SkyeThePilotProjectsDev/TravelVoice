@@ -334,6 +334,9 @@ class _UserMenuWidgetState extends State<UserMenuWidget> {
                                                               status:
                                                                   RequestStatus
                                                                       .Accepted,
+                                                              user:
+                                                                  columnTripInvitationRecord
+                                                                      .user,
                                                             ));
                                                       } finally {
                                                         await firestoreBatch
