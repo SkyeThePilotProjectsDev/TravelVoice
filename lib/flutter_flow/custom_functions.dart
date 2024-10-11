@@ -406,3 +406,7 @@ List<String>? stringListReduce(
           .contains(i.toLowerCase().trim()))
       .toList();
 }
+
+String audioToString(String? audio) {
+  return audio ?? "";
+}

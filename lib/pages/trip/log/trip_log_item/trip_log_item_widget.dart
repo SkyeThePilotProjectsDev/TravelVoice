@@ -253,20 +253,32 @@ class _TripLogItemWidgetState extends State<TripLogItemWidget> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: 300.0,
-                            height: 75.0,
-                            child: custom_widgets.Waveform(
-                              width: 300.0,
+                          Expanded(
+                            child: Container(
+                              width: 500.0,
                               height: 75.0,
-                              audio: widget!.log?.recordings?.first,
-                              widgetHeight: 75.0,
-                              state: _model.playerState!,
-                              onRecordingComplete: (audioPath) async {},
-                              onPlayingComplete: () async {},
+                              child: custom_widgets.Waveform(
+                                width: 500.0,
+                                height: 75.0,
+                                audio: widget!.log?.recordings?.first,
+                                widgetHeight: 75.0,
+                                state: _model.playerState!,
+                                onRecordingComplete: (audioPath) async {},
+                                onPlayingComplete: () async {},
+                              ),
                             ),
                           ),
                         ].divide(SizedBox(width: 8.0)),
+                      ),
+                      Text(
+                        functions.audioToString(valueOrDefault<String>(
+                          widget!.log?.recordings?.first,
+                          '~',
+                        )),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              fontFamily: 'Inter',
+                              letterSpacing: 0.0,
+                            ),
                       ),
                     ],
                   ),
