@@ -49,7 +49,7 @@ class _LoadingIndicatorWidgetState extends State<LoadingIndicatorWidget> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -65,14 +65,14 @@ class _LoadingIndicatorWidgetState extends State<LoadingIndicatorWidget> {
                     ),
               ),
             Container(
-              width: 150.0,
-              height: 150.0,
+              width: 100.0,
+              height: 100.0,
               child: custom_widgets.LoadingWidget(
-                width: 150.0,
-                height: 150.0,
+                width: 100.0,
+                height: 100.0,
               ),
             ),
-          ],
+          ].divide(SizedBox(height: 8.0)),
         ),
       ),
     );
