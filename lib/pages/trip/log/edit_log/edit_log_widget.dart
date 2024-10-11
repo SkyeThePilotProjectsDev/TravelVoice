@@ -51,12 +51,10 @@ class _EditLogWidgetState extends State<EditLogWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (widget!.log != null) {
-        _model.selectedDate = widget!.log?.eventDate;
         _model.recordings = widget!.log!.recordings.toList().cast<String>();
         _model.selectedPlace = functions.locationToPlace(widget!.log?.location);
         safeSetState(() {});
       } else {
-        _model.selectedDate = getCurrentTimestamp;
         _model.addToRecordings(functions.emptyAudio());
         safeSetState(() {});
         await showModalBottomSheet(
@@ -120,9 +118,10 @@ class _EditLogWidgetState extends State<EditLogWidget> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Builder(
                         builder: (context) => InkWell(
@@ -165,6 +164,81 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                             size: 40.0,
                           ),
                         ),
+                      ),
+                      Text(
+                        widget!.log != null ? 'Edit Log' : 'New Log',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).titleSmall.override(
+                              fontFamily: 'Inter Tight',
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      Builder(
+                        builder: (context) {
+                          if ((widget!.log != null) &&
+                              (widget!.log?.ownedBy == currentUserReference)) {
+                            return Container(
+                              width: 40.0,
+                              height: 40.0,
+                              decoration: BoxDecoration(),
+                              child: Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Builder(
+                                  builder: (context) => InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (dialogContext) {
+                                          return Dialog(
+                                            elevation: 0,
+                                            insetPadding: EdgeInsets.zero,
+                                            backgroundColor: Colors.transparent,
+                                            alignment: AlignmentDirectional(
+                                                    0.0, 0.0)
+                                                .resolve(
+                                                    Directionality.of(context)),
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(dialogContext)
+                                                      .unfocus(),
+                                              child: Container(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        0.5,
+                                                child: DeleteConfirmationWidget(
+                                                  onDelete: () async {
+                                                    await widget!.log!.reference
+                                                        .delete();
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: FaIcon(
+                                      FontAwesomeIcons.trashAlt,
+                                      color: FlutterFlowTheme.of(context).error,
+                                      size: 20.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              width: 40.0,
+                              height: 40.0,
+                              decoration: BoxDecoration(),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -666,13 +740,13 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                             updateCallback: () =>
                                                 safeSetState(() {}),
                                             child: DatePickerWidget(
-                                              defaultDate:
-                                                  _model.selectedDate != null
-                                                      ? _model.selectedDate!
-                                                      : getCurrentTimestamp,
-                                              onChange: (setDate) async {
-                                                _model.selectedDate = setDate;
-                                              },
+                                              defaultDate: (widget!.log !=
+                                                          null) &&
+                                                      (widget!.log?.eventDate !=
+                                                          null)
+                                                  ? widget!.log!.eventDate!
+                                                  : getCurrentTimestamp,
+                                              onChange: (setDate) async {},
                                             ),
                                           ),
                                         ),
@@ -946,7 +1020,8 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                           _model.selectedPlace),
                                       clearUnsetFields: false,
                                     ),
-                                    eventDate: _model.selectedDate,
+                                    eventDate:
+                                        _model.datePickerModel.selectedDate,
                                     notes: _model
                                         .textFieldNotesTextController.text,
                                     photo: _model.newImage,
@@ -963,7 +1038,8 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                     LogRecord.createDoc(widget!.trip!);
                                 await logRecordReference.set({
                                   ...createLogRecordData(
-                                    eventDate: _model.selectedDate,
+                                    eventDate:
+                                        _model.datePickerModel.selectedDate,
                                     notes: _model
                                         .textFieldNotesTextController.text,
                                     photo: _model.uploadedFileUrl,
@@ -991,7 +1067,8 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                 });
                                 _model.newLog = LogRecord.getDocumentFromData({
                                   ...createLogRecordData(
-                                    eventDate: _model.selectedDate,
+                                    eventDate:
+                                        _model.datePickerModel.selectedDate,
                                     notes: _model
                                         .textFieldNotesTextController.text,
                                     photo: _model.uploadedFileUrl,

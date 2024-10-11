@@ -48,13 +48,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.selectedDate = getCurrentTimestamp;
       if (widget!.trip != null) {
         _model.thisTrip = widget!.trip;
-        _model.selectedDate =
-            (widget!.trip != null) && (widget!.trip?.tripDate != null)
-                ? widget!.trip?.tripDate
-                : getCurrentTimestamp;
         _model.photoURL = widget!.trip?.image;
       }
     });
@@ -187,7 +182,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                           }
                                           await widget!.trip!.reference
                                               .delete();
-                                          context.safePop();
+
+                                          context.goNamed('Trips');
                                         },
                                       ),
                                     ),
@@ -354,10 +350,7 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                 (widget!.trip?.tripDate != null)
                                             ? widget!.trip!.tripDate!
                                             : getCurrentTimestamp,
-                                        onChange: (setDate) async {
-                                          _model.selectedDate = setDate;
-                                          safeSetState(() {});
-                                        },
+                                        onChange: (setDate) async {},
                                       ),
                                     ),
                                   ].divide(SizedBox(height: 8.0)),
@@ -1155,13 +1148,24 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                 _model.photoURL = _model.uploadedFileUrl;
                               }
                               if (widget!.trip != null) {
-                                firestoreBatch.update(
-                                    widget!.trip!.reference,
-                                    createTripRecordData(
-                                      name: _model.textController1.text,
-                                      editDate: getCurrentTimestamp,
-                                      image: _model.photoURL,
-                                    ));
+                                firestoreBatch.update(widget!.trip!.reference, {
+                                  ...createTripRecordData(
+                                    name: _model.textController1.text,
+                                    editDate: getCurrentTimestamp,
+                                    image: _model.photoURL,
+                                    tripDate:
+                                        _model.datePickerModel.selectedDate,
+                                  ),
+                                  ...mapToFirestore(
+                                    {
+                                      'shareRequests':
+                                          functions.stringListConcat(
+                                              widget!.trip?.shareRequests
+                                                  ?.toList(),
+                                              _model.shareWith.toList()),
+                                    },
+                                  ),
+                                });
                               } else {
                                 var tripRecordReference =
                                     TripRecord.collection.doc();
@@ -1172,7 +1176,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     editDate: getCurrentTimestamp,
                                     image: _model.photoURL,
                                     ownedBy: currentUserReference,
-                                    tripDate: _model.selectedDate,
+                                    tripDate:
+                                        _model.datePickerModel.selectedDate,
                                   ),
                                   ...mapToFirestore(
                                     {
@@ -1189,7 +1194,8 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                     editDate: getCurrentTimestamp,
                                     image: _model.photoURL,
                                     ownedBy: currentUserReference,
-                                    tripDate: _model.selectedDate,
+                                    tripDate:
+                                        _model.datePickerModel.selectedDate,
                                   ),
                                   ...mapToFirestore(
                                     {

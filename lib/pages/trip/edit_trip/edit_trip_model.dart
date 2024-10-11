@@ -28,8 +28,6 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
 
   FFUploadedFile? photo;
 
-  DateTime? selectedDate;
-
   String? photoURL;
 
   List<String> shareWith = [];

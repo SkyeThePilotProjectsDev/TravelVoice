@@ -28,8 +28,6 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
 
   FFUploadedFile? image;
 
-  DateTime? selectedDate;
-
   List<String> recordings = [];
   void addToRecordings(String item) => recordings.add(item);
   void removeFromRecordings(String item) => recordings.remove(item);

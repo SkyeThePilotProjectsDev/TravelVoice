@@ -43,7 +43,9 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       await actions.printToConsoleAction(
         'Init',
       );
-      _model.selectedDate = widget!.defaultDate;
+      _model.selectedDate = widget!.defaultDate != null
+          ? widget!.defaultDate
+          : getCurrentTimestamp;
       safeSetState(() {});
     });
 
@@ -427,6 +429,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               });
             }
             if (_model.datePicked != null) {
+              _model.selectedDate = _model.datePicked;
+              safeSetState(() {});
               safeSetState(() {
                 _model.textFieldYearTextController?.text =
                     dateTimeFormat("yyyy", _model.datePicked);

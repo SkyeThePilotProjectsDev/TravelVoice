@@ -382,3 +382,27 @@ a[x-apple-data-detectors],
 String emptyAudio() {
   return "";
 }
+
+List<String> stringListConcat(
+  List<String>? l1,
+  List<String>? l2,
+) {
+  if (l1 == null) return l2 ?? [];
+  if (l2 == null) return l1;
+
+  return [...l1, ...l2];
+}
+
+List<String>? stringListReduce(
+  List<String>? items,
+  List<String>? removed,
+) {
+  if (items == null) return [];
+  if (removed == null || removed.isEmpty) return items;
+
+  return items
+      .where((i) => !removed
+          .map((r) => r.toLowerCase().trim())
+          .contains(i.toLowerCase().trim()))
+      .toList();
+}
