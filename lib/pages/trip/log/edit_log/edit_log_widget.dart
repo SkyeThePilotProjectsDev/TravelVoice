@@ -2,9 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
 import '/backend/schema/structs/index.dart';
-import '/components/date_picker_widget.dart';
-import '/components/delete_confirmation_widget.dart';
-import '/components/image_uploader_widget.dart';
+import '/components/loading_indicator_widget.dart';
 import '/components/place_suggestions_widget.dart';
 import '/flutter_flow/flutter_flow_audio_player.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -12,6 +10,9 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
+import '/util_components/date_picker/date_picker_widget.dart';
+import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
+import '/util_components/image_uploader/image_uploader_widget.dart';
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -959,170 +960,198 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FFButtonWidget(
-                      onPressed: (!(_model.recordings.isNotEmpty) ||
-                              (_model.selectedPlace == null))
-                          ? null
-                          : () async {
-                              if (_model.image != null &&
-                                  (_model.image?.bytes?.isNotEmpty ?? false)) {
-                                {
-                                  safeSetState(
-                                      () => _model.isDataUploading = true);
-                                  var selectedUploadedFiles =
-                                      <FFUploadedFile>[];
-                                  var selectedMedia = <SelectedFile>[];
-                                  var downloadUrls = <String>[];
-                                  try {
-                                    selectedUploadedFiles =
-                                        _model.image!.bytes!.isNotEmpty
-                                            ? [_model.image!]
-                                            : <FFUploadedFile>[];
-                                    selectedMedia =
-                                        selectedFilesFromUploadedFiles(
-                                      selectedUploadedFiles,
-                                    );
-                                    downloadUrls = (await Future.wait(
-                                      selectedMedia.map(
-                                        (m) async => await uploadData(
-                                            m.storagePath, m.bytes),
+                    Builder(
+                      builder: (context) => FFButtonWidget(
+                        onPressed: (!(_model.recordings.isNotEmpty) ||
+                                (_model.selectedPlace == null))
+                            ? null
+                            : () async {
+                                if (_model.image != null &&
+                                    (_model.image?.bytes?.isNotEmpty ??
+                                        false)) {
+                                  showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (dialogContext) {
+                                      return Dialog(
+                                        elevation: 0,
+                                        insetPadding: EdgeInsets.zero,
+                                        backgroundColor: Colors.transparent,
+                                        alignment:
+                                            AlignmentDirectional(0.0, 0.0)
+                                                .resolve(
+                                                    Directionality.of(context)),
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              FocusScope.of(dialogContext)
+                                                  .unfocus(),
+                                          child: LoadingIndicatorWidget(
+                                            message: 'Uploading image',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+
+                                  {
+                                    safeSetState(
+                                        () => _model.isDataUploading = true);
+                                    var selectedUploadedFiles =
+                                        <FFUploadedFile>[];
+                                    var selectedMedia = <SelectedFile>[];
+                                    var downloadUrls = <String>[];
+                                    try {
+                                      selectedUploadedFiles =
+                                          _model.image!.bytes!.isNotEmpty
+                                              ? [_model.image!]
+                                              : <FFUploadedFile>[];
+                                      selectedMedia =
+                                          selectedFilesFromUploadedFiles(
+                                        selectedUploadedFiles,
+                                      );
+                                      downloadUrls = (await Future.wait(
+                                        selectedMedia.map(
+                                          (m) async => await uploadData(
+                                              m.storagePath, m.bytes),
+                                        ),
+                                      ))
+                                          .where((u) => u != null)
+                                          .map((u) => u!)
+                                          .toList();
+                                    } finally {
+                                      _model.isDataUploading = false;
+                                    }
+                                    if (selectedUploadedFiles.length ==
+                                            selectedMedia.length &&
+                                        downloadUrls.length ==
+                                            selectedMedia.length) {
+                                      safeSetState(() {
+                                        _model.uploadedLocalFile =
+                                            selectedUploadedFiles.first;
+                                        _model.uploadedFileUrl =
+                                            downloadUrls.first;
+                                      });
+                                    } else {
+                                      safeSetState(() {});
+                                      return;
+                                    }
+                                  }
+
+                                  _model.newImage = _model.uploadedFileUrl;
+                                }
+                                if (widget!.log != null) {
+                                  await widget!.log!.reference.update({
+                                    ...createLogRecordData(
+                                      location: updateLocationDataStruct(
+                                        functions.placeToLocation(
+                                            _model.selectedPlace),
+                                        clearUnsetFields: false,
                                       ),
-                                    ))
-                                        .where((u) => u != null)
-                                        .map((u) => u!)
-                                        .toList();
-                                  } finally {
-                                    _model.isDataUploading = false;
-                                  }
-                                  if (selectedUploadedFiles.length ==
-                                          selectedMedia.length &&
-                                      downloadUrls.length ==
-                                          selectedMedia.length) {
-                                    safeSetState(() {
-                                      _model.uploadedLocalFile =
-                                          selectedUploadedFiles.first;
-                                      _model.uploadedFileUrl =
-                                          downloadUrls.first;
-                                    });
-                                  } else {
-                                    safeSetState(() {});
-                                    return;
-                                  }
+                                      eventDate:
+                                          _model.datePickerModel.selectedDate,
+                                      notes: _model
+                                          .textFieldNotesTextController.text,
+                                      photo: _model.newImage,
+                                      editDate: getCurrentTimestamp,
+                                    ),
+                                    ...mapToFirestore(
+                                      {
+                                        'recordings': _model.recordings,
+                                      },
+                                    ),
+                                  });
+                                } else {
+                                  var logRecordReference =
+                                      LogRecord.createDoc(widget!.trip!);
+                                  await logRecordReference.set({
+                                    ...createLogRecordData(
+                                      eventDate:
+                                          _model.datePickerModel.selectedDate,
+                                      notes: _model
+                                          .textFieldNotesTextController.text,
+                                      photo: _model.uploadedFileUrl,
+                                      createdBy: currentUserReference,
+                                      ownedBy: currentUserReference,
+                                      editDate: getCurrentTimestamp,
+                                      creationDate: getCurrentTimestamp,
+                                      location: updateLocationDataStruct(
+                                        LocationDataStruct(
+                                          locationText: _model
+                                              .selectedPlace?.formattedAddress,
+                                          location: functions.locationParser(
+                                              _model.selectedPlace?.geometry
+                                                  ?.location),
+                                        ),
+                                        clearUnsetFields: false,
+                                        create: true,
+                                      ),
+                                    ),
+                                    ...mapToFirestore(
+                                      {
+                                        'recordings': _model.recordings,
+                                      },
+                                    ),
+                                  });
+                                  _model.newLog =
+                                      LogRecord.getDocumentFromData({
+                                    ...createLogRecordData(
+                                      eventDate:
+                                          _model.datePickerModel.selectedDate,
+                                      notes: _model
+                                          .textFieldNotesTextController.text,
+                                      photo: _model.uploadedFileUrl,
+                                      createdBy: currentUserReference,
+                                      ownedBy: currentUserReference,
+                                      editDate: getCurrentTimestamp,
+                                      creationDate: getCurrentTimestamp,
+                                      location: updateLocationDataStruct(
+                                        LocationDataStruct(
+                                          locationText: _model
+                                              .selectedPlace?.formattedAddress,
+                                          location: functions.locationParser(
+                                              _model.selectedPlace?.geometry
+                                                  ?.location),
+                                        ),
+                                        clearUnsetFields: false,
+                                        create: true,
+                                      ),
+                                    ),
+                                    ...mapToFirestore(
+                                      {
+                                        'recordings': _model.recordings,
+                                      },
+                                    ),
+                                  }, logRecordReference);
                                 }
 
-                                _model.newImage = _model.uploadedFileUrl;
-                              }
-                              if (widget!.log != null) {
-                                await widget!.log!.reference.update({
-                                  ...createLogRecordData(
-                                    location: updateLocationDataStruct(
-                                      functions.placeToLocation(
-                                          _model.selectedPlace),
-                                      clearUnsetFields: false,
-                                    ),
-                                    eventDate:
-                                        _model.datePickerModel.selectedDate,
-                                    notes: _model
-                                        .textFieldNotesTextController.text,
-                                    photo: _model.newImage,
-                                    editDate: getCurrentTimestamp,
-                                  ),
-                                  ...mapToFirestore(
-                                    {
-                                      'recordings': _model.recordings,
-                                    },
-                                  ),
-                                });
-                              } else {
-                                var logRecordReference =
-                                    LogRecord.createDoc(widget!.trip!);
-                                await logRecordReference.set({
-                                  ...createLogRecordData(
-                                    eventDate:
-                                        _model.datePickerModel.selectedDate,
-                                    notes: _model
-                                        .textFieldNotesTextController.text,
-                                    photo: _model.uploadedFileUrl,
-                                    createdBy: currentUserReference,
-                                    ownedBy: currentUserReference,
-                                    editDate: getCurrentTimestamp,
-                                    creationDate: getCurrentTimestamp,
-                                    location: updateLocationDataStruct(
-                                      LocationDataStruct(
-                                        locationText: _model
-                                            .selectedPlace?.formattedAddress,
-                                        location: functions.locationParser(
-                                            _model.selectedPlace?.geometry
-                                                ?.location),
-                                      ),
-                                      clearUnsetFields: false,
-                                      create: true,
-                                    ),
-                                  ),
-                                  ...mapToFirestore(
-                                    {
-                                      'recordings': _model.recordings,
-                                    },
-                                  ),
-                                });
-                                _model.newLog = LogRecord.getDocumentFromData({
-                                  ...createLogRecordData(
-                                    eventDate:
-                                        _model.datePickerModel.selectedDate,
-                                    notes: _model
-                                        .textFieldNotesTextController.text,
-                                    photo: _model.uploadedFileUrl,
-                                    createdBy: currentUserReference,
-                                    ownedBy: currentUserReference,
-                                    editDate: getCurrentTimestamp,
-                                    creationDate: getCurrentTimestamp,
-                                    location: updateLocationDataStruct(
-                                      LocationDataStruct(
-                                        locationText: _model
-                                            .selectedPlace?.formattedAddress,
-                                        location: functions.locationParser(
-                                            _model.selectedPlace?.geometry
-                                                ?.location),
-                                      ),
-                                      clearUnsetFields: false,
-                                      create: true,
-                                    ),
-                                  ),
-                                  ...mapToFirestore(
-                                    {
-                                      'recordings': _model.recordings,
-                                    },
-                                  ),
-                                }, logRecordReference);
-                              }
+                                context.safePop();
 
-                              context.safePop();
-
-                              safeSetState(() {});
-                            },
-                      text: 'Submit',
-                      icon: Icon(
-                        Icons.check_rounded,
-                        size: 15.0,
-                      ),
-                      options: FFButtonOptions(
-                        height: 40.0,
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
-                        iconPadding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        color: FlutterFlowTheme.of(context).primary,
-                        textStyle:
-                            FlutterFlowTheme.of(context).titleSmall.override(
-                                  fontFamily: 'Inter Tight',
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                ),
-                        elevation: 0.0,
-                        borderRadius: BorderRadius.circular(8.0),
-                        disabledColor: FlutterFlowTheme.of(context).tertiary,
-                        disabledTextColor:
-                            FlutterFlowTheme.of(context).alternate,
+                                safeSetState(() {});
+                              },
+                        text: 'Submit',
+                        icon: Icon(
+                          Icons.check_rounded,
+                          size: 15.0,
+                        ),
+                        options: FFButtonOptions(
+                          height: 40.0,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              16.0, 0.0, 16.0, 0.0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 0.0),
+                          color: FlutterFlowTheme.of(context).primary,
+                          textStyle:
+                              FlutterFlowTheme.of(context).titleSmall.override(
+                                    fontFamily: 'Inter Tight',
+                                    color: Colors.white,
+                                    letterSpacing: 0.0,
+                                  ),
+                          elevation: 0.0,
+                          borderRadius: BorderRadius.circular(8.0),
+                          disabledColor: FlutterFlowTheme.of(context).tertiary,
+                          disabledTextColor:
+                              FlutterFlowTheme.of(context).alternate,
+                        ),
                       ),
                     ),
                   ],

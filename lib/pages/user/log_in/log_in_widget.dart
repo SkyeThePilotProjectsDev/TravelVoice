@@ -1,4 +1,5 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/components/loading_indicator_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -306,94 +307,124 @@ class _LogInWidgetState extends State<LogInWidget> {
                                       ),
                                     ].divide(SizedBox(height: 16.0)),
                                   ),
-                                  FFButtonWidget(
-                                    onPressed: () async {
-                                      Function() _navigate = () {};
-                                      if ((_model.textFieldEmailTextController
-                                                      .text ==
-                                                  null ||
-                                              _model.textFieldEmailTextController
-                                                      .text ==
-                                                  '') ||
-                                          (_model.textFieldPasswordTextController
-                                                      .text ==
-                                                  null ||
-                                              _model.textFieldPasswordTextController
-                                                      .text ==
-                                                  '')) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Your email and/or password has not been entered',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    fontFamily: 'Outfit',
-                                                    color: (Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? Color(0xFF68656B)
-                                                        : Color(0xFFDCD6DD)),
-                                                    fontSize: 16.0,
-                                                    letterSpacing: 0.0,
-                                                  ),
+                                  Builder(
+                                    builder: (context) => FFButtonWidget(
+                                      onPressed: () async {
+                                        Function() _navigate = () {};
+                                        if ((_model.textFieldEmailTextController
+                                                        .text ==
+                                                    null ||
+                                                _model.textFieldEmailTextController
+                                                        .text ==
+                                                    '') ||
+                                            (_model.textFieldPasswordTextController
+                                                        .text ==
+                                                    null ||
+                                                _model.textFieldPasswordTextController
+                                                        .text ==
+                                                    '')) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Your email and/or password has not been entered',
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .bodyMedium
+                                                    .override(
+                                                      fontFamily: 'Outfit',
+                                                      color: (Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.dark
+                                                          ? Color(0xFF68656B)
+                                                          : Color(0xFFDCD6DD)),
+                                                      fontSize: 16.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                              ),
+                                              duration:
+                                                  Duration(milliseconds: 4000),
+                                              backgroundColor: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Color(0xFFE6E0E9)
+                                                  : Color(0xFF322F35),
                                             ),
-                                            duration:
-                                                Duration(milliseconds: 4000),
-                                            backgroundColor:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Color(0xFFE6E0E9)
-                                                    : Color(0xFF322F35),
-                                          ),
-                                        );
-                                      } else {
-                                        GoRouter.of(context).prepareAuthEvent();
+                                          );
+                                        } else {
+                                          showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (dialogContext) {
+                                              return Dialog(
+                                                elevation: 0,
+                                                insetPadding: EdgeInsets.zero,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                alignment: AlignmentDirectional(
+                                                        0.0, 0.0)
+                                                    .resolve(Directionality.of(
+                                                        context)),
+                                                child: GestureDetector(
+                                                  onTap: () => FocusScope.of(
+                                                          dialogContext)
+                                                      .unfocus(),
+                                                  child: LoadingIndicatorWidget(
+                                                    message: 'Logging in',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
 
-                                        final user =
-                                            await authManager.signInWithEmail(
-                                          context,
-                                          _model.textFieldEmailTextController
-                                              .text,
-                                          functions.encryptPassword(_model
-                                              .textFieldPasswordTextController
-                                              .text),
-                                        );
-                                        if (user == null) {
-                                          return;
+                                          GoRouter.of(context)
+                                              .prepareAuthEvent();
+
+                                          final user =
+                                              await authManager.signInWithEmail(
+                                            context,
+                                            _model.textFieldEmailTextController
+                                                .text,
+                                            functions.encryptPassword(_model
+                                                .textFieldPasswordTextController
+                                                .text),
+                                          );
+                                          if (user == null) {
+                                            return;
+                                          }
+
+                                          _navigate = () => context.goNamedAuth(
+                                              'Trips', context.mounted);
                                         }
 
-                                        _navigate = () => context.goNamedAuth(
-                                            'Trips', context.mounted);
-                                      }
-
-                                      _navigate();
-                                    },
-                                    text: 'Login',
-                                    options: FFButtonOptions(
-                                      padding: EdgeInsets.all(20.0),
-                                      iconPadding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              0.0, 0.0, 0.0, 0.0),
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondary,
-                                      textStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .override(
-                                            fontFamily: 'Inter Tight',
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            letterSpacing: 0.0,
-                                          ),
-                                      elevation: 0.0,
-                                      borderSide: BorderSide(
+                                        _navigate();
+                                      },
+                                      text: 'Login',
+                                      options: FFButtonOptions(
+                                        padding: EdgeInsets.all(20.0),
+                                        iconPadding:
+                                            EdgeInsetsDirectional.fromSTEB(
+                                                0.0, 0.0, 0.0, 0.0),
                                         color: FlutterFlowTheme.of(context)
                                             .secondary,
-                                        width: 2.0,
+                                        textStyle: FlutterFlowTheme.of(context)
+                                            .titleSmall
+                                            .override(
+                                              fontFamily: 'Inter Tight',
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              letterSpacing: 0.0,
+                                            ),
+                                        elevation: 0.0,
+                                        borderSide: BorderSide(
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondary,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
                                       ),
-                                      borderRadius: BorderRadius.circular(40.0),
                                     ),
                                   ),
                                 ].divide(SizedBox(height: 40.0)),
@@ -404,77 +435,132 @@ class _LogInWidgetState extends State<LogInWidget> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  GoRouter.of(context).prepareAuthEvent();
-                                  final user = await authManager
-                                      .signInWithGoogle(context);
-                                  if (user == null) {
-                                    return;
-                                  }
+                              Builder(
+                                builder: (context) => InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return Dialog(
+                                          elevation: 0,
+                                          insetPadding: EdgeInsets.zero,
+                                          backgroundColor: Colors.transparent,
+                                          alignment: AlignmentDirectional(
+                                                  0.0, 0.0)
+                                              .resolve(
+                                                  Directionality.of(context)),
+                                          child: GestureDetector(
+                                            onTap: () =>
+                                                FocusScope.of(dialogContext)
+                                                    .unfocus(),
+                                            child: LoadingIndicatorWidget(
+                                              message: 'Logging in',
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
 
-                                  context.goNamedAuth('Trips', context.mounted);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    final user = await authManager
+                                        .signInWithGoogle(context);
+                                    if (user == null) {
+                                      return;
+                                    }
+
+                                    context.goNamedAuth(
+                                        'Trips', context.mounted);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
                                       color: FlutterFlowTheme.of(context)
-                                          .primaryText,
+                                          .secondaryBackground,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                      ),
                                     ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(12.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: Image.asset(
-                                        'assets/images/google_1.png',
-                                        width: 20.0,
-                                        height: 20.0,
-                                        fit: BoxFit.cover,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Image.asset(
+                                          'assets/images/google_1.png',
+                                          width: 20.0,
+                                          height: 20.0,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  GoRouter.of(context).prepareAuthEvent();
-                                  final user = await authManager
-                                      .signInWithApple(context);
-                                  if (user == null) {
-                                    return;
-                                  }
+                              Builder(
+                                builder: (context) => InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return Dialog(
+                                          elevation: 0,
+                                          insetPadding: EdgeInsets.zero,
+                                          backgroundColor: Colors.transparent,
+                                          alignment: AlignmentDirectional(
+                                                  0.0, 0.0)
+                                              .resolve(
+                                                  Directionality.of(context)),
+                                          child: GestureDetector(
+                                            onTap: () =>
+                                                FocusScope.of(dialogContext)
+                                                    .unfocus(),
+                                            child: LoadingIndicatorWidget(
+                                              message: 'Logging in',
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
 
-                                  context.goNamedAuth('Trips', context.mounted);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    final user = await authManager
+                                        .signInWithApple(context);
+                                    if (user == null) {
+                                      return;
+                                    }
+
+                                    context.goNamedAuth(
+                                        'Trips', context.mounted);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
                                       color: FlutterFlowTheme.of(context)
-                                          .primaryText,
+                                          .secondaryBackground,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                      ),
                                     ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      Icons.apple,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      size: 28.0,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.apple,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 28.0,
+                                      ),
                                     ),
                                   ),
                                 ),

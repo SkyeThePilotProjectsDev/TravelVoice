@@ -1,11 +1,11 @@
 import '/backend/api_requests/api_calls.dart';
 import '/backend/backend.dart';
 import '/backend/schema/structs/index.dart';
-import '/components/empty_list_widget.dart';
 import '/components/place_suggestion_item_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/instant_timer.dart';
+import '/util_components/empty_list/empty_list_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'place_suggestions_widget.dart' show PlaceSuggestionsWidget;
 import 'package:flutter/material.dart';
