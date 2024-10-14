@@ -44,8 +44,8 @@ class Waveform extends StatefulWidget {
 }
 
 class _WaveformState extends State<Waveform> {
-  late RecorderController rController;
-  late PlayerController pController;
+  final RecorderController rController = RecorderController();
+  final PlayerController pController = PlayerController();
   bool tryouts = false;
   MediaPlayerActions? state;
   String? path;
@@ -70,8 +70,8 @@ class _WaveformState extends State<Waveform> {
   @override
   void initState() {
     super.initState();
-    rController = RecorderController();
-    pController = PlayerController();
+    // rController = RecorderController();
+    // pController = PlayerController();
     if (widget.audio != null) {
       path = widget.audio;
       FutureBuilder(
