@@ -59,58 +59,45 @@ class _LogsWidgetState extends State<LogsWidget> {
                   builder: (context) {
                     if (widget!.trip?.image != null &&
                         widget!.trip?.image != '') {
-                      return Stack(
-                        children: [
-                          Hero(
-                            tag: widget!.trip!.image,
-                            transitionOnUserGestures: true,
-                            child: Image.network(
-                              widget!.trip!.image,
-                              width: MediaQuery.sizeOf(context).width * 1.0,
-                              height: MediaQuery.sizeOf(context).height * 1.0,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Align(
-                                  alignment: AlignmentDirectional(0.0, 0.0),
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        24.0, 0.0, 24.0, 0.0),
-                                    child: Text(
-                                      valueOrDefault<String>(
-                                        widget!.trip?.name,
-                                        '[Trip name]',
-                                      ),
-                                      maxLines: 3,
-                                      style: FlutterFlowTheme.of(context)
-                                          .displaySmall
-                                          .override(
-                                            fontFamily: 'Inter Tight',
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            letterSpacing: 0.0,
-                                          ),
-                                    ),
-                                  ),
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                        ),
+                        child: Stack(
+                          children: [
+                            Opacity(
+                              opacity: 0.75,
+                              child: Hero(
+                                tag: widget!.trip!.image,
+                                transitionOnUserGestures: true,
+                                child: Image.network(
+                                  widget!.trip!.image,
+                                  width: MediaQuery.sizeOf(context).width * 1.0,
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 1.0,
+                                  fit: BoxFit.cover,
                                 ),
-                                if (widget!.trip?.tripDate != null)
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
                                   Align(
                                     alignment: AlignmentDirectional(0.0, 0.0),
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           24.0, 0.0, 24.0, 0.0),
                                       child: Text(
-                                        dateTimeFormat("MMMM yyyy",
-                                            widget!.trip!.tripDate!),
+                                        valueOrDefault<String>(
+                                          widget!.trip?.name,
+                                          '[Trip name]',
+                                        ),
                                         maxLines: 3,
                                         style: FlutterFlowTheme.of(context)
-                                            .titleLarge
+                                            .displaySmall
                                             .override(
                                               fontFamily: 'Inter Tight',
                                               color:
@@ -121,10 +108,33 @@ class _LogsWidgetState extends State<LogsWidget> {
                                       ),
                                     ),
                                   ),
-                              ],
+                                  if (widget!.trip?.tripDate != null)
+                                    Align(
+                                      alignment: AlignmentDirectional(0.0, 0.0),
+                                      child: Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            24.0, 0.0, 24.0, 0.0),
+                                        child: Text(
+                                          dateTimeFormat("MMMM yyyy",
+                                              widget!.trip!.tripDate!),
+                                          maxLines: 3,
+                                          style: FlutterFlowTheme.of(context)
+                                              .titleLarge
+                                              .override(
+                                                fontFamily: 'Inter Tight',
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                letterSpacing: 0.0,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     } else {
                       return Container(

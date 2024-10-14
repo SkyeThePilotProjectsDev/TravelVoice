@@ -78,6 +78,8 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   LogRecord? newLog;
+  // Stores action output result for [Backend Call - Read Document] action in Button widget.
+  TripRecord? thisTrip;
 
   @override
   void initState(BuildContext context) {

@@ -1124,7 +1124,24 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   }, logRecordReference);
                                 }
 
-                                context.safePop();
+                                _model.thisTrip =
+                                    await TripRecord.getDocumentOnce(
+                                        widget!.trip!);
+                                if (Navigator.of(context).canPop()) {
+                                  context.pop();
+                                }
+                                context.pushNamed(
+                                  'Logs',
+                                  queryParameters: {
+                                    'trip': serializeParam(
+                                      _model.thisTrip,
+                                      ParamType.Document,
+                                    ),
+                                  }.withoutNulls,
+                                  extra: <String, dynamic>{
+                                    'trip': _model.thisTrip,
+                                  },
+                                );
 
                                 safeSetState(() {});
                               },

@@ -554,27 +554,29 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                                         Container(
                                                                       decoration:
                                                                           BoxDecoration(
-                                                                        color: FlutterFlowTheme.of(context)
-                                                                            .primary,
+                                                                        color: Colors
+                                                                            .black,
                                                                         borderRadius:
                                                                             BorderRadius.circular(8.0),
                                                                       ),
                                                                       child:
                                                                           Stack(
                                                                         children: [
-                                                                          Hero(
-                                                                            tag:
-                                                                                tripsItem.image,
-                                                                            transitionOnUserGestures:
-                                                                                true,
+                                                                          Opacity(
+                                                                            opacity:
+                                                                                0.75,
                                                                             child:
-                                                                                ClipRRect(
-                                                                              borderRadius: BorderRadius.circular(8.0),
-                                                                              child: Image.network(
-                                                                                tripsItem.image,
-                                                                                width: MediaQuery.sizeOf(context).width * 1.0,
-                                                                                height: MediaQuery.sizeOf(context).height * 1.0,
-                                                                                fit: BoxFit.cover,
+                                                                                Hero(
+                                                                              tag: tripsItem.image,
+                                                                              transitionOnUserGestures: true,
+                                                                              child: ClipRRect(
+                                                                                borderRadius: BorderRadius.circular(8.0),
+                                                                                child: Image.network(
+                                                                                  tripsItem.image,
+                                                                                  width: MediaQuery.sizeOf(context).width * 1.0,
+                                                                                  height: MediaQuery.sizeOf(context).height * 1.0,
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
