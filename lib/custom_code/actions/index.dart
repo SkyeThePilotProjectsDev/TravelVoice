@@ -7,4 +7,3 @@ export 'speech_to_text.dart' show speechToText;
 export 'set_portrait_mode.dart' show setPortraitMode;
 export 'clear_route.dart' show clearRoute;
 export 'get_storage_audio_files.dart' show getStorageAudioFiles;
-export 'init_cache.dart' show initCache;

@@ -26,7 +26,6 @@ void main() async {
 
   // Start initial custom actions code
   await actions.setPortraitMode();
-  await actions.initCache();
   // End initial custom actions code
 
   await FlutterFlowTheme.initialize();

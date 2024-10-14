@@ -29,7 +29,6 @@ dependencies:
   assets_audio_player_web: 3.1.1
   audio_waveforms: ^1.0.5
   auto_size_text: 3.0.0
-  cache_systems: ^0.0.6
   cached_network_image: 3.3.1
   cloud_firestore: 4.17.3
   cloud_firestore_platform_interface: 6.2.3
@@ -58,7 +57,6 @@ dependencies:
   firebase_storage_web: 3.9.5
   flutter_animate: 4.5.0
   flutter_cache_manager: 3.3.1
-  flutter_cache_manager_firebase: ^2.0.0
   flutter_plugin_android_lifecycle: 2.0.20
   font_awesome_flutter: 10.7.0
   from_css_color: 2.0.0
