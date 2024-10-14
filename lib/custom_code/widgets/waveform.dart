@@ -17,6 +17,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'dart:ui' as ui;
 import 'package:path_provider/path_provider.dart';
 import 'package:cache_systems/cache_systems.dart';
+import 'package:flutter_cache_manager_firebase/flutter_cache_manager_firebase.dart';
 
 class Waveform extends StatefulWidget {
   const Waveform({
@@ -53,7 +54,9 @@ class _WaveformState extends State<Waveform> {
     print("path: $path");
     if (path == null) return;
     if (path!.startsWith("http")) {
-      path = (await CacheSystem().get(Uri.parse(path!)))!.path;
+      // path = (await CacheSystem().get(Uri.parse(path!)))!.path;
+      var file = await FirebaseCacheManager().getSingleFile(url);
+      path = file.path;
     }
     // await pController.release();
     await pController.preparePlayer(

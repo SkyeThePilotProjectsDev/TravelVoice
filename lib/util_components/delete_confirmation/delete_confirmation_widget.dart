@@ -71,8 +71,8 @@ class _DeleteConfirmationWidgetState extends State<DeleteConfirmationWidget> {
                 Expanded(
                   child: FFButtonWidget(
                     onPressed: () async {
-                      Navigator.pop(context);
                       await widget.onDelete?.call();
+                      Navigator.pop(context);
                     },
                     text: 'Dalete',
                     options: FFButtonOptions(
