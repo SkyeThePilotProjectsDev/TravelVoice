@@ -168,64 +168,66 @@ class _WaveformState extends State<Waveform> {
     }
 
     // if (widget.audio == null) return Container();
+    return Column(
+      children: [
+        state == MediaPlayerActions.record
+            ? AudioWaveforms(
+                size: Size(
+                  widget.width ?? 100,
+                  widget.widgetHeight ?? 100,
+                ),
+                recorderController: rController,
+                enableGesture: true,
+                waveStyle: WaveStyle(
+                  waveColor: _p,
+                  showDurationLabel: false,
+                  durationLinesColor: Colors.transparent,
+                  spacing: 8.0,
+                  showTop: true,
+                  showBottom: true,
+                  extendWaveform: true,
+                  showMiddleLine: false,
+                  scaleFactor: 70,
+                  gradient: ui.Gradient.linear(
+                    const Offset(70, 50),
+                    Offset(MediaQuery.of(context).size.width / 2, 0),
+                    [_s, _p],
+                  ),
+                ),
+              )
+            : path == null
+                ? Container()
+                : InkWell(
+                    onTap: () => print(widget.state),
+                    // child: FutureBuilder(
+                    //   future: pController.extractWaveformData(
+                    //     path: path!,
+                    //     noOfSamples: 100,
+                    //   ),
+                    //   builder: (ctx, sc) {
+                    //     List<double>? data = sc.data;
 
-    if (state == MediaPlayerActions.record) {
-      return AudioWaveforms(
-        size: Size(
-          widget.width ?? 100,
-          widget.widgetHeight ?? 100,
-        ),
-        recorderController: rController,
-        enableGesture: true,
-        waveStyle: WaveStyle(
-          waveColor: _p,
-          showDurationLabel: false,
-          durationLinesColor: Colors.transparent,
-          spacing: 8.0,
-          showTop: true,
-          showBottom: true,
-          extendWaveform: true,
-          showMiddleLine: false,
-          scaleFactor: 70,
-          gradient: ui.Gradient.linear(
-            const Offset(70, 50),
-            Offset(MediaQuery.of(context).size.width / 2, 0),
-            [_s, _p],
-          ),
-        ),
-      );
-    } else {
-      if (path == null) return Container();
-      return InkWell(
-        onTap: () => print(widget.state),
-        // child: FutureBuilder(
-        //   future: pController.extractWaveformData(
-        //     path: path!,
-        //     noOfSamples: 100,
-        //   ),
-        //   builder: (ctx, sc) {
-        //     List<double>? data = sc.data;
+                    //     if (data == null) return Container();
 
-        //     if (data == null) return Container();
-
-        child: CustomAudioFileWaveforms(
-          width: widget.width ?? 100,
-          height: widget.widgetHeight ?? 100,
-          playerController: pController,
-          enableSeekGesture: true,
-          waveformType: WaveformType.long,
-          continuousWaveform: true,
-          // waveformData: data,
-          playerWaveStyle: PlayerWaveStyle(
-            fixedWaveColor: _p,
-            liveWaveColor: _s,
-            spacing: 6,
-            scaleFactor: 300,
-          ),
-          //   );
-          // },
-        ),
-      );
-    }
+                    child: CustomAudioFileWaveforms(
+                      width: widget.width ?? 100,
+                      height: widget.widgetHeight ?? 100,
+                      playerController: pController,
+                      enableSeekGesture: true,
+                      waveformType: WaveformType.long,
+                      continuousWaveform: true,
+                      // waveformData: data,
+                      playerWaveStyle: PlayerWaveStyle(
+                        fixedWaveColor: _p,
+                        liveWaveColor: _s,
+                        spacing: 6,
+                        scaleFactor: 300,
+                      ),
+                      //   );
+                      // },
+                    ),
+                  ),
+      ],
+    );
   }
 }
