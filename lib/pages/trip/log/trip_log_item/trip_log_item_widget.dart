@@ -270,16 +270,6 @@ class _TripLogItemWidgetState extends State<TripLogItemWidget> {
                           ),
                         ].divide(SizedBox(width: 8.0)),
                       ),
-                      Text(
-                        functions.audioToString(valueOrDefault<String>(
-                          widget!.log?.recordings?.first,
-                          '~',
-                        )),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0.0,
-                            ),
-                      ),
                     ],
                   ),
                 ),
