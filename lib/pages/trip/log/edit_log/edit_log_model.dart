@@ -13,6 +13,7 @@ import '/pages/trip/log/create_recording/create_recording_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'edit_log_widget.dart' show EditLogWidget;
@@ -23,6 +24,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 
 class EditLogModel extends FlutterFlowModel<EditLogWidget> {
   ///  Local state fields for this page.
@@ -71,10 +73,19 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
       textFieldNotesTextControllerValidator;
   // Model for imageUploader component.
   late ImageUploaderModel imageUploaderModel;
-  bool isDataUploading = false;
-  FFUploadedFile uploadedLocalFile =
+  AudioRecorder? audioRecorder;
+  String? apath;
+  FFUploadedFile recordedFileBytes =
       FFUploadedFile(bytes: Uint8List.fromList([]));
-  String uploadedFileUrl = '';
+  bool isDataUploading1 = false;
+  List<FFUploadedFile> uploadedLocalFiles1 = [];
+  List<String> uploadedFileUrls1 = [];
+
+  // Stores action output result for [Custom Action - getStorageAudioFiles] action in Button widget.
+  List<FFUploadedFile>? recordingBytes;
+  bool isDataUploading2 = false;
+  List<FFUploadedFile> uploadedLocalFiles2 = [];
+  List<String> uploadedFileUrls2 = [];
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   LogRecord? newLog;

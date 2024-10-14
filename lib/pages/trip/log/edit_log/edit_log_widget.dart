@@ -13,6 +13,7 @@ import '/pages/trip/log/create_recording/create_recording_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 import 'edit_log_model.dart';
 export 'edit_log_model.dart';
 
@@ -54,6 +56,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
       if (widget!.log != null) {
         _model.recordings = widget!.log!.recordings.toList().cast<String>();
         _model.selectedPlace = functions.locationToPlace(widget!.log?.location);
+        _model.newImage = widget!.log?.photo;
         safeSetState(() {});
       } else {
         _model.addToRecordings(functions.emptyAudio());
@@ -944,14 +947,83 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   ),
                         ),
                       if (_model.selectedPlace == null)
-                        Text(
-                          '* A city needs to be selected',
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    fontFamily: 'Inter',
-                                    color: FlutterFlowTheme.of(context).error,
-                                    letterSpacing: 0.0,
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            await startAudioRecording(
+                              context,
+                              audioRecorder: _model.audioRecorder ??=
+                                  AudioRecorder(),
+                            );
+
+                            await stopAudioRecording(
+                              audioRecorder: _model.audioRecorder,
+                              audioName: 'recordedFileBytes.mp3',
+                              onRecordingComplete: (audioFilePath, audioBytes) {
+                                _model.apath = audioFilePath;
+                                _model.recordedFileBytes = audioBytes;
+                              },
+                            );
+
+                            final selectedFiles = await selectFiles(
+                              allowedExtensions: ['mp3'],
+                              multiFile: true,
+                            );
+                            if (selectedFiles != null) {
+                              safeSetState(
+                                  () => _model.isDataUploading1 = true);
+                              var selectedUploadedFiles = <FFUploadedFile>[];
+
+                              var downloadUrls = <String>[];
+                              try {
+                                selectedUploadedFiles = selectedFiles
+                                    .map((m) => FFUploadedFile(
+                                          name: m.storagePath.split('/').last,
+                                          bytes: m.bytes,
+                                        ))
+                                    .toList();
+
+                                downloadUrls = (await Future.wait(
+                                  selectedFiles.map(
+                                    (f) async => await uploadData(
+                                        f.storagePath, f.bytes),
                                   ),
+                                ))
+                                    .where((u) => u != null)
+                                    .map((u) => u!)
+                                    .toList();
+                              } finally {
+                                _model.isDataUploading1 = false;
+                              }
+                              if (selectedUploadedFiles.length ==
+                                      selectedFiles.length &&
+                                  downloadUrls.length == selectedFiles.length) {
+                                safeSetState(() {
+                                  _model.uploadedLocalFiles1 =
+                                      selectedUploadedFiles;
+                                  _model.uploadedFileUrls1 = downloadUrls;
+                                });
+                              } else {
+                                safeSetState(() {});
+                                return;
+                              }
+                            }
+
+                            safeSetState(() {});
+                          },
+                          child: Text(
+                            '* A city needs to be selected',
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  color: FlutterFlowTheme.of(context).error,
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
                         ),
                     ],
                   ),
@@ -966,79 +1038,84 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                 (_model.selectedPlace == null))
                             ? null
                             : () async {
-                                if (_model.image != null &&
-                                    (_model.image?.bytes?.isNotEmpty ??
-                                        false)) {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (dialogContext) {
-                                      return Dialog(
-                                        elevation: 0,
-                                        insetPadding: EdgeInsets.zero,
-                                        backgroundColor: Colors.transparent,
-                                        alignment:
-                                            AlignmentDirectional(0.0, 0.0)
-                                                .resolve(
-                                                    Directionality.of(context)),
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              FocusScope.of(dialogContext)
-                                                  .unfocus(),
-                                          child: LoadingIndicatorWidget(
-                                            message: 'Uploading image',
-                                          ),
+                                showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (dialogContext) {
+                                    return Dialog(
+                                      elevation: 0,
+                                      insetPadding: EdgeInsets.zero,
+                                      backgroundColor: Colors.transparent,
+                                      alignment: AlignmentDirectional(0.0, 0.0)
+                                          .resolve(Directionality.of(context)),
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            FocusScope.of(dialogContext)
+                                                .unfocus(),
+                                        child: LoadingIndicatorWidget(
+                                          message: 'Uploading image',
                                         ),
-                                      );
-                                    },
-                                  );
+                                      ),
+                                    );
+                                  },
+                                );
 
-                                  {
-                                    safeSetState(
-                                        () => _model.isDataUploading = true);
-                                    var selectedUploadedFiles =
-                                        <FFUploadedFile>[];
-                                    var selectedMedia = <SelectedFile>[];
-                                    var downloadUrls = <String>[];
-                                    try {
-                                      selectedUploadedFiles =
-                                          _model.image!.bytes!.isNotEmpty
-                                              ? [_model.image!]
-                                              : <FFUploadedFile>[];
-                                      selectedMedia =
-                                          selectedFilesFromUploadedFiles(
-                                        selectedUploadedFiles,
-                                      );
-                                      downloadUrls = (await Future.wait(
-                                        selectedMedia.map(
-                                          (m) async => await uploadData(
-                                              m.storagePath, m.bytes),
-                                        ),
-                                      ))
-                                          .where((u) => u != null)
-                                          .map((u) => u!)
-                                          .toList();
-                                    } finally {
-                                      _model.isDataUploading = false;
-                                    }
-                                    if (selectedUploadedFiles.length ==
-                                            selectedMedia.length &&
-                                        downloadUrls.length ==
-                                            selectedMedia.length) {
-                                      safeSetState(() {
-                                        _model.uploadedLocalFile =
-                                            selectedUploadedFiles.first;
-                                        _model.uploadedFileUrl =
-                                            downloadUrls.first;
-                                      });
-                                    } else {
-                                      safeSetState(() {});
-                                      return;
-                                    }
+                                _model.recordingBytes =
+                                    await actions.getStorageAudioFiles(
+                                  _model.recordings.toList(),
+                                );
+                                {
+                                  safeSetState(
+                                      () => _model.isDataUploading2 = true);
+                                  var selectedUploadedFiles =
+                                      <FFUploadedFile>[];
+                                  var selectedMedia = <SelectedFile>[];
+                                  var downloadUrls = <String>[];
+                                  try {
+                                    selectedUploadedFiles = functions.addFile(
+                                        _model.recordingBytes?.toList(),
+                                        _model.image);
+                                    selectedMedia =
+                                        selectedFilesFromUploadedFiles(
+                                      selectedUploadedFiles,
+                                      isMultiData: true,
+                                    );
+                                    downloadUrls = (await Future.wait(
+                                      selectedMedia.map(
+                                        (m) async => await uploadData(
+                                            m.storagePath, m.bytes),
+                                      ),
+                                    ))
+                                        .where((u) => u != null)
+                                        .map((u) => u!)
+                                        .toList();
+                                  } finally {
+                                    _model.isDataUploading2 = false;
                                   }
-
-                                  _model.newImage = _model.uploadedFileUrl;
+                                  if (selectedUploadedFiles.length ==
+                                          selectedMedia.length &&
+                                      downloadUrls.length ==
+                                          selectedMedia.length) {
+                                    safeSetState(() {
+                                      _model.uploadedLocalFiles2 =
+                                          selectedUploadedFiles;
+                                      _model.uploadedFileUrls2 = downloadUrls;
+                                    });
+                                  } else {
+                                    safeSetState(() {});
+                                    return;
+                                  }
                                 }
+
+                                _model.newImage = _model.uploadedFileUrls2.last;
+                                _model.recordings = _model.image != null &&
+                                        (_model.image?.bytes?.isNotEmpty ??
+                                            false)
+                                    ? functions.recordingsOnly(
+                                        _model.uploadedFileUrls2.toList())
+                                    : _model.uploadedFileUrls2
+                                        .toList()
+                                        .cast<String>();
                                 if (widget!.log != null) {
                                   await widget!.log!.reference.update({
                                     ...createLogRecordData(
@@ -1069,7 +1146,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                           _model.datePickerModel.selectedDate,
                                       notes: _model
                                           .textFieldNotesTextController.text,
-                                      photo: _model.uploadedFileUrl,
+                                      photo: _model.newImage,
                                       createdBy: currentUserReference,
                                       ownedBy: currentUserReference,
                                       editDate: getCurrentTimestamp,
@@ -1099,7 +1176,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                           _model.datePickerModel.selectedDate,
                                       notes: _model
                                           .textFieldNotesTextController.text,
-                                      photo: _model.uploadedFileUrl,
+                                      photo: _model.newImage,
                                       createdBy: currentUserReference,
                                       ownedBy: currentUserReference,
                                       editDate: getCurrentTimestamp,

@@ -435,3 +435,18 @@ bool stringsContainInvitation(
           (s) => s.toLowerCase().trim() == invitation.id.toLowerCase().trim())
       .isNotEmpty;
 }
+
+List<FFUploadedFile> addFile(
+  List<FFUploadedFile>? fileList,
+  FFUploadedFile? newFile,
+) {
+  if (fileList == null) return [newFile].nonNulls.toList();
+  if (newFile == null) return fileList;
+
+  return [...fileList, newFile];
+}
+
+List<String> recordingsOnly(List<String>? links) {
+  if (links == null || links.isEmpty) return [];
+  return links.where((l) => l != links.last).toList();
+}

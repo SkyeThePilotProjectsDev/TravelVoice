@@ -63,9 +63,18 @@ class _WaveformState extends State<Waveform> {
   @override
   void initState() {
     super.initState();
-    if (widget.audio != null) path = widget.audio;
     rController = RecorderController();
     pController = PlayerController();
+    if (widget.audio != null) {
+      path = widget.audio;
+      FutureBuilder(
+        future: prep(),
+        builder: (_, __) {
+          print("Prepping default audio");
+          return Container();
+        },
+      );
+    }
     // pController.
     pController.onCurrentDurationChanged.listen((i) {
       print("DUREATION CHANGED: $i");

@@ -5,3 +5,5 @@ export 'get_or_create_user_invitations_ref.dart'
 export 'can_open_supported_links.dart' show canOpenSupportedLinks;
 export 'speech_to_text.dart' show speechToText;
 export 'set_portrait_mode.dart' show setPortraitMode;
+export 'clear_route.dart' show clearRoute;
+export 'get_storage_audio_files.dart' show getStorageAudioFiles;

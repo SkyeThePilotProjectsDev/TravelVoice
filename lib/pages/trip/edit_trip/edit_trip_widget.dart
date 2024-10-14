@@ -229,6 +229,9 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                 }
                                                 await widget!.trip!.reference
                                                     .delete();
+                                                await actions.clearRoute(
+                                                  context,
+                                                );
 
                                                 context.goNamed('Trips');
                                               },
