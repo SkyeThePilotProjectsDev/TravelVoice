@@ -29,6 +29,7 @@ dependencies:
   assets_audio_player_web: 3.1.1
   audio_waveforms: ^1.0.5
   auto_size_text: 3.0.0
+  cache_systems: ^0.0.6
   cached_network_image: 3.3.1
   cloud_firestore: 4.17.3
   cloud_firestore_platform_interface: 6.2.3

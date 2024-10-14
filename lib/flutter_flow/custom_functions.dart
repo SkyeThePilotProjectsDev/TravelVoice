@@ -450,3 +450,23 @@ List<String> recordingsOnly(List<String>? links) {
   if (links == null || links.isEmpty) return [];
   return links.where((l) => l != links.last).toList();
 }
+
+List<String> ignoreUploadedRecordings(List<String>? input) {
+  if (input == null) return [];
+
+  return input.where((i) => !i.startsWith("https")).toList();
+}
+
+List<String> mergeRecordingPaths(
+  List<String>? oldPaths,
+  List<String>? uploadedPaths,
+) {
+  if (uploadedPaths == null) return oldPaths ?? [];
+  if (oldPaths == null) return uploadedPaths;
+
+  int index = 0;
+
+  return oldPaths
+      .map((p) => p.startsWith("http") ? p : uploadedPaths[index++])
+      .toList();
+}

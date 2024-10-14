@@ -1062,7 +1062,10 @@ class _EditLogWidgetState extends State<EditLogWidget> {
 
                                 _model.recordingBytes =
                                     await actions.getStorageAudioFiles(
-                                  _model.recordings.toList(),
+                                  functions
+                                      .ignoreUploadedRecordings(
+                                          _model.recordings.toList())
+                                      .toList(),
                                 );
                                 {
                                   safeSetState(
@@ -1108,14 +1111,20 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                 }
 
                                 _model.newImage = _model.uploadedFileUrls2.last;
-                                _model.recordings = _model.image != null &&
-                                        (_model.image?.bytes?.isNotEmpty ??
-                                            false)
-                                    ? functions.recordingsOnly(
-                                        _model.uploadedFileUrls2.toList())
-                                    : _model.uploadedFileUrls2
-                                        .toList()
-                                        .cast<String>();
+                                _model.recordings = functions
+                                    .mergeRecordingPaths(
+                                        _model.recordings.toList(),
+                                        (_model.image != null &&
+                                                    (_model.image?.bytes
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                ? functions.recordingsOnly(
+                                                    _model.uploadedFileUrls2
+                                                        .toList())
+                                                : _model.uploadedFileUrls2)
+                                            .toList())
+                                    .toList()
+                                    .cast<String>();
                                 if (widget!.log != null) {
                                   await widget!.log!.reference.update({
                                     ...createLogRecordData(
