@@ -55,7 +55,7 @@ class _WaveformState extends State<Waveform> {
     if (path == null) return;
     if (path!.startsWith("http")) {
       // path = (await CacheSystem().get(Uri.parse(path!)))!.path;
-      var file = await FirebaseCacheManager().getSingleFile(url);
+      var file = await FirebaseCacheManager().getSingleFile(path!);
       path = file.path;
     }
     // await pController.release();
