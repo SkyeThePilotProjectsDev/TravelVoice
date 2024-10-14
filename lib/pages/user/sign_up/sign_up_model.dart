@@ -3,7 +3,6 @@ import '/components/loading_indicator_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import 'sign_up_widget.dart' show SignUpWidget;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

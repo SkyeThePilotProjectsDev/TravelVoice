@@ -3,7 +3,6 @@ import '/components/loading_indicator_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -747,12 +746,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
                                             GoRouter.of(context)
                                                 .prepareAuthEvent();
-                                            if (functions.encryptPassword(_model
+                                            if (_model
                                                     .textFieldPasswordTextController
-                                                    .text) !=
-                                                functions.encryptPassword(_model
+                                                    .text !=
+                                                _model
                                                     .textFieldConfirmPasswordTextController
-                                                    .text)) {
+                                                    .text) {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 SnackBar(
@@ -770,9 +769,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                               _model
                                                   .textFieldEmailTextController
                                                   .text,
-                                              functions.encryptPassword(_model
+                                              _model
                                                   .textFieldPasswordTextController
-                                                  .text),
+                                                  .text,
                                             );
                                             if (user == null) {
                                               return;

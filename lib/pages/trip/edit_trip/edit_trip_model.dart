@@ -57,6 +57,15 @@ class EditTripModel extends FlutterFlowModel<EditTripWidget> {
 
   int loop2 = 0;
 
+  List<String> resendEmails = [];
+  void addToResendEmails(String item) => resendEmails.add(item);
+  void removeFromResendEmails(String item) => resendEmails.remove(item);
+  void removeAtIndexFromResendEmails(int index) => resendEmails.removeAt(index);
+  void insertAtIndexInResendEmails(int index, String item) =>
+      resendEmails.insert(index, item);
+  void updateResendEmailsAtIndex(int index, Function(String) updateFn) =>
+      resendEmails[index] = updateFn(resendEmails[index]);
+
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();

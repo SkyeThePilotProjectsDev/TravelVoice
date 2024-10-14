@@ -864,7 +864,18 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                         SizedBox(height: 8.0)),
                                                   ),
                                                 if ((widget!.trip != null) &&
-                                                    (widget!.trip!.members
+                                                    (functions
+                                                        .filterOutTripInvitations(
+                                                            oldMembersTripInvitationRecordList
+                                                                .toList(),
+                                                            _model.removedUsers
+                                                                .toList())
+                                                        .where((e) =>
+                                                            e.parentReference !=
+                                                            functions
+                                                                .getPlainInvetationsRef(
+                                                                    currentUserEmail))
+                                                        .toList()
                                                         .isNotEmpty))
                                                   Container(
                                                     decoration: BoxDecoration(),
@@ -967,10 +978,28 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                             ),
                                                                             if (oldMembersItem.status ==
                                                                                 RequestStatus.Requested)
-                                                                              Icon(
-                                                                                Icons.mail,
-                                                                                color: FlutterFlowTheme.of(context).alternate,
-                                                                                size: 20.0,
+                                                                              InkWell(
+                                                                                splashColor: Colors.transparent,
+                                                                                focusColor: Colors.transparent,
+                                                                                hoverColor: Colors.transparent,
+                                                                                highlightColor: Colors.transparent,
+                                                                                onTap: () async {
+                                                                                  if (_model.resendEmails.contains(oldMembersItem.parentReference.id)) {
+                                                                                    _model.removeFromResendEmails(oldMembersItem.parentReference.id);
+                                                                                    safeSetState(() {});
+                                                                                  } else {
+                                                                                    _model.addToResendEmails(oldMembersItem.parentReference.id);
+                                                                                    safeSetState(() {});
+                                                                                  }
+                                                                                },
+                                                                                child: Icon(
+                                                                                  Icons.mail,
+                                                                                  color: valueOrDefault<Color>(
+                                                                                    _model.resendEmails.contains(oldMembersItem.parentReference.id) ? FlutterFlowTheme.of(context).primary : FlutterFlowTheme.of(context).alternate,
+                                                                                    FlutterFlowTheme.of(context).alternate,
+                                                                                  ),
+                                                                                  size: 20.0,
+                                                                                ),
                                                                               ),
                                                                           ],
                                                                         ),
@@ -991,10 +1020,11 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                               .transparent,
                                                                       onTap:
                                                                           () async {
-                                                                        _model.removeAtIndexFromShareWith(
-                                                                            oldMembersIndex);
                                                                         _model.addToRemovedUsers(
                                                                             oldMembersItem);
+                                                                        _model.removeFromResendEmails(oldMembersItem
+                                                                            .parentReference
+                                                                            .id);
                                                                         safeSetState(
                                                                             () {});
                                                                       },
@@ -1168,9 +1198,6 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                                                               .transparent,
                                                                       onTap:
                                                                           () async {
-                                                                        _model.addToShareWith(removedMembersItem
-                                                                            .parentReference
-                                                                            .id);
                                                                         _model.removeFromRemovedUsers(
                                                                             removedMembersItem);
                                                                         safeSetState(
@@ -1570,6 +1597,38 @@ class _EditTripWidgetState extends State<EditTripWidget> {
                                             _model.loop2 = _model.loop2 + 1;
                                           }
                                         }
+                                        _model.loopCounter =
+                                            _model.loopCounter + 1;
+                                      }
+                                      _model.loopCounter = 0;
+                                      while (_model.loopCounter <
+                                          _model.resendEmails.length) {
+                                        firestoreBatch
+                                            .set(MailRecord.collection.doc(), {
+                                          ...createMailRecordData(
+                                            message: updateMessageStruct(
+                                              MessageStruct(
+                                                subject:
+                                                    '${currentUserEmail} invites you to ${_model.textController1.text}',
+                                                html: functions.buildInvite(
+                                                    currentUserEmail,
+                                                    _model.photoURL,
+                                                    _model
+                                                        .textController1.text),
+                                              ),
+                                              clearUnsetFields: false,
+                                              create: true,
+                                            ),
+                                          ),
+                                          ...mapToFirestore(
+                                            {
+                                              'to': [
+                                                _model.resendEmails[
+                                                    _model.loopCounter]
+                                              ],
+                                            },
+                                          ),
+                                        });
                                         _model.loopCounter =
                                             _model.loopCounter + 1;
                                       }
