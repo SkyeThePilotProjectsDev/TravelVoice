@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/components/data_uploading_notif_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -51,7 +52,13 @@ class _LogsWidgetState extends State<LogsWidget> {
           decoration: BoxDecoration(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              wrapWithModel(
+                model: _model.dataUploadingNotifModel,
+                updateCallback: () => safeSetState(() {}),
+                child: DataUploadingNotifWidget(),
+              ),
               Container(
                 height: 200.0,
                 decoration: BoxDecoration(),

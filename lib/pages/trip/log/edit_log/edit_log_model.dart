@@ -14,7 +14,8 @@ import '/pages/trip/log/upload_audio/upload_audio_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
+import 'dart:async';
+import '/actions/actions.dart' as action_blocks;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'edit_log_widget.dart' show EditLogWidget;
@@ -52,6 +53,8 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
 
   String? newImage;
 
+  DocumentReference? thisLog;
+
   ///  State fields for stateful widgets in this page.
 
   final formKey = GlobalKey<FormState>();
@@ -82,11 +85,10 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
   List<FFUploadedFile> uploadedLocalFiles1 = [];
   List<String> uploadedFileUrls1 = [];
 
-  // Stores action output result for [Custom Action - getStorageAudioFiles] action in Button widget.
-  List<FFUploadedFile>? recordingBytes;
   bool isDataUploading2 = false;
-  List<FFUploadedFile> uploadedLocalFiles2 = [];
-  List<String> uploadedFileUrls2 = [];
+  FFUploadedFile uploadedLocalFile2 =
+      FFUploadedFile(bytes: Uint8List.fromList([]));
+  String uploadedFileUrl2 = '';
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   LogRecord? newLog;

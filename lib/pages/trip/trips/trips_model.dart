@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/schema/enums/enums.dart';
+import '/components/data_uploading_notif_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -28,6 +29,8 @@ class TripsModel extends FlutterFlowModel<TripsWidget> {
 
   // Stores action output result for [Custom Action - getOrCreateUserInvitationsRef] action in Trips widget.
   DocumentReference? userInvRef;
+  // Model for dataUploadingNotif component.
+  late DataUploadingNotifModel dataUploadingNotifModel;
   // Model for profileIcon component.
   late ProfileIconModel profileIconModel;
   // State field(s) for TextField widget.
@@ -37,11 +40,14 @@ class TripsModel extends FlutterFlowModel<TripsWidget> {
 
   @override
   void initState(BuildContext context) {
+    dataUploadingNotifModel =
+        createModel(context, () => DataUploadingNotifModel());
     profileIconModel = createModel(context, () => ProfileIconModel());
   }
 
   @override
   void dispose() {
+    dataUploadingNotifModel.dispose();
     profileIconModel.dispose();
     textFieldFocusNode?.dispose();
     textController?.dispose();

@@ -100,7 +100,11 @@ class _UnverifiedUserWidgetState extends State<UnverifiedUserWidget> {
                           highlightColor: Colors.transparent,
                           onTap: () async {
                             await authManager.refreshUser();
-                            if (currentUserEmailVerified) {}
+                            if (currentUserEmailVerified) {
+                              FFAppState().update(() {});
+                            } else {
+                              FFAppState().update(() {});
+                            }
                           },
                           child: Icon(
                             Icons.refresh,

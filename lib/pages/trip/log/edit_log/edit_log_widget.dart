@@ -14,7 +14,8 @@ import '/pages/trip/log/upload_audio/upload_audio_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
+import 'dart:async';
+import '/actions/actions.dart' as action_blocks;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,6 +59,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
         _model.recordings = widget!.log!.recordings.toList().cast<String>();
         _model.selectedPlace = functions.locationToPlace(widget!.log?.location);
         _model.newImage = widget!.log?.photo;
+        _model.thisLog = widget!.log?.reference;
         safeSetState(() {});
       } else {
         _model.addToRecordings(functions.emptyAudio());
@@ -1090,76 +1092,55 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   },
                                 );
 
-                                _model.recordingBytes =
-                                    await actions.getStorageAudioFiles(
-                                  functions
-                                      .ignoreUploadedRecordings(
-                                          _model.recordings.toList())
-                                      .toList(),
-                                );
-                                {
-                                  safeSetState(
-                                      () => _model.isDataUploading2 = true);
-                                  var selectedUploadedFiles =
-                                      <FFUploadedFile>[];
-                                  var selectedMedia = <SelectedFile>[];
-                                  var downloadUrls = <String>[];
-                                  try {
-                                    selectedUploadedFiles = functions.addFile(
-                                        _model.recordingBytes?.toList(),
-                                        _model.image);
-                                    selectedMedia =
-                                        selectedFilesFromUploadedFiles(
-                                      selectedUploadedFiles,
-                                      isMultiData: true,
-                                    );
-                                    downloadUrls = (await Future.wait(
-                                      selectedMedia.map(
-                                        (m) async => await uploadData(
-                                            m.storagePath, m.bytes),
-                                      ),
-                                    ))
-                                        .where((u) => u != null)
-                                        .map((u) => u!)
-                                        .toList();
-                                  } finally {
-                                    _model.isDataUploading2 = false;
+                                if (_model.image != null &&
+                                    (_model.image?.bytes?.isNotEmpty ??
+                                        false)) {
+                                  {
+                                    safeSetState(
+                                        () => _model.isDataUploading2 = true);
+                                    var selectedUploadedFiles =
+                                        <FFUploadedFile>[];
+                                    var selectedMedia = <SelectedFile>[];
+                                    var downloadUrls = <String>[];
+                                    try {
+                                      selectedUploadedFiles =
+                                          _model.image!.bytes!.isNotEmpty
+                                              ? [_model.image!]
+                                              : <FFUploadedFile>[];
+                                      selectedMedia =
+                                          selectedFilesFromUploadedFiles(
+                                        selectedUploadedFiles,
+                                      );
+                                      downloadUrls = (await Future.wait(
+                                        selectedMedia.map(
+                                          (m) async => await uploadData(
+                                              m.storagePath, m.bytes),
+                                        ),
+                                      ))
+                                          .where((u) => u != null)
+                                          .map((u) => u!)
+                                          .toList();
+                                    } finally {
+                                      _model.isDataUploading2 = false;
+                                    }
+                                    if (selectedUploadedFiles.length ==
+                                            selectedMedia.length &&
+                                        downloadUrls.length ==
+                                            selectedMedia.length) {
+                                      safeSetState(() {
+                                        _model.uploadedLocalFile2 =
+                                            selectedUploadedFiles.first;
+                                        _model.uploadedFileUrl2 =
+                                            downloadUrls.first;
+                                      });
+                                    } else {
+                                      safeSetState(() {});
+                                      return;
+                                    }
                                   }
-                                  if (selectedUploadedFiles.length ==
-                                          selectedMedia.length &&
-                                      downloadUrls.length ==
-                                          selectedMedia.length) {
-                                    safeSetState(() {
-                                      _model.uploadedLocalFiles2 =
-                                          selectedUploadedFiles;
-                                      _model.uploadedFileUrls2 = downloadUrls;
-                                    });
-                                  } else {
-                                    safeSetState(() {});
-                                    return;
-                                  }
-                                }
 
-                                _model.newImage = functions
-                                        .getImageFromAudio(
-                                            _model.uploadedFileUrls2.toList())
-                                        .isNotEmpty
-                                    ? _model.uploadedFileUrls2.last
-                                    : _model.newImage;
-                                _model.recordings = functions
-                                    .mergeRecordingPaths(
-                                        _model.recordings.toList(),
-                                        (_model.image != null &&
-                                                    (_model.image?.bytes
-                                                            ?.isNotEmpty ??
-                                                        false)
-                                                ? functions.recordingsOnly(
-                                                    _model.uploadedFileUrls2
-                                                        .toList())
-                                                : _model.uploadedFileUrls2)
-                                            .toList())
-                                    .toList()
-                                    .cast<String>();
+                                  _model.newImage = _model.uploadedFileUrl2;
+                                }
                                 if (widget!.log != null) {
                                   await widget!.log!.reference.update({
                                     ...createLogRecordData(
@@ -1243,8 +1224,19 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                       },
                                     ),
                                   }, logRecordReference);
+                                  _model.thisLog = _model.newLog?.reference;
                                 }
 
+                                unawaited(
+                                  () async {
+                                    await action_blocks
+                                        .saveLogRecordingsBackground(
+                                      context,
+                                      logRef: _model.thisLog,
+                                      recordingPaths: _model.recordings,
+                                    );
+                                  }(),
+                                );
                                 _model.thisTrip =
                                     await TripRecord.getDocumentOnce(
                                         widget!.trip!);

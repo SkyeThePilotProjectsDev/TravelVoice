@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/schema/enums/enums.dart';
+import '/components/data_uploading_notif_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -103,7 +104,13 @@ class _TripsWidgetState extends State<TripsWidget> {
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      wrapWithModel(
+                        model: _model.dataUploadingNotifModel,
+                        updateCallback: () => safeSetState(() {}),
+                        child: DataUploadingNotifWidget(),
+                      ),
                       Expanded(
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(

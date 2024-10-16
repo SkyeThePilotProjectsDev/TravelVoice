@@ -9,6 +9,7 @@ import 'package:travel_voice/index.dart';
 import 'package:travel_voice/main.dart';
 import 'package:travel_voice/flutter_flow/flutter_flow_util.dart';
 
+import 'package:provider/provider.dart';
 import 'package:travel_voice/backend/firebase/firebase_config.dart';
 import 'package:travel_voice/auth/firebase_auth/auth_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +25,9 @@ void main() async {
 
   setUp(() async {
     await authManager.signOut();
+    FFAppState.reset();
+    final appState = FFAppState();
+    await appState.initializePersistedState();
   });
 
   group('Trip', () {
@@ -31,7 +35,10 @@ void main() async {
       _overrideOnError();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: 'skyecodesthings@gmail.com', password: 'P@ssw0rd');
-      await tester.pumpWidget(MyApp());
+      await tester.pumpWidget(ChangeNotifierProvider(
+        create: (context) => FFAppState(),
+        child: MyApp(),
+      ));
 
       await tester.pumpAndSettle(
         Duration(milliseconds: 500),
