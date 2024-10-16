@@ -58,7 +58,6 @@ class CreateRecordingModel extends FlutterFlowModel<CreateRecordingWidget> {
   String timerValue = StopWatchTimer.getDisplayTime(
     0,
     hours: false,
-    minute: false,
   );
   FlutterFlowTimerController timerController =
       FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countUp));

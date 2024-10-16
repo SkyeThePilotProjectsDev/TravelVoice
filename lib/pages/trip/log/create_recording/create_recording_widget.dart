@@ -288,7 +288,6 @@ class _CreateRecordingWidgetState extends State<CreateRecordingWidget> {
                               StopWatchTimer.getDisplayTime(
                             value,
                             hours: false,
-                            minute: false,
                           ),
                           controller: _model.timerController,
                           updateStateInterval: Duration(milliseconds: 1000),

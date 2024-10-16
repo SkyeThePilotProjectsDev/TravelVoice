@@ -23,6 +23,7 @@ class PlacesSearchMultiCall {
       params: {
         'key': "AIzaSyCx5MzxtWSIUYXGH2g21NW2M_xxGkzlBQk",
         'query': query,
+        'type': "locality",
       },
       returnBody: true,
       encodeBodyUtf8: false,

@@ -10,6 +10,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/upload_data.dart';
 import '/pages/trip/log/create_recording/create_recording_widget.dart';
+import '/pages/trip/log/upload_audio/upload_audio_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
@@ -56,7 +57,7 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
   final formKey = GlobalKey<FormState>();
   // Stores action output result for [Bottom Sheet - createRecording] action in EditLog widget.
   String? recordingInit;
-  // Stores action output result for [Bottom Sheet - createRecording] action in Button widget.
+  // Stores action output result for [Alert Dialog - Custom Dialog] action in Button widget.
   String? recording;
   // State field(s) for TextField_City widget.
   FocusNode? textFieldCityFocusNode;
