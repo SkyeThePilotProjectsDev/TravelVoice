@@ -1083,7 +1083,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                             FocusScope.of(dialogContext)
                                                 .unfocus(),
                                         child: LoadingIndicatorWidget(
-                                          message: 'Uploading image',
+                                          message: 'Uploading data',
                                         ),
                                       ),
                                     );
@@ -1140,7 +1140,12 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   }
                                 }
 
-                                _model.newImage = _model.uploadedFileUrls2.last;
+                                _model.newImage = functions
+                                        .getImageFromAudio(
+                                            _model.uploadedFileUrls2.toList())
+                                        .isNotEmpty
+                                    ? _model.uploadedFileUrls2.last
+                                    : _model.newImage;
                                 _model.recordings = functions
                                     .mergeRecordingPaths(
                                         _model.recordings.toList(),

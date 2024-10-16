@@ -454,7 +454,11 @@ List<String> recordingsOnly(List<String>? links) {
 List<String> ignoreUploadedRecordings(List<String>? input) {
   if (input == null) return [];
 
-  return input.where((i) => !i.startsWith("https")).toList();
+  return input
+      .where((i) =>
+          !i.startsWith("https") &&
+          RegExp(r'\.(jpg|jpeg|png|gif)(\?|$)').hasMatch(i))
+      .toList();
 }
 
 List<String> mergeRecordingPaths(
@@ -468,5 +472,12 @@ List<String> mergeRecordingPaths(
 
   return oldPaths
       .map((p) => p.startsWith("http") ? p : uploadedPaths[index++])
+      .toList();
+}
+
+List<String> getImageFromAudio(List<String>? input) {
+  if (input == null) return [];
+  return input
+      .where((i) => RegExp(r'\.(jpg|jpeg|png|gif)(\?|$)').hasMatch(i))
       .toList();
 }
