@@ -55,7 +55,16 @@ Future<List<String>> uploadRecordings(List<String>? audioPaths) async {
     // safeSetState(() {});
     // return;
   }
+
+  int i_ = 0;
+
   return downloadUrls.length == waitingForUpload.length
-      ? downloadUrls
+      ? audioPaths
+          .map((i) => i.startsWith("http") ? i : downloadUrls[i_++])
+          .toList()
       : audioPaths;
+
+  // return downloadUrls.length == waitingForUpload.length
+  //     ? downloadUrls
+  //     : audioPaths;
 }
