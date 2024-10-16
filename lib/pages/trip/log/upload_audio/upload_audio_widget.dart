@@ -50,6 +50,7 @@ class _UploadAudioWidgetState extends State<UploadAudioWidget> {
         padding: EdgeInsets.all(16.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FFButtonWidget(
               onPressed: () async {
