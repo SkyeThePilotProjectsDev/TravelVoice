@@ -59,7 +59,8 @@
     <string>This app requires permission to upload images from your library.</string>
 	<key>NSMicrophoneUsageDescription</key>
     <string>This app requires permission to record audio.</string>
-
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+    <string>This allows TravelVoice to upload your log data in the background</string>
 
 
 	<key>UILaunchStoryboardName</key>
