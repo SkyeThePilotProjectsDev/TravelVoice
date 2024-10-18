@@ -15,7 +15,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +30,7 @@ Future initBackgroundTasks() async {
     'MY FOREGROUND SERVICE', // title
     description:
         'This channel is used for important notifications.', // description
-    importance: Importance.low, // importance must be at low or higher level
+    importance: Importance.high, // importance must be at low or higher level
   );
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -63,7 +63,7 @@ Future initBackgroundTasks() async {
       initialNotificationTitle: 'AWESOME SERVICE',
       initialNotificationContent: 'Initializing',
       foregroundServiceNotificationId: 888,
-      foregroundServiceTypes: [AndroidForegroundType.location],
+      foregroundServiceTypes: [AndroidForegroundType.dataSync],
     ),
     iosConfiguration: IosConfiguration(
       // auto start service

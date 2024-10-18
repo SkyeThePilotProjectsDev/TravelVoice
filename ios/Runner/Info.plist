@@ -61,6 +61,11 @@
     <string>This app requires permission to record audio.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
     <string>This allows TravelVoice to upload your log data in the background</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+    </array>
 
 
 	<key>UILaunchStoryboardName</key>
