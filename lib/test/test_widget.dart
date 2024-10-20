@@ -66,9 +66,14 @@ class _TestWidgetState extends State<TestWidget> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  custom_widgets.BackgroundNotifsTest(
+                  Container(
                     width: 200.0,
                     height: 200.0,
+                    decoration: BoxDecoration(),
+                    child: custom_widgets.BackgroundNotifsTest(
+                      width: 200.0,
+                      height: 200.0,
+                    ),
                   ),
                 ],
               ),

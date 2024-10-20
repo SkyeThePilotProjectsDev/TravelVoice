@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'index.dart'; // Imports other custom actions
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -140,38 +142,32 @@ void onStart(ServiceInstance service) async {
               'MY FOREGROUND SERVICE',
               icon: 'ic_bg_service_small',
               ongoing: true,
+              color: Colors.green,
+              showProgress: true,
+              indeterminate: true,
+              // progress: 5,
+              // maxProgress: 10,
+              // showWhen: true,
+              // when: 500,
+              colorized: true,
             ),
           ),
         );
 
         // if you don't using custom notification, uncomment this
-        service.setForegroundNotificationInfo(
-          title: "My App Service",
-          content: "Updated at ${DateTime.now()}",
-        );
+        // service.setForegroundNotificationInfo(
+        //   title: "My App Service",
+        //   content: "Updated at ${DateTime.now()}",
+        // );
       }
     }
 
-    /// you can see this log in logcat
-    debugPrint('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
-
-    // test using external plugin
-    // final deviceInfo = DeviceInfoPlugin();
-    // String? device;
-    // if (Platform.isAndroid) {
-    //   final androidInfo = await deviceInfo.androidInfo;
-    //   device = androidInfo.model;
-    // } else if (Platform.isIOS) {
-    //   final iosInfo = await deviceInfo.iosInfo;
-    //   device = iosInfo.model;
-    // }
-
-    service.invoke(
-      'update',
-      {
-        "current_date": DateTime.now().toIso8601String(),
-        // "device": device,
-      },
-    );
+    // service.invoke(
+    //   'update',
+    //   {
+    //     "current_date": DateTime.now().toIso8601String(),
+    //     // "device": device,
+    //   },
+    // );
   });
 }

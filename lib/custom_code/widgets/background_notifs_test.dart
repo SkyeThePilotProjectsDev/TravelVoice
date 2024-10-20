@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'index.dart'; // Imports other custom widgets
+
 import 'dart:async';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -51,8 +53,14 @@ class _BackgroundNotifsTestState extends State<BackgroundNotifsTest> {
             DateTime? date = DateTime.tryParse(data["current_date"]);
             return Column(
               children: [
-                Text(device ?? 'Unknown'),
-                Text(date.toString()),
+                Text(
+                  device ?? 'Unknown',
+                  style: TextStyle(color: Colors.black),
+                ),
+                Text(
+                  date.toString(),
+                  style: TextStyle(color: Colors.black),
+                ),
               ],
             );
           },
