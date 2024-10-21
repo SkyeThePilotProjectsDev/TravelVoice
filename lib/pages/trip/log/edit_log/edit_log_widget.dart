@@ -1228,16 +1228,16 @@ class _EditLogWidgetState extends State<EditLogWidget> {
 
                                 await actions.backgroundTask(
                                   () async {
-                                    _model.recordingUploads =
+                                    _model.recUploads =
                                         await actions.uploadRecordings(
                                       _model.recordings.toList(),
                                     );
-                                    if (recordingUploads != null &&
-                                        (recordingUploads)!.isNotEmpty) {
+                                    if (_model.recUploads != null &&
+                                        (_model.recUploads)!.isNotEmpty) {
                                       await logRef!.update({
                                         ...mapToFirestore(
                                           {
-                                            'recordings': recordingUploads,
+                                            'recordings': _model.recUploads,
                                           },
                                         ),
                                       });
