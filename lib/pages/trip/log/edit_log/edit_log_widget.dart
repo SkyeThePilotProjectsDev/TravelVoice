@@ -1230,7 +1230,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   () async {
                                     _model.recordingUploads =
                                         await actions.uploadRecordings(
-                                      recordingPaths?.toList(),
+                                      _model.recordings.toList(),
                                     );
                                     if (recordingUploads != null &&
                                         (recordingUploads)!.isNotEmpty) {
