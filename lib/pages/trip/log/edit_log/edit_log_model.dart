@@ -14,8 +14,7 @@ import '/pages/trip/log/upload_audio/upload_audio_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
-import 'dart:async';
-import '/actions/actions.dart' as action_blocks;
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'edit_log_widget.dart' show EditLogWidget;
@@ -92,6 +91,8 @@ class EditLogModel extends FlutterFlowModel<EditLogWidget> {
 
   // Stores action output result for [Backend Call - Create Document] action in Button widget.
   LogRecord? newLog;
+  // Stores action output result for [Custom Action - uploadRecordings] action in Button widget.
+  List<String>? recordingUploads;
   // Stores action output result for [Backend Call - Read Document] action in Button widget.
   TripRecord? thisTrip;
 

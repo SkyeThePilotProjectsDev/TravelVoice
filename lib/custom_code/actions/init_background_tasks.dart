@@ -58,8 +58,8 @@ Future initBackgroundTasks() async {
       onStart: onStart,
 
       // auto start service
-      autoStart: true,
-      isForegroundMode: true,
+      autoStart: false,
+      isForegroundMode: false,
 
       notificationChannelId: 'my_foreground',
       initialNotificationTitle: 'AWESOME SERVICE',
@@ -134,8 +134,9 @@ void onStart(ServiceInstance service) async {
         /// the notification id must be equals with AndroidConfiguration when you call configure() method.
         flutterLocalNotificationsPlugin.show(
           888,
-          'COOL SERVICE',
-          'Awesome ${DateTime.now()}',
+          'Uploading recordings...',
+          // 'Awesome ${DateTime.now()}',
+          null,
           const NotificationDetails(
             android: AndroidNotificationDetails(
               'my_foreground',
@@ -145,10 +146,6 @@ void onStart(ServiceInstance service) async {
               color: Colors.green,
               showProgress: true,
               indeterminate: true,
-              // progress: 5,
-              // maxProgress: 10,
-              // showWhen: true,
-              // when: 500,
               colorized: true,
             ),
           ),

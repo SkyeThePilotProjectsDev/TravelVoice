@@ -16,8 +16,6 @@ Future saveLogRecordingsBackground(
 }) async {
   List<String>? recordingUploads;
 
-  FFAppState().isRecordingsUploading = true;
-  FFAppState().update(() {});
   recordingUploads = await actions.uploadRecordings(
     recordingPaths?.toList(),
   );
@@ -30,6 +28,4 @@ Future saveLogRecordingsBackground(
       ),
     });
   }
-  FFAppState().isRecordingsUploading = false;
-  FFAppState().update(() {});
 }

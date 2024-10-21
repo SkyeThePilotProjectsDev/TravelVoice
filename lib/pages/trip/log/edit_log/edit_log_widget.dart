@@ -14,8 +14,7 @@ import '/pages/trip/log/upload_audio/upload_audio_widget.dart';
 import '/util_components/date_picker/date_picker_widget.dart';
 import '/util_components/delete_confirmation/delete_confirmation_widget.dart';
 import '/util_components/image_uploader/image_uploader_widget.dart';
-import 'dart:async';
-import '/actions/actions.dart' as action_blocks;
+import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -1227,15 +1226,23 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                   _model.thisLog = _model.newLog?.reference;
                                 }
 
-                                unawaited(
+                                await actions.backgroundTask(
                                   () async {
-                                    await action_blocks
-                                        .saveLogRecordingsBackground(
-                                      context,
-                                      logRef: _model.thisLog,
-                                      recordingPaths: _model.recordings,
+                                    _model.recordingUploads =
+                                        await actions.uploadRecordings(
+                                      recordingPaths?.toList(),
                                     );
-                                  }(),
+                                    if (recordingUploads != null &&
+                                        (recordingUploads)!.isNotEmpty) {
+                                      await logRef!.update({
+                                        ...mapToFirestore(
+                                          {
+                                            'recordings': recordingUploads,
+                                          },
+                                        ),
+                                      });
+                                    }
+                                  },
                                 );
                                 _model.thisTrip =
                                     await TripRecord.getDocumentOnce(
