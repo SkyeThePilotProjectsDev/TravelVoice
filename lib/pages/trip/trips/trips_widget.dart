@@ -5,9 +5,7 @@ import '/components/data_uploading_notif_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/pages/trip/user_menu/user_menu_widget.dart';
 import '/pages/user/profile_icon/profile_icon_widget.dart';
-import '/util_components/empty_list/empty_list_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:auto_size_text/auto_size_text.dart';
@@ -16,6 +14,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'trips_model.dart';
@@ -168,122 +167,110 @@ class _TripsWidgetState extends State<TripsWidget> {
                                           ),
                                         ),
                                         if (_model.userInvRef != null)
-                                          Builder(
-                                            builder: (context) => StreamBuilder<
-                                                List<TripInvitationRecord>>(
-                                              stream: queryTripInvitationRecord(
-                                                parent: _model.userInvRef,
-                                                queryBuilder:
-                                                    (tripInvitationRecord) =>
-                                                        tripInvitationRecord
-                                                            .where(
-                                                  'status',
-                                                  isEqualTo: RequestStatus
-                                                      .Requested.serialize(),
-                                                ),
+                                          StreamBuilder<
+                                              List<TripInvitationRecord>>(
+                                            stream: queryTripInvitationRecord(
+                                              parent: _model.userInvRef,
+                                              queryBuilder:
+                                                  (tripInvitationRecord) =>
+                                                      tripInvitationRecord
+                                                          .where(
+                                                'status',
+                                                isEqualTo: RequestStatus
+                                                    .Requested.serialize(),
                                               ),
-                                              builder: (context, snapshot) {
-                                                // Customize what your widget looks like when it's loading.
-                                                if (!snapshot.hasData) {
-                                                  return Center(
-                                                    child: SizedBox(
-                                                      width: 50.0,
-                                                      height: 50.0,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                Color>(
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .primary,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                List<TripInvitationRecord>
-                                                    containerTripInvitationRecordList =
-                                                    snapshot.data!;
-
-                                                return InkWell(
-                                                  splashColor:
-                                                      Colors.transparent,
-                                                  focusColor:
-                                                      Colors.transparent,
-                                                  hoverColor:
-                                                      Colors.transparent,
-                                                  highlightColor:
-                                                      Colors.transparent,
-                                                  onTap: () async {
-                                                    await showDialog(
-                                                      context: context,
-                                                      builder: (dialogContext) {
-                                                        return Dialog(
-                                                          elevation: 0,
-                                                          insetPadding:
-                                                              EdgeInsets.zero,
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          alignment: AlignmentDirectional(
-                                                                  0.0, -1.0)
-                                                              .resolve(
-                                                                  Directionality.of(
-                                                                      context)),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        dialogContext)
-                                                                    .unfocus(),
-                                                            child: Container(
-                                                              width: MediaQuery
-                                                                          .sizeOf(
-                                                                              context)
-                                                                      .width *
-                                                                  1.0,
-                                                              child:
-                                                                  UserMenuWidget(),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: MediaQuery.sizeOf(
+                                            ),
+                                            builder: (context, snapshot) {
+                                              // Customize what your widget looks like when it's loading.
+                                              if (!snapshot.hasData) {
+                                                return Center(
+                                                  child: SizedBox(
+                                                    width: 50.0,
+                                                    height: 50.0,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                              Color>(
+                                                        FlutterFlowTheme.of(
                                                                 context)
-                                                            .width *
-                                                        1.0,
-                                                    height: 100.0,
-                                                    decoration: BoxDecoration(),
-                                                    child: Visibility(
-                                                      visible:
-                                                          containerTripInvitationRecordList
-                                                              .isNotEmpty,
-                                                      child: Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                1.0, -1.0),
-                                                        child: Container(
-                                                          width: 15.0,
-                                                          height: 15.0,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .error,
-                                                            shape:
-                                                                BoxShape.circle,
-                                                          ),
-                                                        ),
+                                                            .primary,
                                                       ),
                                                     ),
                                                   ),
                                                 );
-                                              },
-                                            ),
+                                              }
+                                              List<TripInvitationRecord>
+                                                  containerTripInvitationRecordList =
+                                                  snapshot.data!;
+
+                                              return InkWell(
+                                                splashColor: Colors.transparent,
+                                                focusColor: Colors.transparent,
+                                                hoverColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                onTap: () async {
+                                                  _model.userInvRefx = await actions
+                                                      .getOrCreateUserInvitationsRef(
+                                                    currentUserReference,
+                                                    currentUserEmail,
+                                                  );
+
+                                                  context.pushNamed(
+                                                    'SlidingUserMenu',
+                                                    queryParameters: {
+                                                      'previousPage':
+                                                          serializeParam(
+                                                        'home',
+                                                        ParamType.String,
+                                                      ),
+                                                    }.withoutNulls,
+                                                    extra: <String, dynamic>{
+                                                      kTransitionInfoKey:
+                                                          TransitionInfo(
+                                                        hasTransition: true,
+                                                        transitionType:
+                                                            PageTransitionType
+                                                                .leftToRight,
+                                                      ),
+                                                    },
+                                                  );
+
+                                                  safeSetState(() {});
+                                                },
+                                                child: Container(
+                                                  width:
+                                                      MediaQuery.sizeOf(context)
+                                                              .width *
+                                                          1.0,
+                                                  height: 100.0,
+                                                  decoration: BoxDecoration(),
+                                                  child: Visibility(
+                                                    visible:
+                                                        containerTripInvitationRecordList
+                                                            .isNotEmpty,
+                                                    child: Align(
+                                                      alignment:
+                                                          AlignmentDirectional(
+                                                              1.0, -1.0),
+                                                      child: Container(
+                                                        width: 15.0,
+                                                        height: 15.0,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .error,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           ),
                                       ],
                                     ),
@@ -490,7 +477,11 @@ class _TripsWidgetState extends State<TripsWidget> {
                                                             desc: true)
                                                         .toList();
                                                     if (trips.isEmpty) {
-                                                      return EmptyListWidget();
+                                                      return Center(
+                                                        child: SvgPicture.asset(
+                                                          'assets/images/1Trees.svg',
+                                                        ),
+                                                      );
                                                     }
 
                                                     return Column(

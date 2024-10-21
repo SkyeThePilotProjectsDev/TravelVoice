@@ -218,6 +218,31 @@ GoRouter createRouter(AppStateNotifier appStateNotifier, [Widget? entryPage]) =>
               path: 'unverifiedUser',
               requireAuth: true,
               builder: (context, params) => UnverifiedUserWidget(),
+            ),
+            FFRoute(
+              name: 'SlidingUserMenu',
+              path: 'slidingUserMenu',
+              builder: (context, params) => SlidingUserMenuWidget(
+                previousPage: params.getParam(
+                  'previousPage',
+                  ParamType.String,
+                ),
+              ),
+            ),
+            FFRoute(
+              name: 'profilePage',
+              path: 'profilePage',
+              builder: (context, params) => ProfilePageWidget(),
+            ),
+            FFRoute(
+              name: 'TripInvitations',
+              path: 'tripInvitations',
+              builder: (context, params) => TripInvitationsWidget(
+                previousPage: params.getParam(
+                  'previousPage',
+                  ParamType.String,
+                ),
+              ),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),

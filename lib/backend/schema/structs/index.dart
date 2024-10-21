@@ -6,6 +6,7 @@ export 'trip_request_struct.dart';
 export 'trip_user_struct.dart';
 export 'display_name_struct.dart';
 export 'geometry_struct.dart';
+export 'invitation_group_struct.dart';
 export 'location_struct.dart';
 export 'message_struct.dart';
 export 'northeast_struct.dart';

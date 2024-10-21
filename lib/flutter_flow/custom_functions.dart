@@ -481,3 +481,33 @@ List<String> getImageFromAudio(List<String>? input) {
       .where((i) => RegExp(r'\.(jpg|jpeg|png|gif)(\?|$)').hasMatch(i))
       .toList();
 }
+
+List<InvitationGroupStruct> splitInvitations(
+    List<TripInvitationRecord> invitations) {
+  DateTime aMonthAgo = DateTime.now().subtract(Duration(days: 30));
+  return [
+    InvitationGroupStruct(
+      name: 'In the last Month',
+      invitations: invitations
+          .where((i) => (i?.dateInvited ?? DateTime.now()).isAfter(aMonthAgo))
+          .map((i) => i.reference)
+          .toList(),
+    ),
+    InvitationGroupStruct(
+      name: 'Older',
+      invitations: invitations
+          .where((i) => (i?.dateInvited ?? DateTime.now()).isBefore(aMonthAgo))
+          .map((i) => i.reference)
+          .toList(),
+    ),
+  ];
+}
+
+TripInvitationRecord? getTripInvitation(
+  List<TripInvitationRecord>? invitations,
+  DocumentReference? invitationRef,
+) {
+  if (invitations == null || invitationRef == null) return null;
+
+  return invitations.where((i) => i.reference == invitationRef).firstOrNull;
+}

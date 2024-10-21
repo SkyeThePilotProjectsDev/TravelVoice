@@ -16,3 +16,9 @@ export '/pages/trip/log/view_log/view_log_widget.dart' show ViewLogWidget;
 export '/test/test_widget.dart' show TestWidget;
 export '/pages/user/unverified_user/unverified_user_widget.dart'
     show UnverifiedUserWidget;
+export '/pages/user/sliding_user_menu/sliding_user_menu_widget.dart'
+    show SlidingUserMenuWidget;
+export '/pages/user/profile_page/profile_page_widget.dart'
+    show ProfilePageWidget;
+export '/pages/user/trip_invitations/trip_invitations_widget.dart'
+    show TripInvitationsWidget;

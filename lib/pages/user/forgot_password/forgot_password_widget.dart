@@ -12,10 +12,10 @@ export 'forgot_password_model.dart';
 class ForgotPasswordWidget extends StatefulWidget {
   const ForgotPasswordWidget({
     super.key,
-    required this.firebaseCode,
-  });
+    String? firebaseCode,
+  }) : this.firebaseCode = firebaseCode ?? ' ';
 
-  final String? firebaseCode;
+  final String firebaseCode;
 
   @override
   State<ForgotPasswordWidget> createState() => _ForgotPasswordWidgetState();
@@ -83,7 +83,7 @@ class _ForgotPasswordWidgetState extends State<ForgotPasswordWidget> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Forgot\npassword?',
+                      'Reset\npassword',
                       style: FlutterFlowTheme.of(context).displaySmall.override(
                             fontFamily: 'Inter Tight',
                             letterSpacing: 0.0,
