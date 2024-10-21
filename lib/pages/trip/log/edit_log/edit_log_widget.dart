@@ -1234,7 +1234,7 @@ class _EditLogWidgetState extends State<EditLogWidget> {
                                     );
                                     if (_model.recUploads != null &&
                                         (_model.recUploads)!.isNotEmpty) {
-                                      await logRef!.update({
+                                      await widget!.log!.reference.update({
                                         ...mapToFirestore(
                                           {
                                             'recordings': _model.recUploads,
